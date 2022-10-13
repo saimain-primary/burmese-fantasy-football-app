@@ -1,11 +1,12 @@
 <template>
   <v-banner
+    v-if="deferredPrompt"
     :avatar="logo"
     color="primary"
     text="Get our free BFF app. It won't take up space on your phone and also works offline!"
   >
     <v-banner-actions>
-      <v-btn size="small">Install</v-btn>
+      <v-btn size="small" @click="install">Install</v-btn>
     </v-banner-actions>
   </v-banner>
   <div class="header-div">
@@ -212,7 +213,26 @@ export default {
   data() {
     return {
       logo: logo,
+      deferredPrompt: null,
     };
+  },
+  methods: {
+    async install() {
+      this.deferredPrompt.prompt();
+    },
+  },
+  created() {
+    console.log("cread");
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      console.log("e", e);
+      // Stash the event so it can be triggered later.
+      this.deferredPrompt = e;
+    });
+    window.addEventListener("appinstalled", () => {
+      console.log("installed");
+      this.deferredPrompt = null;
+    });
   },
   mounted() {},
 };
