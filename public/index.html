@@ -1,15 +1,51 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" 
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+      <meta name="apple-mobile-web-app-capable" content="yes"></meta>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></meta>
+    <!-- Android  -->
+    <meta name="theme-color" content="#4C2FE3" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- iOS -->
+    <meta name="apple-mobile-web-app-title" content="BFF Sports" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <!-- Windows  -->
+    <meta name="msapplication-navbutton-color" content="#4C2FE3" />
+    <meta name="msapplication-TileColor" content="#4C2FE3" />
+    <meta name="msapplication-TileImage" content="ms-icon-144x144.png" />
+    <meta name="msapplication-config" content="browserconfig.xml" />
+
+    <!-- Pinned Sites  -->
+    <meta name="application-name" content="BFF Sports" />
+    <meta name="msapplication-tooltip" content="BFF Sports" />
+    <meta name="msapplication-starturl" content="/" />
+
+    <!-- Tap highlighting  -->
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- UC Mobile Browser  -->
+    <meta name="full-screen" content="yes" />
+    <meta name="browsermode" content="application" />
+
+    <!-- Orientation  -->
+    <meta name="screen-orientation" content="portrait" />
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
     <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong
+        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
+        properly without JavaScript enabled. Please enable it to
+        continue.</strong
+      >
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->

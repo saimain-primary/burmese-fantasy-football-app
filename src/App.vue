@@ -1,30 +1,47 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <v-app>
+    <v-dialog v-model="isLoading" persistent width="100">
+      <v-card
+        class="d-flex justify-center align-center"
+        width="100"
+        height="100"
+      >
+        <v-progress-circular
+          :size="30"
+          color="primary"
+          indeterminate
+        ></v-progress-circular
+      ></v-card>
+    </v-dialog>
+    <TopBar :pageName="pageName" />
+    <v-main class="my-auto">
+      <router-view />
+    </v-main>
+    <Dialog></Dialog>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import TopBar from "./components/TopBar.vue";
+import Dialog from "./components/Dialog.vue";
+import { mapActions, mapGetters } from "vuex";
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+export default {
+  name: "App",
+  components: { TopBar, Dialog },
+  computed: {
+    ...mapGetters({
+      isLoading: "isLoading",
+    }),
+  },
+  data: () => ({
+    pageName: "",
+  }),
+  mounted() {},
+  watch: {
+    $route(to, from) {
+      this.pageName = to.name;
+    },
+  },
+};
+</script>
