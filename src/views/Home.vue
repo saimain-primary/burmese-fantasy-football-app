@@ -1,6 +1,6 @@
 <template>
   <v-banner
-    v-if="deferredPrompt"
+    v-if="deferredPrompt && !checkDeviceIOS"
     :avatar="logo"
     color="primary"
     text="Get our free BFF app. It won't take up space on your phone and also works offline!"
@@ -209,6 +209,9 @@ export default {
       authenticated: "auth/authenticated",
       user: "auth/user",
     }),
+    checkDeviceIOS() {
+      return this.isIOSMobile(navigator.userAgent);
+    },
   },
   data() {
     return {
@@ -219,6 +222,13 @@ export default {
   methods: {
     async install() {
       this.deferredPrompt.prompt();
+    },
+    isIOSMobile() {
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
   created() {
@@ -234,7 +244,10 @@ export default {
       this.deferredPrompt = null;
     });
   },
-  mounted() {},
+  mounted() {
+    console.log(navigator.userAgent);
+    console.log(this.isIOSMobile(navigator.userAgent));
+  },
 };
 </script>
 <style scoped>
