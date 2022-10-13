@@ -61,12 +61,6 @@ export default createStore({
     storeForVerifyAction({ commit }, data) {
       commit("storeVerifyData", data);
     },
-    async verifyAccountAction({ commit }, data) {
-      commit("toggleLoading", true);
-      const response = await axios.post("/verify-otp", data);
-      commit("toggleLoading", false);
-      return response.data;
-    },
   },
   modules: {
     general,

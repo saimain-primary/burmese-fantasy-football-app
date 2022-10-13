@@ -58,28 +58,30 @@ export default {
   methods: {
     ...mapActions({
       toggleLoading: "toggleLoading",
-      verifyAccountAction: "verifyAccountAction",
+      verifyAccountAction: "auth/verifyAccountAction",
       showDialogAction: "general/showDialogAction",
     }),
     async onSubmitHandler() {
-      const response = await this.verifyAccountAction({
-        code: this.formData.code,
-        phone: this.verifyData.phone,
-        password: this.verifyData.password,
-      });
-      console.log("rr", response);
-      if (response.code === 200) {
-        // store user data to localhost
-        // logged in
-
-        localStorage.setItem("token", response.results.token);
-
-        this.$router.push("/profile");
-      } else {
+      try {
+        const response = await this.verifyAccountAction({
+          code: this.formData.code,
+          phone: this.verifyData.phone,
+          password: this.verifyData.password,
+        });
+        if (response.code === 200) {
+          this.$router.push("/profile");
+        } else {
+          this.showDialogAction({
+            title: "Whoops!",
+            body: response.message,
+          });
+        }
+      } catch (error) {
         this.showDialogAction({
           title: "Whoops!",
-          body: response.message,
+          body: "Something went wrong",
         });
+        console.log("herr verify");
       }
     },
   },

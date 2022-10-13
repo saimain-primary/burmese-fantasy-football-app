@@ -5,7 +5,7 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 import axios from "axios";
-import './registerServiceWorker'
+import "./registerServiceWorker";
 
 require("@/store/subscriber");
 

@@ -71,6 +71,22 @@ export default {
       }
     },
 
+    async verifyAccountAction({ commit, dispatch }, data) {
+      try {
+        commit("toggleLoading", true, { root: true });
+        const response = await axios.post("/verify-otp", data);
+
+        if (response.data.code !== 200) {
+          commit("toggleLoading", false, { root: true });
+          return response.data;
+        } else {
+          return dispatch("getMeAction", response.data.results.token);
+        }
+      } catch (error) {
+        commit("toggleLoading", false, { root: true });
+      }
+    },
+
     logoutAction({ commit }) {
       localStorage.removeItem("token");
       commit("setToken", null);

@@ -214,7 +214,7 @@ export default {
 .header-div {
   height: 60px;
   background: #4c2fe3;
-  border-radius: 0 0 26px 26px;
+  border-radius: 0 0 10px 10px;
   position: relative;
 }
 

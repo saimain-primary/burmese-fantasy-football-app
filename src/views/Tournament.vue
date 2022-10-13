@@ -111,11 +111,10 @@
     </v-row>
   </v-container>
 
-  <!-- <div class="d-flex mt-10 flex-column justify-space-between align-center">
-    <v-img class="" :src="nodata" width="180"></v-img>
-    <p class="text-body-1 text-dark mt-3"><b>No data Available!</b></p>
+  <!-- <div class="d-flex mt-16 flex-column justify-space-between align-center">
+    <v-img class="" :src="nodata" width="100"></v-img>
+    <p class="text-body-2 text-grey-darken-1 mt-3"><b>No data Available!</b></p>
   </div> -->
-
   <v-container>
     <v-row>
       <v-col>

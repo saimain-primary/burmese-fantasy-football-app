@@ -93,11 +93,11 @@ export default {
     showPassword: false,
     showConfirmPassword: false,
     formData: {
-      name: "",
-      phone: "",
-      favorite_team: null,
-      region: null,
-      password: "",
+      name: "Sai Main",
+      phone: "09756783439",
+      favorite_team: "Manchester United",
+      region: "Yangon",
+      password: "111111",
     },
     formRules: {
       name: [(v) => !!v || "Name is required"],
