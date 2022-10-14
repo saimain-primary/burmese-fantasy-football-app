@@ -1,6 +1,33 @@
 <template>
   <v-container class="mt-8">
-    <v-date-picker v-model="picker"></v-date-picker>
+    <v-select
+      :items="gameWeekList"
+      label="Game Week"
+      variant="outlined"
+      class="mb-2"
+      v-model="gameWeek"
+    ></v-select>
+    <v-text-field
+      variant="outlined"
+      v-model="startDate"
+      label="Start Date"
+      color="primary"
+      class="mb-2"
+      type="date"
+    >
+    </v-text-field>
+    <v-text-field
+      variant="outlined"
+      v-model="endDate"
+      label="End Date"
+      color="primary"
+      class="mb-2"
+      type="date"
+    >
+    </v-text-field>
+    <div class="text-center">
+      <v-btn color="primary"> Submit Game Week</v-btn>
+    </div>
   </v-container>
   <BottomNavigation :value="page" />
 </template>
@@ -13,19 +40,18 @@ export default {
   components: { BottomNavigation },
   data: () => ({
     page: "profile",
-    dates: null,
-    picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
+    startDate: null,
+    endDate: null,
+    gameWeek: null,
+    gameWeekList: [],
   }),
   methods: {},
-  mounted() {},
+  mounted() {
+    for (let index = 0; index < 40; index++) {
+      this.gameWeekList.push("Game Week " + index);
+    }
+  },
 };
 </script>
 
-<style>
-.dp__theme_light {
-  --dp-primary-color: #4c2fe3;
-  --dp-success-color: #4c2fe3;
-}
-</style>
+<style></style>

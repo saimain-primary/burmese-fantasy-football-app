@@ -232,7 +232,6 @@ export default {
     },
   },
   created() {
-    console.log("cread");
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       console.log("e", e);
@@ -244,10 +243,7 @@ export default {
       this.deferredPrompt = null;
     });
   },
-  mounted() {
-    console.log(navigator.userAgent);
-    console.log(this.isIOSMobile(navigator.userAgent));
-  },
+  mounted() {},
 };
 </script>
 <style scoped>
