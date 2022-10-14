@@ -70,10 +70,14 @@
                 <v-dialog v-model="showFilterDialog">
                   <template v-slot:activator="{ props }">
                     <v-btn
-                      icon="mdi-tune-vertical"
+                      class="bg-white text-primary"
+                      size="small"
                       v-bind="props"
-                      variant="text"
-                    ></v-btn>
+                      prepend-icon="mdi-tune-vertical"
+                      variant="tonal"
+                    >
+                      Change Game Week
+                    </v-btn>
                   </template>
 
                   <v-card class="pt-10 pb-5 px-5">
