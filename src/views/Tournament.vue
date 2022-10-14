@@ -70,7 +70,7 @@
                 <v-dialog v-model="showFilterDialog">
                   <template v-slot:activator="{ props }">
                     <v-btn
-                      class="bg-white text-primary"
+                      class="bg-white text-primary ml-2"
                       size="small"
                       v-bind="props"
                       prepend-icon="mdi-tune-vertical"
