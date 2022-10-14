@@ -2,7 +2,6 @@
   "name": "Burmese Fantasy Football",
   "short_name": "BFF",
   "theme_color": "#4c2fe3",
-  "gcm_sender_id": "643240659175",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
