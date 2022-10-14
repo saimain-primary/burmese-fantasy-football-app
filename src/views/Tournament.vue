@@ -74,7 +74,7 @@
                       size="small"
                       v-bind="props"
                       prepend-icon="mdi-tune-vertical"
-                      variant="tonal"
+                      variant="text"
                     >
                       Change Game Week
                     </v-btn>
