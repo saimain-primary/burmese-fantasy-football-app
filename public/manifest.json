@@ -1,0 +1,40 @@
+{
+  "name": "Burmese Fantasy Football",
+  "short_name": "BFF",
+  "theme_color": "#4c2fe3",
+  "gcm_sender_id": "643240659175",
+  "icons": [
+    {
+      "src": "./img/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./img/icons/android-chrome-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./img/icons/android-chrome-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "scope": "/",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://next.bffsports.com/manifest.json"
+    }
+  ]
+}

@@ -25,6 +25,8 @@
 import TopBar from "./components/TopBar.vue";
 import Dialog from "./components/Dialog.vue";
 import { mapActions, mapGetters } from "vuex";
+import firebaseMessaging from "./firebase";
+import { provide } from "vue";
 
 export default {
   name: "App",
@@ -42,6 +44,9 @@ export default {
     $route(to, from) {
       this.pageName = to.name;
     },
+  },
+  provide: {
+    messaging: firebaseMessaging,
   },
 };
 </script>

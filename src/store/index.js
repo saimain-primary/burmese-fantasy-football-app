@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import general from "./general";
 import auth from "./auth";
+import gameweek from "./gameweek";
 import axios from "axios";
 
 export default createStore({
@@ -63,6 +64,7 @@ export default createStore({
     },
   },
   modules: {
+    gameweek,
     general,
     auth,
   },

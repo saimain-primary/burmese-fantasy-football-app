@@ -60,20 +60,21 @@ const routes = [
     path: "/manage-gw",
     name: "Manage Game Week",
     component: ManageGameWeek,
-    // beforeEnter: (to, from, next) => {
-    //   console.log("middleware", store.getters["auth/authenticated"]);
-    //   console.log("middleware", store.getters["auth/user"]);
-    //   if (
-    //     store.getters["auth/authenticated"] &&
-    //     store.getters["auth/user"] === true
-    //   ) {
-    //     console.log("redice");
-    //     return next({
-    //       name: "Profile",
-    //     });
-    //   }
-    //   next();
-    // },
+    beforeEnter: (to, from, next) => {
+      let user = store.getters["auth/user"];
+      if (user) {
+        if (!store.getters["auth/authenticated"] && !user.isAdmin) {
+          return next({
+            path: "/",
+          });
+        }
+        next();
+      } else {
+        return next({
+          path: "/",
+        });
+      }
+    },
   },
 ];
 

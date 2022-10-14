@@ -45,7 +45,12 @@
             </v-list-item>
           </template>
         </v-list>
-        <v-card tonal class="mt-5" elevation="1">
+        <v-card
+          v-if="authenticated && user.isAdmin"
+          tonal
+          class="mt-5"
+          elevation="1"
+        >
           <v-list>
             <v-list-item to="/manage-gw" active-color="primary" variant="plain">
               <v-list-item-title

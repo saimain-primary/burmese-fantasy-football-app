@@ -5,7 +5,16 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 import axios from "axios";
+import { initializeApp } from "firebase/app";
+import { getMessaging } from "firebase/messaging";
+
 import "./registerServiceWorker";
+
+import firebaseMessaging from "./firebase";
+
+const app = createApp(App);
+
+app.config.globalProperties.$messaging = firebaseMessaging;
 
 require("@/store/subscriber");
 
