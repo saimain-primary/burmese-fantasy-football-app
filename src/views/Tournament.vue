@@ -121,11 +121,7 @@
     </v-row>
   </v-container>
 
-  <!-- <div class="d-flex mt-16 flex-column justify-space-between align-center">
-    <v-img class="" :src="nodata" width="100"></v-img>
-    <p class="text-body-2 text-grey-darken-1 mt-3"><b>No data Available!</b></p>
-  </div> -->
-  <v-container>
+  <v-container v-if="fixtureList.length > 0">
     <v-row>
       <v-col>
         <p class="mb-3 font-weight-medium text-body-1">Matches</p>
@@ -242,6 +238,16 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <div
+    v-else
+    class="d-flex mt-16 flex-column justify-space-between align-center"
+  >
+    <v-img class="" :src="nodata" width="100"></v-img>
+    <p class="text-body-2 text-grey-darken-1 mt-3">
+      <b>No Match Available!</b>
+    </p>
+  </div>
   <BottomNavigation />
 </template>
 
