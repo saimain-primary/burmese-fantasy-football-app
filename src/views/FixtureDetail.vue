@@ -23,7 +23,7 @@
       class="d-flex mx-3 justify-space-between px-5 py-5 mt-5 align-center gameweek-deadline-card"
     >
       <div class="d-flex align-center justify-center" style="width: 100px">
-        <p class="mr-3 text-body-1 text-center font-weight-medium">
+        <p class="mr-3 text-body-1 text-center">
           {{ getTeamCode(fixtureDetail.teams.home.id) }}
         </p>
         <v-avatar size="40" large class="rounded-circle">
@@ -48,7 +48,7 @@
             :src="fixtureDetail.teams.away.logo"
           ></v-img>
         </v-avatar>
-        <p class="ml-3 text-body-1 text-center font-weight-medium">
+        <p class="ml-3 text-body-1 text-center">
           {{ getTeamCode(fixtureDetail.teams.away.id) }}
         </p>
       </div>
@@ -67,7 +67,10 @@
     <v-card-text>
       <p class="text-overline">Scores</p>
       <v-divider class="mb-2 mt-1"></v-divider>
-      <div class="d-flex justify-space-between align-center">
+      <div
+        v-if="fixtureDetail.score.halftime.home"
+        class="d-flex justify-space-between align-center"
+      >
         <p>Half Time</p>
         <p>
           {{
@@ -77,7 +80,10 @@
           }}
         </p>
       </div>
-      <div class="d-flex justify-space-between align-center">
+      <div
+        v-if="fixtureDetail.score.fulltime.home"
+        class="d-flex justify-space-between align-center"
+      >
         <p>Full Time</p>
         <p>
           {{
@@ -118,20 +124,42 @@
     <v-container>
       <v-row>
         <v-col>
-          <v-card color="primary" class="pt-3">
-            <v-card-subtitle>Match Events</v-card-subtitle>
-            <v-card-actions>
-              <v-btn variant="text"> View </v-btn>
-            </v-card-actions>
+          <v-card color="primary" class="mt-3">
+            <v-card-text>
+              Line-ups
+              <span class="float-right">
+                <v-icon icon="mdi-arrow-right"></v-icon>
+              </span>
+            </v-card-text>
+          </v-card>
+          <v-card color="primary" class="mt-3">
+            <v-card-text>
+              Match Events
+              <span class="float-right">
+                <v-icon icon="mdi-arrow-right"></v-icon>
+              </span>
+            </v-card-text>
+          </v-card>
+          <v-card color="primary" class="mt-3">
+            <v-card-text>
+              Players
+              <span class="float-right">
+                <v-icon icon="mdi-arrow-right"></v-icon>
+              </span>
+            </v-card-text>
+          </v-card>
+
+          <v-card color="primary" class="mt-3">
+            <v-card-text>
+              Statistics
+              <span class="float-right">
+                <v-icon icon="mdi-arrow-right"></v-icon>
+              </span>
+            </v-card-text>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
-    <v-card-actions>
-      <v-btn color="orange"> Share </v-btn>
-
-      <v-btn color="orange"> Explore </v-btn>
-    </v-card-actions>
   </v-card>
   <v-container>
     <v-row dense>
