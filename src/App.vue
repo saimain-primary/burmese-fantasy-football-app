@@ -13,7 +13,7 @@
         ></v-progress-circular
       ></v-card>
     </v-dialog>
-    <TopBar :pageName="pageName" />
+    <TopBar :pageName="pageName" :back="this.$route.meta.back" />
     <v-main class="my-auto">
       <router-view />
     </v-main>
@@ -36,6 +36,7 @@ export default {
   },
   data: () => ({
     pageName: "",
+    back: "",
   }),
   mounted() {
     console.log(process.env.NODE_ENV);

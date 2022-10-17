@@ -64,9 +64,7 @@
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title class="text-h6">Premier League </v-card-title>
-              <v-card-subtitle
-                >Game Week {{ currentGameWeek.week }}</v-card-subtitle
-              >
+              <v-card-subtitle>Game Week {{ fixtureGameWeek }}</v-card-subtitle>
               <!-- <v-card-subtitle>October 2022</v-card-subtitle> -->
               <v-card-actions>
                 <v-dialog v-model="showFilterDialog">
@@ -138,13 +136,14 @@
                 )
               }}
             </p>
-            <p
-              class="text-caption text-uppercase font-weight-medium text-primary"
-              style="font-size: 10px !important"
-            >
-              View Detail
-              <v-icon>mdi-arrow-right</v-icon>
-            </p>
+            <v-btn
+              :to="'/fixture/' + f.fixture.id"
+              variant="text"
+              append-icon="mdi-arrow-right"
+              size="small"
+              color="primary"
+              >View Detail
+            </v-btn>
           </div>
           <v-divider class="my-3"></v-divider>
           <div
@@ -230,6 +229,7 @@
               size="small"
               @click="predictionDialogHandler"
               color="primary"
+              :disabled="f.fixture.status.short !== 'NS'"
             >
               Predict Match</v-btn
             >
@@ -281,7 +281,6 @@ export default {
     logo: logo,
     nodata: nodata,
     leagues: ["Premier League", "World Cup 2022"],
-    gameweeks: ["Game Week 1", "Game Week 2", "Game Week 3"],
     teamOnePredictionNumber: ["0"],
     teamTwoPredictionNumber: ["0"],
     showPredictionDialog: false,
@@ -289,6 +288,7 @@ export default {
     currentFormData: {
       gameWeek: null,
     },
+    fixtureGameWeek: null,
     options: [
       [
         {
@@ -336,6 +336,7 @@ export default {
       const response = await this.getFixtureListAction({
         week: this.currentFormData.gameWeek,
       });
+      this.fixtureGameWeek = this.currentFormData.gameWeek;
       console.log(response);
       this.showFilterDialog = false;
     },
@@ -348,7 +349,8 @@ export default {
     });
     console.log(response);
     if (this.currentGameWeek) {
-      this.currentFormData.gameWeek = this.currentGameWeek.name;
+      this.currentFormData.gameWeek = this.currentGameWeek.week;
+      this.fixtureGameWeek = this.currentGameWeek.week;
     } else {
       this.currentFormData.gameWeek = null;
     }

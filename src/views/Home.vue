@@ -220,6 +220,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      getPremierLeagueTeamListAction: "getPremierLeagueTeamListAction",
+    }),
     async install() {
       this.deferredPrompt.prompt();
     },
@@ -243,7 +246,9 @@ export default {
       this.deferredPrompt = null;
     });
   },
-  mounted() {},
+  async mounted() {
+    await this.getPremierLeagueTeamListAction();
+  },
 };
 </script>
 <style scoped>

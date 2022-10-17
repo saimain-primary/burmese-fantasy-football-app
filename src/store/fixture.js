@@ -4,15 +4,31 @@ export default {
   namespaced: true,
   state: {
     fixtureList: [],
+    venueDetail: null,
+    fixtureDetail: null,
   },
   getters: {
     fixtureList(state) {
       return state.fixtureList;
     },
+    venueDetail(state) {
+      return state.venueDetail;
+    },
+    fixtureDetail(state) {
+      return state.fixtureDetail;
+    },
   },
   mutations: {
     storeFixtureList(state, fixtures) {
       state.fixtureList = fixtures;
+    },
+
+    storeVenuesDetail(state, venue) {
+      state.venueDetail = venue;
+    },
+
+    storeFixtureDetail(state, fixture) {
+      state.fixtureDetail = fixture;
     },
   },
   actions: {
@@ -42,6 +58,33 @@ export default {
       commit("toggleLoading", false, { root: true });
       console.log("response", response.data.results.response);
       return response.data;
+    },
+
+    async getFixtureDetail({ commit, dispatch }, id) {
+      commit("toggleLoading", true, { root: true });
+      const response = await axios.get("/fixture", {
+        params: {
+          id: id,
+        },
+      });
+
+      dispatch(
+        "getVenuesDetail",
+        response.data.results.response[0].fixture.venue.id
+      );
+
+      commit("storeFixtureDetail", response.data.results.response[0]);
+      commit("toggleLoading", false, { root: true });
+      return response.data;
+    },
+
+    async getVenuesDetail({ commit }, id) {
+      const response = await axios.get("/venues", {
+        params: {
+          id: id,
+        },
+      });
+      commit("storeVenuesDetail", response.data.results.response[0]);
     },
   },
 };

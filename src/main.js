@@ -19,7 +19,6 @@ loadFonts();
 
 Promise.all([
   store.dispatch("auth/getMeAction", localStorage.getItem("token")),
-  store.dispatch("gameweek/getCurrentGameWeekAction"),
 ]).finally(() => {
   createApp(App).use(router).use(store).use(vuetify).mount("#app");
 });

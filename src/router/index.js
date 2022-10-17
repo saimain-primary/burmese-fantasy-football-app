@@ -8,6 +8,7 @@ import Signup from "../views/Signup.vue";
 import Verify from "../views/Verify.vue";
 import ResetPassword from "../views/ResetPassword.vue";
 import ChangePassword from "../views/ChangePassword.vue";
+import FixtureDetail from "../views/FixtureDetail.vue";
 import ManageGameWeek from "../views/ManageGameWeek.vue";
 import store from "@/store";
 const routes = [
@@ -20,6 +21,13 @@ const routes = [
     path: "/tournament",
     name: "tournament",
     component: Tournament,
+  },
+  {
+    path: "/fixture/:id",
+    name: "Match Details",
+    component: FixtureDetail,
+    props: true,
+    meta: { back: true },
   },
   {
     path: "/leaderboard",
