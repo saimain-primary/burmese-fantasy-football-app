@@ -37,7 +37,9 @@ export default {
   data: () => ({
     pageName: "",
   }),
-  mounted() {},
+  mounted() {
+    console.log(process.env.NODE_ENV);
+  },
   watch: {
     $route(to, from) {
       this.pageName = to.name;

@@ -11,13 +11,15 @@ import "./registerServiceWorker";
 require("@/store/subscriber");
 
 axios.defaults.baseURL =
-  process.env.VUE_APP_PRODUCTION === "true"
+  process.env.NODE_ENV === "production"
     ? process.env.VUE_APP_PRODUCTION_API_BASE_URL
     : process.env.VUE_APP_API_BASE_URL;
 
 loadFonts();
 
-store.dispatch("auth/getMeAction", localStorage.getItem("token"));
-Promise.all([]).finally(() => {
+Promise.all([
+  store.dispatch("auth/getMeAction", localStorage.getItem("token")),
+  store.dispatch("gameweek/getCurrentGameWeekAction"),
+]).finally(() => {
   createApp(App).use(router).use(store).use(vuetify).mount("#app");
 });
