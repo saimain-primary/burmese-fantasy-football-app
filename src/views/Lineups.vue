@@ -1,12 +1,11 @@
 <template>
+	<v-tabs v-model="tab" bg-color="primary" grow>
+		<v-tab value="home"> {{ fixtureDetail.teams.home.name }} </v-tab>
+		<v-tab value="away"> {{ fixtureDetail.teams.away.name }} </v-tab>
+	</v-tabs>
 	<v-container>
 		<v-row>
 			<v-col>
-				<v-tabs v-model="tab" bg-color="transparent" color="primary" grow>
-					<v-tab value="home"> {{ fixtureDetail.teams.home.name }} </v-tab>
-					<v-tab value="away"> {{ fixtureDetail.teams.away.name }} </v-tab>
-				</v-tabs>
-
 				<v-window v-model="tab">
 					<v-window-item value="home">
 						<v-card color="white" elevation="0" class="mt-3">
