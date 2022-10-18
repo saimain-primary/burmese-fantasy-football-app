@@ -48,13 +48,12 @@
 								<p
 									class="
 										mt-3
-										text-uppercase text-body-2
+										text-body-2
 										font-weight-bold
 										py-2
 										px-2
 										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
+										bg-primary
 									"
 								>
 									Coach
@@ -73,8 +72,7 @@
 										py-2
 										px-2
 										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
+										bg-primary
 									"
 								>
 									Goalkeeper
@@ -107,8 +105,7 @@
 										py-2
 										px-2
 										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
+										bg-primary
 									"
 								>
 									Defenders
@@ -141,8 +138,7 @@
 										py-2
 										px-2
 										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
+										bg-primary
 									"
 								>
 									Midfielders
@@ -175,8 +171,7 @@
 										py-2
 										px-2
 										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
+										bg-primary
 									"
 								>
 									Forwards
@@ -208,8 +203,7 @@
 										py-2
 										px-2
 										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
+										bg-primary
 									"
 								>
 									Substitutes
