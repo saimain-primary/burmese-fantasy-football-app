@@ -10,6 +10,7 @@ import ResetPassword from "../views/ResetPassword.vue";
 import ChangePassword from "../views/ChangePassword.vue";
 import FixtureDetail from "../views/FixtureDetail.vue";
 import ManageGameWeek from "../views/ManageGameWeek.vue";
+import Lineups from "../views/Lineups.vue";
 import store from "@/store";
 const routes = [
   {
@@ -27,6 +28,12 @@ const routes = [
     name: "Match Details",
     component: FixtureDetail,
     props: true,
+    meta: { back: true },
+  },
+  {
+    path: "/lineups",
+    name: "Line Ups",
+    component: Lineups,
     meta: { back: true },
   },
   {
