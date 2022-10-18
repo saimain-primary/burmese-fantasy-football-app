@@ -6,6 +6,7 @@ export default {
     fixtureList: [],
     venueDetail: null,
     fixtureDetail: null,
+    selectedGameWeek: null,
   },
   getters: {
     fixtureList(state) {
@@ -16,6 +17,9 @@ export default {
     },
     fixtureDetail(state) {
       return state.fixtureDetail;
+    },
+    selectedGameWeek(state) {
+      return state.selectedGameWeek;
     },
   },
   mutations: {
@@ -29,6 +33,10 @@ export default {
 
     storeFixtureDetail(state, fixture) {
       state.fixtureDetail = fixture;
+    },
+
+    storeSelectedGameWeek(state, gameweek) {
+      state.selectedGameWeek = gameweek;
     },
   },
   actions: {
@@ -85,6 +93,10 @@ export default {
         },
       });
       commit("storeVenuesDetail", response.data.results.response[0]);
+    },
+
+    storeSelectedGameWeekAction({ commit }, gameweek) {
+      commit("storeSelectedGameWeek", gameweek);
     },
   },
 };

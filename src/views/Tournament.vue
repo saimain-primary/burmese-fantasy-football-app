@@ -64,7 +64,12 @@
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title class="text-h6">Premier League </v-card-title>
-              <v-card-subtitle>Game Week {{ fixtureGameWeek }}</v-card-subtitle>
+              <v-card-subtitle
+                >Game Week
+                {{
+                  selectedGameWeek ? selectedGameWeek : fixtureGameWeek
+                }}</v-card-subtitle
+              >
               <!-- <v-card-subtitle>October 2022</v-card-subtitle> -->
               <v-card-actions>
                 <v-dialog v-model="showFilterDialog">
@@ -209,9 +214,14 @@
                 1 : 2
               </p>
             </div>
-            <div class="d-flex justify-space-between align-center">
+            <div
+              v-if="f.goals.home !== null"
+              class="d-flex justify-space-between align-center"
+            >
               <p class="">Full Time Result</p>
-              <p class="font-weight-medium">1 : 1</p>
+              <p class="font-weight-medium">
+                {{ f.goals.home + " : " + f.goals.away }}
+              </p>
             </div>
           </div>
           <!-- <v-alert
@@ -269,6 +279,7 @@ export default {
       currentGameWeek: "gameweek/currentGameWeek",
       gameWeekList: "gameweek/gameWeekList",
       fixtureList: "fixture/fixtureList",
+      selectedGameWeek: "fixture/selectedGameWeek",
     }),
     sortByDateFixtureList() {
       return this.fixtureList.sort(
@@ -328,6 +339,7 @@ export default {
       showDialogAction: "general/showDialogAction",
       getGameWeekAction: "gameweek/getGameWeekAction",
       getFixtureListAction: "fixture/getFixtureListAction",
+      storeSelectedGameWeekAction: "fixture/storeSelectedGameWeekAction",
     }),
     predictionDialogHandler() {
       this.showPredictionDialog = true;
@@ -336,21 +348,30 @@ export default {
       const response = await this.getFixtureListAction({
         week: this.currentFormData.gameWeek,
       });
-      this.fixtureGameWeek = this.currentFormData.gameWeek;
       console.log(response);
       this.showFilterDialog = false;
+      this.storeSelectedGameWeekAction(this.currentFormData.gameWeek);
     },
   },
   async mounted() {
     await this.getGameWeekAction();
-    const response = await this.getFixtureListAction({
-      startDate: this.currentGameWeek.startDate,
-      endDate: this.currentGameWeek.endDate,
-    });
+
+    let fixtureParams = {};
+    if (this.selectedGameWeek) {
+      fixtureParams = {
+        week: this.selectedGameWeek.week,
+      };
+    } else {
+      fixtureParams = {
+        startDate: this.currentGameWeek.startDate,
+        endDate: this.currentGameWeek.endDate,
+      };
+    }
+    const response = await this.getFixtureListAction(fixtureParams);
     console.log(response);
     if (this.currentGameWeek) {
-      this.currentFormData.gameWeek = this.currentGameWeek.week;
       this.fixtureGameWeek = this.currentGameWeek.week;
+      this.currentFormData.gameWeek = this.currentGameWeek.week;
     } else {
       this.currentFormData.gameWeek = null;
     }

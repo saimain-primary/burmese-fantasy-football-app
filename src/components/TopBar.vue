@@ -1,10 +1,7 @@
 <template>
   <v-app-bar max-height="60" color="primary" flat fixed>
     <template v-if="back" v-slot:prepend>
-      <v-btn
-        @click="this.$router.push('/tournament')"
-        icon="mdi-arrow-left"
-      ></v-btn>
+      <v-btn @click="this.$router.go(-1)" icon="mdi-arrow-left"></v-btn>
     </template>
     <h3 class="app-name-text text-uppercase">{{ pageName }}</h3>
     <v-spacer></v-spacer>
