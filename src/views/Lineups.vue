@@ -230,7 +230,7 @@
 							</v-card>
 						</v-window-item>
 						<v-window-item value="away">
-							<v-card color="white" class="mt-3">
+							<v-card color="white"  elevation="0" class="mt-3">
 								<v-card-text
 									class="d-flex justify-space-between align-center bg-primary"
 								>
@@ -263,6 +263,8 @@
 										<p>Formation</p>
 										<p>{{ fixtureDetail.lineups[1].formation }}</p>
 									</div>
+								</v-card-text>
+								<v-card elevation="0">
 									<p
 										class="
 											mt-3
@@ -271,8 +273,7 @@
 											py-2
 											px-2
 											rounded
-											text-grey-darken-3
-											bg-grey-lighten-3
+											bg-primary
 										"
 									>
 										Coach
@@ -294,8 +295,7 @@
 											py-2
 											px-2
 											rounded
-											text-grey-darken-3
-											bg-grey-lighten-3
+											bg-primary
 										"
 									>
 										Goalkeeper
@@ -328,8 +328,7 @@
 											py-2
 											px-2
 											rounded
-											text-grey-darken-3
-											bg-grey-lighten-3
+											bg-primary
 										"
 									>
 										Defenders
@@ -362,8 +361,7 @@
 											py-2
 											px-2
 											rounded
-											text-grey-darken-3
-											bg-grey-lighten-3
+											bg-primary
 										"
 									>
 										Midfielders
@@ -396,8 +394,7 @@
 											py-2
 											px-2
 											rounded
-											text-grey-darken-3
-											bg-grey-lighten-3
+											bg-primary
 										"
 									>
 										Forwards
@@ -430,8 +427,7 @@
 											py-2
 											px-2
 											rounded
-											text-grey-darken-3
-											bg-grey-lighten-3
+											bg-primary
 										"
 									>
 										Substitutes
@@ -473,7 +469,7 @@
 											</div>
 										</v-list-item>
 									</v-list>
-								</v-card-text>
+								</v-card>
 							</v-card>
 						</v-window-item>
 					</v-window>
