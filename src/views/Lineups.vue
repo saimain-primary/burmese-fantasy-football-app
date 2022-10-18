@@ -9,7 +9,7 @@
 
 				<v-window v-model="tab">
 					<v-window-item value="home">
-						<v-card color="white" class="mt-3">
+						<v-card color="white" elevation="0" class="mt-3">
 							<v-card-text
 								class="d-flex justify-space-between align-center bg-primary"
 							>
@@ -42,93 +42,197 @@
 									<p>Formation</p>
 									<p>{{ fixtureDetail.lineups[0].formation }}</p>
 								</div>
-								<p
-									class="
-										mt-3
-										text-uppercase text-body-2
-										font-weight-bold
-										py-2
-										px-2
-										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
-									"
-								>
-									Coach
-								</p>
-
-								<v-list lines="one">
-									<v-list-item :title="fixtureDetail.lineups[0].coach.name">
-										<template v-slot:append>
-											<v-icon icon="mdi-circle-right"></v-icon>
-										</template>
-									</v-list-item>
-								</v-list>
-
-								<p
-									class="
-										mt-3
-										text-uppercase text-body-2
-										font-weight-bold
-										py-2
-										px-2
-										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
-									"
-								>
-									Starting XI
-								</p>
-
-								<v-list lines="one">
-									<v-list-item
-										v-for="(p, index) in fixtureDetail.lineups[0].startXI"
-										:key="index"
-										:title="p.player.name"
-									>
-										<template v-slot:prepend>
-											<p
-												style="width: 50px"
-												class="font-weight-bold text-grey-lighten-1"
-											>
-												{{ p.player.number }}
-											</p>
-										</template>
-									</v-list-item>
-								</v-list>
-
-								<p
-									class="
-										mt-3
-										text-uppercase text-body-2
-										font-weight-bold
-										py-2
-										px-2
-										rounded
-										text-grey-darken-3
-										bg-grey-lighten-3
-									"
-								>
-									Substitutes
-								</p>
-
-								<v-list lines="one">
-									<v-list-item
-										v-for="(p, index) in fixtureDetail.lineups[0].substitutes"
-										:key="index"
-										:title="p.player.name"
-									>
-										<template v-slot:prepend>
-											<p
-												style="width: 50px"
-												class="font-weight-bold text-grey-lighten-1"
-											>
-												{{ p.player.number }}
-											</p>
-										</template>
-									</v-list-item>
-								</v-list>
 							</v-card-text>
+						</v-card>
+						<v-card elevation="0">
+							<p
+								class="
+									mt-3
+									text-uppercase text-body-2
+									font-weight-bold
+									py-2
+									px-2
+									rounded
+									text-grey-darken-3
+									bg-grey-lighten-3
+								"
+							>
+								Coach
+							</p>
+
+							<v-list lines="one">
+								<v-list-item :title="fixtureDetail.lineups[0].coach.name">
+								</v-list-item>
+							</v-list>
+
+							<p
+								class="
+									mt-3
+									text-body-2
+									font-weight-bold
+									py-2
+									px-2
+									rounded
+									text-grey-darken-3
+									bg-grey-lighten-3
+								"
+							>
+								Goalkeeper
+							</p>
+
+							<v-list lines="one">
+								<v-list-item
+									v-for="(p, index) in this.getGoalkeeper(0)"
+									:key="index"
+								>
+									<template v-slot:prepend>
+										<p
+											style="width: 50px"
+											class="font-weight-bold text-grey-lighten-1"
+										>
+											{{ p.player.number }}
+										</p>
+									</template>
+									<div class="d-flex justify-space-between align-center">
+										<p>{{ p.player.name }}</p>
+									</div>
+								</v-list-item>
+							</v-list>
+
+							<p
+								class="
+									mt-3
+									text-body-2
+									font-weight-bold
+									py-2
+									px-2
+									rounded
+									text-grey-darken-3
+									bg-grey-lighten-3
+								"
+							>
+								Defenders
+							</p>
+
+							<v-list lines="one">
+								<v-list-item
+									v-for="(p, index) in this.getDefenders(0)"
+									:key="index"
+								>
+									<template v-slot:prepend>
+										<p
+											style="width: 50px"
+											class="font-weight-bold text-grey-lighten-1"
+										>
+											{{ p.player.number }}
+										</p>
+									</template>
+									<div class="d-flex justify-space-between align-center">
+										<p>{{ p.player.name }}</p>
+									</div>
+								</v-list-item>
+							</v-list>
+
+							<p
+								class="
+									mt-3
+									text-body-2
+									font-weight-bold
+									py-2
+									px-2
+									rounded
+									text-grey-darken-3
+									bg-grey-lighten-3
+								"
+							>
+								Midfielders
+							</p>
+
+							<v-list lines="one">
+								<v-list-item
+									v-for="(p, index) in this.getMidfielders(0)"
+									:key="index"
+								>
+									<template v-slot:prepend>
+										<p
+											style="width: 50px"
+											class="font-weight-bold text-grey-lighten-1"
+										>
+											{{ p.player.number }}
+										</p>
+									</template>
+									<div class="d-flex justify-space-between align-center">
+										<p>{{ p.player.name }}</p>
+									</div>
+								</v-list-item>
+							</v-list>
+
+							<p
+								class="
+									mt-3
+									text-body-2
+									font-weight-bold
+									py-2
+									px-2
+									rounded
+									text-grey-darken-3
+									bg-grey-lighten-3
+								"
+							>
+								Forwards
+							</p>
+
+							<v-list lines="one">
+								<v-list-item
+									v-for="(p, index) in this.getForwards(0)"
+									:key="index"
+								>
+									<template v-slot:prepend>
+										<p
+											style="width: 50px"
+											class="font-weight-bold text-grey-lighten-1"
+										>
+											{{ p.player.number }}
+										</p>
+									</template>
+									<div class="d-flex justify-space-between align-center">
+										<p>{{ p.player.name }}</p>
+									</div>
+								</v-list-item>
+							</v-list>
+							<p
+								class="
+									mt-3
+									text-uppercase text-body-2
+									font-weight-bold
+									py-2
+									px-2
+									rounded
+									text-grey-darken-3
+									bg-grey-lighten-3
+								"
+							>
+								Substitutes
+							</p>
+
+							<v-list lines="one">
+								<v-list-item
+									v-for="(p, index) in fixtureDetail.lineups[0].substitutes"
+									:key="index"
+								>
+									<template v-slot:prepend>
+										<p
+											style="width: 50px"
+											class="font-weight-bold text-grey-lighten-1"
+										>
+											{{ p.player.number }}
+										</p>
+									</template>
+									<div class="d-flex justify-space-between align-center">
+										<p>{{ p.player.name }}</p>
+									</div>
+								</v-list-item>
+							</v-list>
 						</v-card>
 					</v-window-item>
 					<v-window-item value="away">
@@ -191,7 +295,7 @@
 								<p
 									class="
 										mt-3
-										text-uppercase text-body-2
+										text-body-2
 										font-weight-bold
 										py-2
 										px-2
@@ -200,14 +304,13 @@
 										bg-grey-lighten-3
 									"
 								>
-									Starting XI
+									Goalkeeper
 								</p>
 
 								<v-list lines="one">
 									<v-list-item
-										v-for="(p, index) in fixtureDetail.lineups[1].startXI"
+										v-for="(p, index) in getGoalkeeper(0)"
 										:key="index"
-										:title="p.player.name"
 									>
 										<template v-slot:prepend>
 											<p
@@ -217,6 +320,111 @@
 												{{ p.player.number }}
 											</p>
 										</template>
+										<div class="d-flex justify-space-between align-center">
+											<p>{{ p.player.name }}</p>
+										</div>
+									</v-list-item>
+								</v-list>
+
+								<p
+									class="
+										mt-3
+										text-body-2
+										font-weight-bold
+										py-2
+										px-2
+										rounded
+										text-grey-darken-3
+										bg-grey-lighten-3
+									"
+								>
+									Defenders
+								</p>
+
+								<v-list lines="one">
+									<v-list-item
+										v-for="(p, index) in this.getDefenders(1)"
+										:key="index"
+									>
+										<template v-slot:prepend>
+											<p
+												style="width: 50px"
+												class="font-weight-bold text-grey-lighten-1"
+											>
+												{{ p.player.number }}
+											</p>
+										</template>
+										<div class="d-flex justify-space-between align-center">
+											<p>{{ p.player.name }}</p>
+										</div>
+									</v-list-item>
+								</v-list>
+
+								<p
+									class="
+										mt-3
+										text-body-2
+										font-weight-bold
+										py-2
+										px-2
+										rounded
+										text-grey-darken-3
+										bg-grey-lighten-3
+									"
+								>
+									Midfielders
+								</p>
+
+								<v-list lines="one">
+									<v-list-item
+										v-for="(p, index) in this.getMidfielders(1)"
+										:key="index"
+									>
+										<template v-slot:prepend>
+											<p
+												style="width: 50px"
+												class="font-weight-bold text-grey-lighten-1"
+											>
+												{{ p.player.number }}
+											</p>
+										</template>
+										<div class="d-flex justify-space-between align-center">
+											<p>{{ p.player.name }}</p>
+										</div>
+									</v-list-item>
+								</v-list>
+
+								<p
+									class="
+										mt-3
+										text-body-2
+										font-weight-bold
+										py-2
+										px-2
+										rounded
+										text-grey-darken-3
+										bg-grey-lighten-3
+									"
+								>
+									Forwards
+								</p>
+
+								<v-list lines="one">
+									<v-list-item
+										v-for="(p, index) in this.getForwards(1)"
+										:key="index"
+									>
+										<template v-slot:prepend>
+											<p
+												style="width: 50px"
+												class="font-weight-bold text-grey-lighten-1"
+											>
+												{{ p.player.number }}
+											</p>
+										</template>
+										<div class="d-flex justify-space-between align-center">
+											<p>{{ p.player.name }}</p>
+										</div>
 									</v-list-item>
 								</v-list>
 
@@ -239,7 +447,6 @@
 									<v-list-item
 										v-for="(p, index) in fixtureDetail.lineups[1].substitutes"
 										:key="index"
-										:title="p.player.name"
 									>
 										<template v-slot:prepend>
 											<p
@@ -249,6 +456,27 @@
 												{{ p.player.number }}
 											</p>
 										</template>
+										<div class="d-flex justify-space-between align-center">
+											<p>{{ p.player.name }}</p>
+											<v-icon
+												:style="[
+													p.player.number === 1
+														? {
+																color:
+																	'#' +
+																	fixtureDetail.lineups[1].team.colors
+																		.goalkeeper.primary,
+														  }
+														: {
+																color:
+																	'#' +
+																	fixtureDetail.lineups[1].team.colors.player
+																		.primary,
+														  },
+												]"
+												>mdi-square</v-icon
+											>
+										</div>
 									</v-list-item>
 								</v-list>
 							</v-card-text>
@@ -283,6 +511,30 @@ export default {
 		...mapActions({
 			showDialogAction: "general/showDialogAction",
 		}),
+		getGoalkeeper(index) {
+			const player = this.fixtureDetail.lineups[index].startXI.filter((p) => {
+				return p.player.pos === "G";
+			});
+			return player;
+		},
+		getDefenders(index) {
+			const player = this.fixtureDetail.lineups[index].startXI.filter((p) => {
+				return p.player.pos === "D";
+			});
+			return player;
+		},
+		getMidfielders(index) {
+			const player = this.fixtureDetail.lineups[index].startXI.filter((p) => {
+				return p.player.pos === "M";
+			});
+			return player;
+		},
+		getForwards(index) {
+			const player = this.fixtureDetail.lineups[index].startXI.filter((p) => {
+				return p.player.pos === "F";
+			});
+			return player;
+		},
 	},
 	async mounted() {},
 };
