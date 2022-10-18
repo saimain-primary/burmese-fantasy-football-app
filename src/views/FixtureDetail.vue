@@ -145,7 +145,7 @@
 							</span>
 						</v-card-text>
 					</v-card>
-					<v-card color="primary" class="mt-3">
+					<v-card @click="$router.push('/events')" color="primary" class="mt-3">
 						<v-card-text>
 							Match Events
 							<span class="float-right">

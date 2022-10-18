@@ -372,6 +372,7 @@ export default {
 					startDate: this.currentGameWeek.startDate,
 					endDate: this.currentGameWeek.endDate,
 				};
+				this.fixtureGameWeek = this.currentGameWeek.week;
 			}
 			const response = await this.getFixtureListAction(fixtureParams);
 			console.log(response);
