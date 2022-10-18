@@ -202,7 +202,7 @@
 							<p
 								class="
 									mt-3
-									text-uppercase text-body-2
+									text-body-2
 									font-weight-bold
 									py-2
 									px-2
@@ -430,7 +430,7 @@
 								<p
 									class="
 										mt-3
-										text-uppercase text-body-2
+										text-body-2
 										font-weight-bold
 										py-2
 										px-2
