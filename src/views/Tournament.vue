@@ -413,10 +413,14 @@ export default {
 			}
 		},
 		getTeamCode(id) {
-			const team = this.teams.filter((t) => {
-				return t.team.id === id;
-			});
-			return team[0].team.code;
+			if (this.teams) {
+				const team = this.teams.filter((t) => {
+					return t.team.id === id;
+				});
+				return team[0].team.code;
+			} else {
+				return null;
+			}
 		},
 		async onSavePredictionHandler() {
 			let week = "";
