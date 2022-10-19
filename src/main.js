@@ -5,6 +5,7 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 import axios from "axios";
+import VueGtag from "vue-gtag";
 
 import "./registerServiceWorker";
 
@@ -20,5 +21,13 @@ loadFonts();
 Promise.all([
   store.dispatch("auth/getMeAction", localStorage.getItem("token")),
 ]).finally(() => {
-  createApp(App).use(router).use(store).use(vuetify).mount("#app");
+  createApp(App)
+    .use(router)
+    .use(store)
+    .use(vuetify)
+    .use(VueGtag, {
+      config: { id: "G-PJJCRGQ8Z5" },
+      router,
+    })
+    .mount("#app");
 });

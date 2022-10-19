@@ -230,7 +230,7 @@
 							</v-card>
 						</v-window-item>
 						<v-window-item value="away">
-							<v-card color="white"  elevation="0" class="mt-3">
+							<v-card color="white" elevation="0" class="mt-3">
 								<v-card-text
 									class="d-flex justify-space-between align-center bg-primary"
 								>
@@ -448,24 +448,6 @@
 											</template>
 											<div class="d-flex justify-space-between align-center">
 												<p>{{ p.player.name }}</p>
-												<v-icon
-													:style="[
-														p.player.number === 1
-															? {
-																	color:
-																		'#' +
-																		fixtureDetail.lineups[1].team.colors
-																			.goalkeeper.primary,
-															  }
-															: {
-																	color:
-																		'#' +
-																		fixtureDetail.lineups[1].team.colors.player
-																			.primary,
-															  },
-													]"
-													>mdi-square</v-icon
-												>
 											</div>
 										</v-list-item>
 									</v-list>
