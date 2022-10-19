@@ -1,8 +1,12 @@
 <template>
-	<div v-if="fixtureDetail.lineups.length > 0">
+	<div v-if="fixtureDetail.fixtures[0].lineups.length > 0">
 		<v-tabs v-model="tab" bg-color="primary" grow>
-			<v-tab value="home"> {{ fixtureDetail.teams.home.name }} </v-tab>
-			<v-tab value="away"> {{ fixtureDetail.teams.away.name }} </v-tab>
+			<v-tab value="home">
+				{{ fixtureDetail.fixtures[0].teams.home.name }}
+			</v-tab>
+			<v-tab value="away">
+				{{ fixtureDetail.fixtures[0].teams.away.name }}
+			</v-tab>
 		</v-tabs>
 		<v-container>
 			<v-row>
@@ -17,13 +21,13 @@
 										class="text-body-1 font-weight-medium text-uppercase"
 										style="letter-spacing: 1px !important"
 									>
-										{{ fixtureDetail.teams.home.name }}
+										{{ fixtureDetail.fixtures[0].teams.home.name }}
 									</p>
 									<v-avatar size="30" large class="rounded-circle">
 										<v-img
 											class="rounded-circle"
 											lazy-src="../assets/logo.jpg"
-											:src="fixtureDetail.teams.home.logo"
+											:src="fixtureDetail.fixtures[0].teams.home.logo"
 										></v-img>
 									</v-avatar>
 								</v-card-text>
@@ -40,7 +44,7 @@
 										"
 									>
 										<p>Formation</p>
-										<p>{{ fixtureDetail.lineups[0].formation }}</p>
+										<p>{{ fixtureDetail.fixtures[0].lineups[0].formation }}</p>
 									</div>
 								</v-card-text>
 							</v-card>
@@ -60,7 +64,9 @@
 								</p>
 
 								<v-list lines="one">
-									<v-list-item :title="fixtureDetail.lineups[0].coach.name">
+									<v-list-item
+										:title="fixtureDetail.fixtures[0].lineups[0].coach.name"
+									>
 									</v-list-item>
 								</v-list>
 
@@ -211,7 +217,8 @@
 
 								<v-list lines="one">
 									<v-list-item
-										v-for="(p, index) in fixtureDetail.lineups[0].substitutes"
+										v-for="(p, index) in fixtureDetail.fixtures[0].lineups[0]
+											.substitutes"
 										:key="index"
 									>
 										<template v-slot:prepend>
@@ -238,13 +245,13 @@
 										class="text-body-1 font-weight-medium text-uppercase"
 										style="letter-spacing: 1px !important"
 									>
-										{{ fixtureDetail.teams.away.name }}
+										{{ fixtureDetail.fixtures[0].teams.away.name }}
 									</p>
 									<v-avatar size="30" large class="rounded-circle">
 										<v-img
 											class="rounded-circle"
 											lazy-src="../assets/logo.jpg"
-											:src="fixtureDetail.teams.away.logo"
+											:src="fixtureDetail.fixtures[0].teams.away.logo"
 										></v-img>
 									</v-avatar>
 								</v-card-text>
@@ -261,7 +268,7 @@
 										"
 									>
 										<p>Formation</p>
-										<p>{{ fixtureDetail.lineups[1].formation }}</p>
+										<p>{{ fixtureDetail.fixtures[0].lineups[1].formation }}</p>
 									</div>
 								</v-card-text>
 								<v-card elevation="0">
@@ -280,7 +287,9 @@
 									</p>
 
 									<v-list lines="one">
-										<v-list-item :title="fixtureDetail.lineups[1].coach.name">
+										<v-list-item
+											:title="fixtureDetail.fixtures[0].lineups[1].coach.name"
+										>
 											<template v-slot:append>
 												<v-icon icon="mdi-circle-right"></v-icon>
 											</template>
@@ -435,7 +444,8 @@
 
 									<v-list lines="one">
 										<v-list-item
-											v-for="(p, index) in fixtureDetail.lineups[1].substitutes"
+											v-for="(p, index) in fixtureDetail.fixtures[0].lineups[1]
+												.substitutes"
 											:key="index"
 										>
 											<template v-slot:prepend>
@@ -499,25 +509,33 @@ export default {
 			showDialogAction: "general/showDialogAction",
 		}),
 		getGoalkeeper(index) {
-			const player = this.fixtureDetail.lineups[index].startXI.filter((p) => {
+			const player = this.fixtureDetail.fixtures[0].lineups[
+				index
+			].startXI.filter((p) => {
 				return p.player.pos === "G";
 			});
 			return player;
 		},
 		getDefenders(index) {
-			const player = this.fixtureDetail.lineups[index].startXI.filter((p) => {
+			const player = this.fixtureDetail.fixtures[0].lineups[
+				index
+			].startXI.filter((p) => {
 				return p.player.pos === "D";
 			});
 			return player;
 		},
 		getMidfielders(index) {
-			const player = this.fixtureDetail.lineups[index].startXI.filter((p) => {
+			const player = this.fixtureDetail.fixtures[0].lineups[
+				index
+			].startXI.filter((p) => {
 				return p.player.pos === "M";
 			});
 			return player;
 		},
 		getForwards(index) {
-			const player = this.fixtureDetail.lineups[index].startXI.filter((p) => {
+			const player = this.fixtureDetail.fixtures[0].lineups[
+				index
+			].startXI.filter((p) => {
 				return p.player.pos === "F";
 			});
 			return player;

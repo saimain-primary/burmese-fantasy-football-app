@@ -5,7 +5,11 @@ export default {
   state: {
     fixtureList: [],
     venueDetail: null,
-    fixtureDetail: null,
+    fixtureDetail: {
+      fixtures: null,
+      predictions: null,
+      venues: null,
+    },
     selectedGameWeek: null,
   },
   getters: {
@@ -64,7 +68,6 @@ export default {
       });
       commit("storeFixtureList", response.data.results.response);
       commit("toggleLoading", false, { root: true });
-      console.log("response", response.data.results.response);
       return response.data;
     },
 
@@ -76,7 +79,7 @@ export default {
         },
       });
 
-      dispatch(
+      await dispatch(
         "getVenuesDetail",
         response.data.results.response[0].fixture.venue.id
       );
@@ -95,8 +98,8 @@ export default {
       commit("storeVenuesDetail", response.data.results.response[0]);
     },
 
-    storeSelectedGameWeekAction({ commit }, gameweek) {
-      commit("storeSelectedGameWeek", gameweek);
+    async storeSelectedGameWeekAction({ commit }, gameweek) {
+      await commit("storeSelectedGameWeek", gameweek);
     },
   },
 };

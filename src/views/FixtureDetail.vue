@@ -1,178 +1,194 @@
 <template>
-	<v-card v-if="venueDetail" elevation="0" class="mx-auto">
+	<v-card elevation="0" class="mx-auto">
 		<v-img
+			v-if="fixtureDetail.venues"
 			class="align-end text-white"
 			height="200"
-			:src="venueDetail.image"
+			:src="fixtureDetail.venues[0].image"
 			cover
 		>
 			<v-card-title class="text-body-1 stadium-text-bg"
 				><v-icon icon="mdi-map-marker-radius" size="small"></v-icon>
-				{{ venueDetail.name }}</v-card-title
+				{{ fixtureDetail.venues[0].name }}</v-card-title
 			>
 		</v-img>
 
-		<v-card-subtitle v-if="fixtureDetail" class="pt-4">{{
-			moment(new Date(fixtureDetail.fixture.date), moment.ISO_8601).format(
-				"ddd D MMM YYYY , h:mm A"
-			)
-		}}</v-card-subtitle>
+		<template v-if="fixtureDetail.fixtures">
+			<v-card-subtitle class="pt-4">{{
+				moment(
+					new Date(fixtureDetail.fixtures[0].fixture.date),
+					moment.ISO_8601
+				).format("ddd D MMM YYYY , h:mm A")
+			}}</v-card-subtitle>
 
-		<v-card
-			v-if="fixtureDetail"
-			class="
-				d-flex
-				mx-3
-				justify-space-between
-				px-5
-				py-5
-				mt-5
-				align-center
-				gameweek-deadline-card
-			"
-		>
-			<div class="d-flex align-center justify-center" style="width: 100px">
-				<p class="mr-3 text-body-1 text-center">
-					{{ getTeamCode(fixtureDetail.teams.home.id) }}
-				</p>
-				<v-avatar size="40" large class="rounded-circle">
-					<v-img
-						class="rounded-circle"
-						lazy-src="../assets/logo.jpg"
-						:src="fixtureDetail.teams.home.logo"
-					></v-img>
-				</v-avatar>
-			</div>
-			<div class="mx-3 text-center" style="width: 100px">
-				<p class="text-h5 font-weight-medium">
-					{{ fixtureDetail.goals.home ? fixtureDetail.goals.home : 0 }} -
-					{{ fixtureDetail.goals.away ? fixtureDetail.goals.away : 0 }}
-				</p>
-			</div>
-			<div class="d-flex align-center justify-center" style="width: 100px">
-				<v-avatar size="40" large class="rounded-circle">
-					<v-img
-						class="rounded-circle"
-						lazy-src="../assets/logo.jpg"
-						:src="fixtureDetail.teams.away.logo"
-					></v-img>
-				</v-avatar>
-				<p class="ml-3 text-body-1 text-center">
-					{{ getTeamCode(fixtureDetail.teams.away.id) }}
-				</p>
-			</div>
-		</v-card>
-		<div class="text-center mt-5">
-			<v-btn
-				variant="outlined"
-				size="small"
-				color="primary"
-				style="margin: 0 auto"
+			<v-card
+				class="
+					d-flex
+					mx-3
+					justify-space-between
+					px-5
+					py-5
+					mt-5
+					align-center
+					gameweek-deadline-card
+				"
 			>
-				<p class="">{{ fixtureDetail.fixture.status.long }}</p>
-			</v-btn>
-		</div>
+				<div class="d-flex align-center justify-center" style="width: 100px">
+					<p class="mr-3 text-body-1 text-center">
+						{{ getTeamCode(fixtureDetail.fixtures[0].teams.home.id) }}
+					</p>
+					<v-avatar size="40" large class="rounded-circle">
+						<v-img
+							class="rounded-circle"
+							lazy-src="../assets/logo.jpg"
+							:src="fixtureDetail.fixtures[0].teams.home.logo"
+						></v-img>
+					</v-avatar>
+				</div>
+				<div class="mx-3 text-center" style="width: 100px">
+					<p class="text-h5 font-weight-medium">
+						{{
+							fixtureDetail.fixtures[0].goals.home
+								? fixtureDetail.fixtures[0].goals.home
+								: 0
+						}}
+						-
+						{{
+							fixtureDetail.fixtures[0].goals.away
+								? fixtureDetail.fixtures[0].goals.away
+								: 0
+						}}
+					</p>
+				</div>
+				<div class="d-flex align-center justify-center" style="width: 100px">
+					<v-avatar size="40" large class="rounded-circle">
+						<v-img
+							class="rounded-circle"
+							lazy-src="../assets/logo.jpg"
+							:src="fixtureDetail.fixtures[0].teams.away.logo"
+						></v-img>
+					</v-avatar>
+					<p class="ml-3 text-body-1 text-center">
+						{{ getTeamCode(fixtureDetail.fixtures[0].teams.away.id) }}
+					</p>
+				</div>
+			</v-card>
+			<div class="text-center mt-5">
+				<v-btn
+					variant="outlined"
+					size="small"
+					color="primary"
+					style="margin: 0 auto"
+				>
+					<p class="">{{ fixtureDetail.fixtures[0].fixture.status.long }}</p>
+				</v-btn>
+			</div>
 
-		<v-card-text>
-			<p class="text-overline">Scores</p>
-			<v-divider class="mb-2 mt-1"></v-divider>
-			<div
-				v-if="fixtureDetail.score.halftime.home !== null"
-				class="d-flex justify-space-between align-center"
-			>
-				<p>Half Time</p>
-				<p>
-					{{
-						fixtureDetail.score.halftime.home +
-						" : " +
-						fixtureDetail.score.halftime.away
-					}}
-				</p>
-			</div>
-			<div
-				v-if="fixtureDetail.score.fulltime.home !== null"
-				class="d-flex justify-space-between align-center"
-			>
-				<p>Full Time</p>
-				<p>
-					{{
-						fixtureDetail.score.fulltime.home +
-						" : " +
-						fixtureDetail.score.fulltime.away
-					}}
-				</p>
-			</div>
-			<div
-				v-if="fixtureDetail.score.extratime.home"
-				class="d-flex justify-space-between align-center"
-			>
-				<p>Extra Time</p>
-				<p>
-					{{
-						fixtureDetail.score.extratime.home +
-						" : " +
-						fixtureDetail.score.extratime.away
-					}}
-				</p>
-			</div>
-			<div
-				v-if="fixtureDetail.score.penalty.home"
-				class="d-flex justify-space-between align-center"
-			>
-				<p>Penalty</p>
-				<p>
-					{{
-						fixtureDetail.score.penalty.home +
-						" : " +
-						fixtureDetail.score.penalty.away
-					}}
-				</p>
-			</div>
-		</v-card-text>
+			<v-card-text>
+				<p class="text-overline">Scores</p>
+				<v-divider class="mb-2 mt-1"></v-divider>
+				<div
+					v-if="fixtureDetail.fixtures[0].score.halftime.home !== null"
+					class="d-flex justify-space-between align-center"
+				>
+					<p>Half Time</p>
+					<p>
+						{{
+							fixtureDetail.fixtures[0].score.halftime.home +
+							" : " +
+							fixtureDetail.fixtures[0].score.halftime.away
+						}}
+					</p>
+				</div>
+				<div
+					v-if="fixtureDetail.fixtures[0].score.fulltime.home !== null"
+					class="d-flex justify-space-between align-center"
+				>
+					<p>Full Time</p>
+					<p>
+						{{
+							fixtureDetail.fixtures[0].score.fulltime.home +
+							" : " +
+							fixtureDetail.fixtures[0].score.fulltime.away
+						}}
+					</p>
+				</div>
+				<div
+					v-if="fixtureDetail.fixtures[0].score.extratime.home"
+					class="d-flex justify-space-between align-center"
+				>
+					<p>Extra Time</p>
+					<p>
+						{{
+							fixtureDetail.fixtures[0].score.extratime.home +
+							" : " +
+							fixtureDetail.fixtures[0].score.extratime.away
+						}}
+					</p>
+				</div>
+				<div
+					v-if="fixtureDetail.fixtures[0].score.penalty.home"
+					class="d-flex justify-space-between align-center"
+				>
+					<p>Penalty</p>
+					<p>
+						{{
+							fixtureDetail.fixtures[0].score.penalty.home +
+							" : " +
+							fixtureDetail.fixtures[0].score.penalty.away
+						}}
+					</p>
+				</div>
+			</v-card-text>
 
-		<v-container>
-			<v-row>
-				<v-col>
-					<v-card
-						@click="$router.push('/lineups')"
-						color="primary"
-						class="mt-3"
-					>
-						<v-card-text>
-							Line-ups
-							<span class="float-right">
-								<v-icon icon="mdi-arrow-right"></v-icon>
-							</span>
-						</v-card-text>
-					</v-card>
-					<v-card @click="$router.push('/events')" color="primary" class="mt-3">
-						<v-card-text>
-							Match Events
-							<span class="float-right">
-								<v-icon icon="mdi-arrow-right"></v-icon>
-							</span>
-						</v-card-text>
-					</v-card>
-					<v-card color="primary" class="mt-3">
-						<v-card-text>
-							Players
-							<span class="float-right">
-								<v-icon icon="mdi-arrow-right"></v-icon>
-							</span>
-						</v-card-text>
-					</v-card>
+			<v-container>
+				<v-row>
+					<v-col>
+						<v-card
+							@click="$router.push('/lineups')"
+							color="primary"
+							class="mt-3"
+						>
+							<v-card-text>
+								Line-ups
+								<span class="float-right">
+									<v-icon icon="mdi-arrow-right"></v-icon>
+								</span>
+							</v-card-text>
+						</v-card>
+						<v-card
+							@click="$router.push('/events')"
+							color="primary"
+							class="mt-3"
+						>
+							<v-card-text>
+								Match Events
+								<span class="float-right">
+									<v-icon icon="mdi-arrow-right"></v-icon>
+								</span>
+							</v-card-text>
+						</v-card>
+						<v-card color="primary" class="mt-3">
+							<v-card-text>
+								Players
+								<span class="float-right">
+									<v-icon icon="mdi-arrow-right"></v-icon>
+								</span>
+							</v-card-text>
+						</v-card>
 
-					<v-card color="primary" class="mt-3">
-						<v-card-text>
-							Statistics
-							<span class="float-right">
-								<v-icon icon="mdi-arrow-right"></v-icon>
-							</span>
-						</v-card-text>
-					</v-card>
-				</v-col>
-			</v-row>
-		</v-container>
+						<v-card color="primary" class="mt-3">
+							<v-card-text>
+								Statistics
+								<span class="float-right">
+									<v-icon icon="mdi-arrow-right"></v-icon>
+								</span>
+							</v-card-text>
+						</v-card>
+					</v-col>
+				</v-row>
+			</v-container>
+		</template>
 	</v-card>
 	<v-container>
 		<v-row dense>
@@ -251,7 +267,7 @@ import "moment-timezone";
 
 export default {
 	name: "Fixture",
-	props: ["id"],
+	props: ["id", "venue"],
 	components: { BottomNavigation, ScrollPicker },
 	computed: {
 		...mapGetters({
@@ -308,39 +324,59 @@ export default {
 			getFixtureDetail: "fixture/getFixtureDetail",
 			getPremierLeagueTeamListAction: "getPremierLeagueTeamListAction",
 			toggleLoading: "toggleLoading",
+
+			getTournamentIndexAction: "getTournamentIndexAction",
+			setTeamsAction: "setTeamsAction",
 		}),
 		getTeamCode(id) {
-			console.log(this.teams);
-			const team = this.teams.filter((t) => {
-				return t.team.id === id;
-			});
-			return team[0].team.code;
+			if (this.teams) {
+				const filteredTeam = this.teams.filter((t) => {
+					return t.team.id === id;
+				});
+				if (filteredTeam.length > 0) {
+					return filteredTeam[0].team.code;
+				}
+			} else {
+				return null;
+			}
 		},
 		predictionDialogHandler() {
 			this.showPredictionDialog = true;
 		},
 	},
 	beforeRouteEnter(to, from, next) {
-		console.log(from);
 		next((vm) => {
 			vm.prevRoute = from;
 		});
 	},
 	async mounted() {
-		this.toggleLoading(true);
-		if (!this.prevRoute.path.includes("/lineups")) {
-			if (this.teams.length <= 0) {
-				await this.getPremierLeagueTeamListAction();
+		if (this.prevRoute.path.includes("/lineups")) {
+			console.log("old data from " + this.prevRoute.path);
+		} else if (this.prevRoute.path.includes("/events")) {
+			console.log("old data from " + this.prevRoute.path);
+		} else {
+			let get = "";
+			if (this.teams) {
+				get = "fixtures,predictions,venues";
+			} else {
+				get = "fixtures,teams,predictions,venues";
 			}
-			const response = await this.getFixtureDetail(this.id);
-			if (response.code !== 200) {
+
+			const response = await this.getTournamentIndexAction({
+				fixture_id: this.id,
+				venue_id: this.venue,
+				get: get,
+			});
+
+			if (response.code === 200) {
+				this.setTeamsAction(response.results.teams);
+			} else {
 				this.showDialogAction({
 					title: "Whoops!",
-					body: response.message,
+					body: response.results.message,
 				});
 			}
 		}
-		this.toggleLoading(false);
 	},
 };
 </script>

@@ -133,7 +133,7 @@
 		</v-row>
 	</v-container>
 
-	<v-container v-if="tournamentData.fixtures">
+	<v-container v-if="fixtureList.length > 0">
 		<v-row>
 			<v-col>
 				<p class="mb-3 font-weight-medium text-body-1">Matches</p>
@@ -151,7 +151,7 @@
 							}}
 						</p>
 						<v-btn
-							:to="'/fixture/' + f.fixture.id + '/' + f.fixture.venue.id"
+							:to="'/fixture/' + f.fixture.id"
 							variant="text"
 							append-icon="mdi-arrow-right"
 							size="small"
@@ -212,23 +212,15 @@
 						</div>
 					</div>
 					<div class="text-caption mt-5">
-						<div
-							v-if="getFixturePrediction(f.fixture.id)"
-							class="d-flex justify-space-between align-center"
-						>
+						<div class="d-flex justify-space-between align-center">
 							<p>Your Prediction</p>
 							<p class="font-weight-medium">
 								<span
-									v-if="getFixturePrediction(f.fixture.id).boosted"
 									class="text-success text-uppercase font-weight-medium"
 									style="font-size: 10px"
 									>2x Boosted</span
 								>
-								{{
-									getFixturePrediction(f.fixture.id).home +
-									" : " +
-									getFixturePrediction(f.fixture.id).away
-								}}
+								1 : 2
 							</p>
 						</div>
 						<div
@@ -258,11 +250,8 @@
 							color="primary"
 							:hidden="f.fixture.status.short !== 'NS'"
 						>
-							<span v-if="getFixturePrediction(f.fixture.id)">
-								Update Predict
-							</span>
-							<span v-else> Predict Match </span>
-						</v-btn>
+							Predict Match</v-btn
+						>
 					</div>
 				</v-card>
 			</v-col>
@@ -298,12 +287,12 @@ export default {
 			gameWeekListForSelect: "gameweek/gameWeekListForSelect",
 			currentGameWeek: "gameweek/currentGameWeek",
 			gameWeekList: "gameweek/gameWeekList",
+			fixtureList: "fixture/fixtureList",
 			selectedGameWeek: "fixture/selectedGameWeek",
 			teams: "teams",
-			tournamentData: "tournamentData",
 		}),
 		sortByDateFixtureList() {
-			return this.tournamentData.fixtures.sort(
+			return this.fixtureList.sort(
 				(a, b) => new Date(a.fixture.date) - new Date(b.fixture.date)
 			);
 		},
@@ -369,48 +358,24 @@ export default {
 			toggleLoading: "toggleLoading",
 			showDialogAction: "general/showDialogAction",
 			getGameWeekAction: "gameweek/getGameWeekAction",
+			getFixtureListAction: "fixture/getFixtureListAction",
+			getPremierLeagueTeamListAction: "getPremierLeagueTeamListAction",
 			storeSelectedGameWeekAction: "fixture/storeSelectedGameWeekAction",
 			savePredictionAction: "prediction/savePredictionAction",
-
-			getTournamentIndexAction: "getTournamentIndexAction",
-			setTeamsAction: "setTeamsAction",
 		}),
 		predictionDialogHandler(f) {
-			console.log(this.getFixturePrediction(f.fixture.id));
-			if (this.getFixturePrediction(f.fixture.id)) {
-				this.predictionForm.teamOnePredictionNumber = [
-					this.getFixturePrediction(f.fixture.id).home,
-				];
-				this.predictionForm.teamTwoPredictionNumber = [
-					this.getFixturePrediction(f.fixture.id).away,
-				];
-			} else {
-				this.predictionForm.teamOnePredictionNumber = ["0"];
-				this.predictionForm.teamTwoPredictionNumber = ["0"];
-			}
 			this.showPredictionDialog = true;
 			this.prediction.homeTeam = f.teams.home;
 			this.prediction.awayTeam = f.teams.away;
 			this.prediction.fixtureId = f.fixture.id;
 		},
 		async onChangeGameWeekHandler() {
-			// const response = await this.getFixtureListAction({
-			// 	week: this.currentFormData.gameWeek,
-			// });
-			const response = await this.getTournamentIndexAction({
-				fixture_week: this.currentFormData.gameWeek,
-				get: "fixtures,predictions",
+			const response = await this.getFixtureListAction({
+				week: this.currentFormData.gameWeek,
 			});
-
-			if (response.code === 200) {
-				this.showFilterDialog = false;
-				this.storeSelectedGameWeekAction(this.currentFormData.gameWeek);
-			} else {
-				this.showDialogAction({
-					title: "Whoops!",
-					body: response.results.message,
-				});
-			}
+			console.log(response);
+			this.showFilterDialog = false;
+			this.storeSelectedGameWeekAction(this.currentFormData.gameWeek);
 		},
 		getTeamCode(id) {
 			const team = this.teams.filter((t) => {
@@ -437,30 +402,6 @@ export default {
 			});
 
 			if (response.code === 200) {
-				let fixtureParams = {};
-				let get = "";
-
-				if (this.selectedGameWeek) {
-					fixtureParams = {
-						fixture_week: this.selectedGameWeek.week,
-					};
-				} else {
-					fixtureParams = {
-						fixture_from: this.currentGameWeek.startDate,
-						fixture_to: this.currentGameWeek.endDate,
-					};
-					this.fixtureGameWeek = this.currentGameWeek.week;
-				}
-
-				if (this.teams) {
-					get = "fixtures,predictions";
-				} else {
-					get = "fixtures,teams,predictions";
-				}
-				await this.getTournamentIndexAction({
-					...fixtureParams,
-					get,
-				});
 				this.prediction = {
 					homeTeam: null,
 					awayTeam: null,
@@ -480,18 +421,6 @@ export default {
 				});
 			}
 		},
-		getFixturePrediction(fixture_id) {
-			const predictions = this.tournamentData.predictions.filter((p) => {
-				return p.fixture_id == fixture_id;
-			});
-			if (predictions[0]) {
-				return {
-					home: predictions[0].home,
-					away: predictions[0].away,
-					boosted: predictions[0].boosted,
-				};
-			}
-		},
 	},
 	beforeRouteEnter(to, from, next) {
 		next((vm) => {
@@ -505,37 +434,18 @@ export default {
 			if (!this.prevRoute.path.includes("/fixture/")) {
 				await this.getGameWeekAction();
 				let fixtureParams = {};
-				let get = "";
 				if (this.selectedGameWeek) {
 					fixtureParams = {
-						fixture_week: this.selectedGameWeek.week,
+						week: this.selectedGameWeek.week,
 					};
 				} else {
 					fixtureParams = {
-						fixture_from: this.currentGameWeek.startDate,
-						fixture_to: this.currentGameWeek.endDate,
+						startDate: this.currentGameWeek.startDate,
+						endDate: this.currentGameWeek.endDate,
 					};
 					this.fixtureGameWeek = this.currentGameWeek.week;
 				}
-
-				if (this.teams) {
-					get = "fixtures,predictions";
-				} else {
-					get = "fixtures,teams,predictions";
-				}
-				const response = await this.getTournamentIndexAction({
-					...fixtureParams,
-					get,
-				});
-
-				if (response.code === 200) {
-					this.setTeamsAction(response.results.teams);
-				} else {
-					this.showDialogAction({
-						title: "Whoops!",
-						body: response.results.message,
-					});
-				}
+				const response = await this.getFixtureListAction(fixtureParams);
 				if (this.currentGameWeek) {
 					this.fixtureGameWeek = this.currentGameWeek.week;
 					this.currentFormData.gameWeek = this.currentGameWeek.week;
@@ -547,11 +457,11 @@ export default {
 
 		this.fixtureGameWeek = this.currentGameWeek.week;
 
-		// this.toggleLoading(true);
+		this.toggleLoading(true);
 
-		// if (this.teams.length <= 0) {
-		// 	await this.getPremierLeagueTeamListAction();
-		// }
+		if (this.teams.length <= 0) {
+			await this.getPremierLeagueTeamListAction();
+		}
 
 		this.toggleLoading(false);
 	},

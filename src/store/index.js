@@ -3,12 +3,17 @@ import general from "./general";
 import auth from "./auth";
 import gameweek from "./gameweek";
 import fixture from "./fixture";
+import prediction from "./prediction";
 import axios from "axios";
 
 export default createStore({
   state: {
+    tournamentData: {
+      predictions: null,
+      fixtures: null,
+    },
     isLoading: false,
-    teams: [],
+    teams: null,
     verifyData: {
       phone: "",
       password: "",
@@ -31,6 +36,9 @@ export default createStore({
     verifyData(state) {
       return state.verifyData;
     },
+    tournamentData(state) {
+      return state.tournamentData;
+    },
   },
   mutations: {
     setTeams(state, teams) {
@@ -42,6 +50,13 @@ export default createStore({
     storeVerifyData(state, data) {
       state.verifyData.phone = data.phone;
       state.verifyData.password = data.password;
+    },
+    storeTournamentData(state, data) {
+      console.log(data);
+      state.tournamentData.fixtures = data.fixtures ? data.fixtures : null;
+      state.tournamentData.predictions = data.predictions
+        ? data.predictions
+        : null;
     },
   },
   actions: {
@@ -63,11 +78,36 @@ export default createStore({
     storeForVerifyAction({ commit }, data) {
       commit("storeVerifyData", data);
     },
+
+    setTeamsAction({ commit }, data) {
+      commit("setTeams", data);
+    },
+
+    async getTournamentIndexAction({ commit }, query) {
+      commit("toggleLoading", true);
+      console.log("q", query);
+      const response = await axios.get("/tournament", {
+        params: query,
+      });
+
+      if (query.fixture_id) {
+        commit("fixture/storeFixtureDetail", response.data.results, {
+          root: true,
+        });
+      } else {
+        commit("storeTournamentData", response.data.results);
+      }
+
+      commit("toggleLoading", false);
+
+      return response.data;
+    },
   },
   modules: {
     gameweek,
     fixture,
     general,
     auth,
+    prediction,
   },
 });

@@ -25,7 +25,7 @@ const routes = [
     component: Tournament,
   },
   {
-    path: "/fixture/:id",
+    path: "/fixture/:id/:venue",
     name: "Match Details",
     component: FixtureDetail,
     props: true,
