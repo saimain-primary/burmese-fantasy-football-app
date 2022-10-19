@@ -360,6 +360,8 @@ export default {
 		});
 	},
 	async mounted() {
+		this.$gtag.event("tournament");
+
 		if (!this.prevRoute.path.includes("/fixture/")) {
 			await this.getGameWeekAction();
 			let fixtureParams = {};
