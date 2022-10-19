@@ -481,15 +481,17 @@ export default {
 			}
 		},
 		getFixturePrediction(fixture_id) {
-			const predictions = this.tournamentData.predictions.filter((p) => {
-				return p.fixture_id == fixture_id;
-			});
-			if (predictions[0]) {
-				return {
-					home: predictions[0].home,
-					away: predictions[0].away,
-					boosted: predictions[0].boosted,
-				};
+			if (this.tournamentData.predictions) {
+				const predictions = this.tournamentData.predictions.filter((p) => {
+					return p.fixture_id == fixture_id;
+				});
+				if (predictions[0]) {
+					return {
+						home: predictions[0].home,
+						away: predictions[0].away,
+						boosted: predictions[0].boosted,
+					};
+				}
 			}
 		},
 	},
