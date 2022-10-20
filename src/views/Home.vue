@@ -9,6 +9,7 @@
 			<v-btn size="small" @click="install">Install</v-btn>
 		</v-banner-actions>
 	</v-banner>
+
 	<div class="header-div">
 		<v-container>
 			<v-row>
