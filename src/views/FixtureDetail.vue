@@ -369,7 +369,9 @@ export default {
 			});
 
 			if (response.code === 200) {
-				this.setTeamsAction(response.results.teams);
+				if (response.results.teams) {
+					this.setTeamsAction(response.results.teams);
+				}
 			} else {
 				this.showDialogAction({
 					title: "Whoops!",

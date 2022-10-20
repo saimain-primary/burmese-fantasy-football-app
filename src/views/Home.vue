@@ -226,9 +226,7 @@ export default {
 		};
 	},
 	methods: {
-		...mapActions({
-			getPremierLeagueTeamListAction: "getPremierLeagueTeamListAction",
-		}),
+		...mapActions({}),
 		async install() {
 			this.deferredPrompt.prompt();
 		},
@@ -254,7 +252,22 @@ export default {
 	},
 	async mounted() {
 		this.$gtag.event("home");
-		await this.getPremierLeagueTeamListAction();
+		if (!this.teams) {
+			get = "teams";
+			const response = await this.getTournamentIndexAction({
+				get,
+			});
+			if (response.code === 200) {
+				if (response.results.teams) {
+					this.setTeamsAction(response.results.teams);
+				}
+			} else {
+				this.showDialogAction({
+					title: "Whoops!",
+					body: response.results.message,
+				});
+			}
+		}
 	},
 };
 </script>

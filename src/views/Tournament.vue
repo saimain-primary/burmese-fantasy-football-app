@@ -136,6 +136,13 @@
 	<v-container v-if="tournamentData.fixtures">
 		<v-row>
 			<v-col>
+				<v-alert
+					v-if="!tournamentData.predictions.some((p) => p.boosted === true)"
+					class="mb-3"
+					color="success"
+					text="Don't forget to use your 2x booster to win the double points."
+					variant="tonal"
+				></v-alert>
 				<p class="mb-3 font-weight-medium text-body-1">Matches</p>
 				<v-card
 					v-for="(f, index) in sortByDateFixtureList"
@@ -376,7 +383,7 @@ export default {
 			setTeamsAction: "setTeamsAction",
 		}),
 		predictionDialogHandler(f) {
-			console.log(this.getFixturePrediction(f.fixture.id));
+			console.log("open dialog for ", this.getFixturePrediction(f.fixture.id));
 			if (this.getFixturePrediction(f.fixture.id)) {
 				this.predictionForm.teamOnePredictionNumber = [
 					this.getFixturePrediction(f.fixture.id).home,
@@ -384,9 +391,13 @@ export default {
 				this.predictionForm.teamTwoPredictionNumber = [
 					this.getFixturePrediction(f.fixture.id).away,
 				];
+				this.predictionForm.prediction2xBooster = this.getFixturePrediction(
+					f.fixture.id
+				).boosted;
 			} else {
 				this.predictionForm.teamOnePredictionNumber = ["0"];
 				this.predictionForm.teamTwoPredictionNumber = ["0"];
+				this.predictionForm.prediction2xBooster = false;
 			}
 			this.showPredictionDialog = true;
 			this.prediction.homeTeam = f.teams.home;
@@ -422,6 +433,48 @@ export default {
 				return null;
 			}
 		},
+		updatePredictionValue(fixture_id, data) {
+			console.log("data", data);
+			console.log("looking prediction for #" + fixture_id);
+			const predictions = this.tournamentData.predictions;
+
+			if (predictions.length <= 0) {
+				predictions.push(data);
+			} else {
+				let existingPredictionIndex = -1;
+				const checkPredictionExist = predictions.find((p, index) => {
+					if (parseInt(p.fixture_id) === fixture_id) {
+						existingPredictionIndex = index;
+						return p;
+					}
+				});
+
+				if (checkPredictionExist) {
+					predictions[existingPredictionIndex].home = data.home;
+					predictions[existingPredictionIndex].away = data.away;
+					predictions[existingPredictionIndex].boosted = data.boosted;
+				} else {
+					predictions.push(data);
+				}
+				// predictions.forEach((p) => {
+				// 	console.log("looping the predictions");
+				// 	if (p.fixture_id === fixture_id) {
+				// 		console.log("prediction data for #" + fixture_id);
+				// 		console.log("prediction", p);
+				// 		p.home = data.home;
+				// 		p.away = data.away;
+				// 		p.boosted = data.boosted;
+				// 	} else {
+				// 		console.log("no data for #", fixture_id);
+				// 		console.log("push", data);
+				// 		predictions.push(data);
+				// 	}
+				// });
+			}
+
+			console.log("update prediction", predictions);
+			this.tournamentData.predictions = predictions;
+		},
 		async onSavePredictionHandler() {
 			let week = "";
 			if (this.selectedGameWeek) {
@@ -441,30 +494,10 @@ export default {
 			});
 
 			if (response.code === 200) {
-				let fixtureParams = {};
-				let get = "";
+				// update fixture prediction value in store
 
-				if (this.selectedGameWeek) {
-					fixtureParams = {
-						fixture_week: this.selectedGameWeek.week,
-					};
-				} else {
-					fixtureParams = {
-						fixture_from: this.currentGameWeek.startDate,
-						fixture_to: this.currentGameWeek.endDate,
-					};
-					this.fixtureGameWeek = this.currentGameWeek.week;
-				}
+				this.updatePredictionValue(this.prediction.fixtureId, response.results);
 
-				if (this.teams) {
-					get = "fixtures,predictions";
-				} else {
-					get = "fixtures,teams,predictions";
-				}
-				await this.getTournamentIndexAction({
-					...fixtureParams,
-					get,
-				});
 				this.prediction = {
 					homeTeam: null,
 					awayTeam: null,
@@ -535,7 +568,9 @@ export default {
 				});
 
 				if (response.code === 200) {
-					this.setTeamsAction(response.results.teams);
+					if (response.results.teams) {
+						this.setTeamsAction(response.results.teams);
+					}
 				} else {
 					this.showDialogAction({
 						title: "Whoops!",
