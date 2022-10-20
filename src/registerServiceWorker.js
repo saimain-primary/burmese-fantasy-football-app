@@ -21,7 +21,6 @@ if (process.env.NODE_ENV === "production") {
     },
     updated(registration) {
       console.log("New content is available; please refresh.");
-      // window.location.reload(true);
       document.dispatchEvent(
         new CustomEvent("swUpdated", { detail: registration })
       );

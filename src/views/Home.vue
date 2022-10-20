@@ -24,7 +24,7 @@
 					</p>
 					<v-card class="py-3">
 						<p class="text-center font-weight-medium text-body-1 mb-2">
-							Game Week 3 Result
+							Game Week {{ currentGameWeek.week }} Result
 						</p>
 						<div
 							class="
@@ -157,7 +157,7 @@
 				</div>
 				<div class="mt-3">
 					<p class="text-body-2 font-weight-medium text-grey-darken-3">
-						Game Week 11 Top Predictor
+						Game Week {{ currentGameWeek.week }} Top Predictor
 					</p>
 					<v-card class="mt-3 py-5 px-10">
 						<div class="d-flex align-center">
@@ -215,6 +215,7 @@ export default {
 		...mapGetters({
 			authenticated: "auth/authenticated",
 			user: "auth/user",
+			currentGameWeek: "gameweek/currentGameWeek",
 		}),
 		checkDeviceIOS() {
 			return this.isIOSMobile(navigator.userAgent);
@@ -227,7 +228,9 @@ export default {
 		};
 	},
 	methods: {
-		...mapActions({}),
+		...mapActions({
+			getGameWeekAction: "gameweek/getGameWeekAction",
+		}),
 		async install() {
 			this.deferredPrompt.prompt();
 		},
@@ -253,6 +256,8 @@ export default {
 	},
 	async mounted() {
 		this.$gtag.event("home");
+		await this.getGameWeekAction();
+
 		if (!this.teams) {
 			const response = await this.getTournamentIndexAction({
 				get: "teams",
