@@ -216,6 +216,7 @@ export default {
 			authenticated: "auth/authenticated",
 			user: "auth/user",
 			currentGameWeek: "gameweek/currentGameWeek",
+			teams: "teams",
 		}),
 		checkDeviceIOS() {
 			return this.isIOSMobile(navigator.userAgent);
@@ -258,7 +259,9 @@ export default {
 	},
 	async mounted() {
 		this.$gtag.event("home");
-		await this.getGameWeekAction();
+		if (!this.currentGameWeek) {
+			await this.getGameWeekAction();
+		}
 
 		if (!this.teams) {
 			const response = await this.getTournamentIndexAction({
