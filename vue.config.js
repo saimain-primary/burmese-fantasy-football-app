@@ -19,6 +19,7 @@ module.exports = defineConfig({
     workboxOptions: {
       // swSrc is required in InjectManifest mode.
       swSrc: "./src/service-worker.js",
+      skipWaiting: true,
       // ...other Workbox options...
     },
     icons: {

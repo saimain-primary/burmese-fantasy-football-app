@@ -138,9 +138,8 @@
 			<v-col>
 				<v-alert
 					v-if="
-						tournamentData.predictions &&
-						tournamentData.predictions.some((p) => p.boosted === true).length <=
-							0
+						tournamentData.predictions ||
+						tournamentData.predictions.some((p) => p.boosted === true)
 					"
 					class="mb-3"
 					color="success"
@@ -517,7 +516,7 @@ export default {
 			} else {
 				this.showDialogAction({
 					title: "Whoops!",
-					body: response.results.message,
+					body: response.message,
 				});
 			}
 		},
