@@ -68,7 +68,12 @@
 						</div>
 					</v-card>
 				</v-dialog>
-
+				<!-- <PredictionDialog
+					:prediction="prediction"
+					:predictionForm="predictionForm"
+					:showPredictionDialog="showPredictionDialog"
+					@closePredictionDialog="closePredictionDialog"
+				/> -->
 				<v-card color="primary">
 					<div class="d-flex flex-no-wrap justify-space-between">
 						<div>
@@ -136,17 +141,26 @@
 	<v-container v-if="tournamentData.fixtures">
 		<v-row>
 			<v-col>
-				<v-alert
-					v-if="
-						tournamentData.predications
-							? tournamentData.predictions.some((p) => p.boosted === true)
-							: true
-					"
-					class="mb-3"
-					color="success"
-					text="Don't forget to use your 2x booster to win the double points."
-					variant="tonal"
-				></v-alert>
+				<template v-if="this.tournamentData.predictions">
+					<v-alert
+						v-if="
+							!this.tournamentData.predictions.some((p) => p.boosted === true)
+						"
+						class="mb-3"
+						color="success"
+						text="Don't forget to use your 2x booster to win the double points."
+						variant="tonal"
+					></v-alert>
+				</template>
+				<template v-else>
+					<v-alert
+						class="mb-3"
+						color="success"
+						text="Don't forget to use your 2x booster to win the double points."
+						variant="tonal"
+					></v-alert>
+				</template>
+
 				<p class="mb-3 font-weight-medium text-body-1">Matches</p>
 				<v-card
 					v-for="(f, index) in sortByDateFixtureList"
@@ -270,7 +284,7 @@
 							:hidden="f.fixture.status.short !== 'NS'"
 						>
 							<span v-if="getFixturePrediction(f.fixture.id)">
-								Update Predict
+								Change Predict
 							</span>
 							<span v-else> Predict Match </span>
 						</v-btn>
@@ -300,10 +314,11 @@ import ScrollPicker from "vue3-scroll-picker";
 import { mapGetters, mapActions } from "vuex";
 import moment from "moment";
 import "moment-timezone";
+import PredictionDialog from "../components/PredictionDialog.vue";
 
 export default {
 	name: "Tournament",
-	components: { BottomNavigation, ScrollPicker },
+	components: { BottomNavigation, ScrollPicker, PredictionDialog },
 	computed: {
 		...mapGetters({
 			gameWeekListForSelect: "gameweek/gameWeekListForSelect",
@@ -454,9 +469,11 @@ export default {
 				});
 
 				if (checkPredictionExist) {
+					console.log("exist ", checkPredictionExist);
 					predictions[existingPredictionIndex].home = data.home;
 					predictions[existingPredictionIndex].away = data.away;
 					predictions[existingPredictionIndex].boosted = data.boosted;
+					console.log("updated", predictions[existingPredictionIndex]);
 				} else {
 					predictions.push(data);
 				}
@@ -500,6 +517,7 @@ export default {
 			if (response.code === 200) {
 				// update fixture prediction value in store
 
+				console.log("rrr", response.results);
 				this.updatePredictionValue(this.prediction.fixtureId, response.results);
 
 				this.prediction = {
@@ -545,9 +563,13 @@ export default {
 		this.$gtag.event("tournament");
 
 		if (this.prevRoute) {
-			if (!this.prevRoute.path.includes("/fixture/")) {
+			if (
+				!this.prevRoute.path.includes("/fixture/") ||
+				!this.tournamentData.fixtures
+			) {
 				await this.getGameWeekAction();
 				let fixtureParams = {};
+
 				let get = "";
 				if (this.selectedGameWeek) {
 					fixtureParams = {
@@ -588,6 +610,10 @@ export default {
 					this.currentFormData.gameWeek = null;
 				}
 			}
+		}
+
+		if (!this.currentGameWeek) {
+			await this.getGameWeekAction();
 		}
 
 		this.fixtureGameWeek = this.currentGameWeek.week;

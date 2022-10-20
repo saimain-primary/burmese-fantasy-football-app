@@ -14,13 +14,42 @@
 		</v-img>
 
 		<template v-if="fixtureDetail.fixtures">
-			<v-card-subtitle class="pt-4">{{
-				moment(
-					new Date(fixtureDetail.fixtures[0].fixture.date),
-					moment.ISO_8601
-				).format("ddd D MMM YYYY , h:mm A")
-			}}</v-card-subtitle>
-
+			<div
+				class="
+					pt-4
+					px-3
+					font-weight-medium
+					d-flex
+					justify-space-between
+					align-center
+				"
+			>
+				<p
+					class="
+						text-body-1 text-grey-darken-4 text-uppercase
+						font-weight-medium
+					"
+				>
+					{{ fixtureDetail.fixtures[0].fixture.status.long }}
+				</p>
+				<div
+					class="text-right text-caption font-weight-medium text-grey-darken-1"
+				>
+					<p class="">Kickoff Time</p>
+					<p>
+						{{
+							moment(
+								new Date(fixtureDetail.fixtures[0].fixture.date),
+								moment.ISO_8601
+							).format("ddd D MMM YYYY , h:mm A")
+						}}
+					</p>
+				</div>
+			</div>
+			<v-divider class="my-5 mx-3"></v-divider>
+			<p class="text-center font-weight-medium text-uppercase text-overline">
+				Match Result
+			</p>
 			<v-card
 				class="
 					d-flex
@@ -28,7 +57,6 @@
 					justify-space-between
 					px-5
 					py-5
-					mt-5
 					align-center
 					gameweek-deadline-card
 				"
@@ -52,7 +80,7 @@
 								? fixtureDetail.fixtures[0].goals.home
 								: 0
 						}}
-						-
+						:
 						{{
 							fixtureDetail.fixtures[0].goals.away
 								? fixtureDetail.fixtures[0].goals.away
@@ -73,18 +101,46 @@
 					</p>
 				</div>
 			</v-card>
-			<div class="text-center mt-5">
-				<v-btn
-					variant="outlined"
-					size="small"
-					color="primary"
-					style="margin: 0 auto"
-				>
-					<p class="">{{ fixtureDetail.fixtures[0].fixture.status.long }}</p>
-				</v-btn>
-			</div>
 
-			<v-card-text>
+			<v-card class="mx-3 mt-5 py-3 px-3 text-center">
+				<p class="text-center font-weight-medium text-uppercase text-overline">
+					<span v-if="fixtureDetail.predictions.length > 0"
+						>Your Prediction</span
+					>
+					<span v-else>You have not predict in this match</span>
+				</p>
+				<div class="text-center" v-if="fixtureDetail.predictions.length > 0">
+					<p class="text-h5 font-weight-medium">
+						{{ fixtureDetail.predictions[0].home }}
+						:
+						{{ fixtureDetail.predictions[0].away }}
+					</p>
+					<p
+						v-if="fixtureDetail.predictions[0].boosted"
+						class="text-overline text-success"
+					>
+						Using 2x Booster
+					</p>
+				</div>
+				<v-btn
+					class="mt-2"
+					size="small"
+					@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
+					color="primary"
+					:hidden="fixtureDetail.fixtures[0].fixture.status.short !== 'NS'"
+				>
+					<span
+						v-if="getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)"
+					>
+						Change Predict
+					</span>
+					<span v-else> Predict Match </span>
+				</v-btn>
+			</v-card>
+
+			<v-card-text
+				v-if="fixtureDetail.fixtures[0].fixture.status.short !== 'NS'"
+			>
 				<p class="text-overline">Scores</p>
 				<v-divider class="mb-2 mt-1"></v-divider>
 				<div
@@ -199,36 +255,40 @@
 						<p class="text-body-1 font-weight-bold">Sun 2 Oct 2022</p>
 						<p class="text-caption">8:30 PM</p>
 						<div class="d-flex justify-space-between align-center">
-							<div class="d-flex align-center">
-								<p class="mr-3 text-caption font-weight-medium">MUN</p>
+							<div v-if="prediction.homeTeam" class="d-flex align-center">
+								<p class="mr-3 text-caption font-weight-medium">
+									{{ getTeamCode(prediction.homeTeam.id) }}
+								</p>
 								<v-avatar size="40" large class="rounded-circle">
 									<v-img
 										class="rounded-circle"
 										:lazy-src="logo"
-										src="https://media.api-sports.io/football/teams/33.png"
+										:src="prediction.homeTeam.logo"
 									></v-img>
 								</v-avatar>
 							</div>
 							<div class="d-flex align-center">
 								<scroll-picker
 									:options="options"
-									v-model="teamOnePredictionNumber"
+									v-model="predictionForm.teamOnePredictionNumber"
 								/>
 								<div style="width: 30px"><span>:</span></div>
 								<scroll-picker
 									:options="options"
-									v-model="teamTwoPredictionNumber"
+									v-model="predictionForm.teamTwoPredictionNumber"
 								/>
 							</div>
-							<div class="d-flex align-center">
+							<div v-if="prediction.homeTeam" class="d-flex align-center">
 								<v-avatar size="40" large class="rounded-circle">
 									<v-img
 										class="rounded-circle"
 										:lazy-src="logo"
-										src="https://media.api-sports.io/football/teams/34.png"
+										:src="prediction.awayTeam.logo"
 									></v-img>
 								</v-avatar>
-								<p class="ml-3 text-caption font-weight-medium">NEW</p>
+								<p class="ml-3 text-caption font-weight-medium">
+									{{ getTeamCode(prediction.awayTeam.id) }}
+								</p>
 							</div>
 						</div>
 						<div class="mx-auto">
@@ -236,7 +296,7 @@
 								style="font-size: 12px"
 								hide-details
 								color="primary"
-								v-model="prediction2xBooster"
+								v-model="predictionForm.prediction2xBooster"
 								label="Use 2x Booster to double Pts"
 							></v-checkbox>
 						</div>
@@ -244,7 +304,12 @@
 							You can change it until 30 mins before the match start.
 						</p>
 						<div class="text-center">
-							<v-btn class="mt-3" size="small" width="160px" color="primary"
+							<v-btn
+								@click="onSavePredictionHandler"
+								class="mt-3"
+								size="small"
+								width="160px"
+								color="primary"
 								>Save Prediction</v-btn
 							>
 						</div>
@@ -272,7 +337,10 @@ export default {
 	computed: {
 		...mapGetters({
 			venueDetail: "fixture/venueDetail",
+			selectedGameWeek: "fixture/selectedGameWeek",
 			fixtureDetail: "fixture/fixtureDetail",
+			currentGameWeek: "gameweek/currentGameWeek",
+			tournamentData: "tournamentData",
 			teams: "teams",
 		}),
 	},
@@ -316,6 +384,17 @@ export default {
 			],
 		],
 		prevRoute: null,
+		prediction: {
+			homeTeam: null,
+			awayTeam: null,
+			date: null,
+			fixtureId: null,
+		},
+		predictionForm: {
+			teamOnePredictionNumber: ["0"],
+			teamTwoPredictionNumber: ["0"],
+			prediction2xBooster: false,
+		},
 	}),
 	methods: {
 		moment,
@@ -324,6 +403,8 @@ export default {
 			getFixtureDetail: "fixture/getFixtureDetail",
 			getPremierLeagueTeamListAction: "getPremierLeagueTeamListAction",
 			toggleLoading: "toggleLoading",
+			savePredictionAction: "prediction/savePredictionAction",
+			getGameWeekAction: "gameweek/getGameWeekAction",
 
 			getTournamentIndexAction: "getTournamentIndexAction",
 			setTeamsAction: "setTeamsAction",
@@ -340,8 +421,121 @@ export default {
 				return null;
 			}
 		},
-		predictionDialogHandler() {
+		predictionDialogHandler(f) {
+			console.log("open dialog for ", f);
+			if (this.getFixturePrediction(f.fixture.id)) {
+				this.predictionForm.teamOnePredictionNumber = [
+					this.getFixturePrediction(f.fixture.id).home,
+				];
+				this.predictionForm.teamTwoPredictionNumber = [
+					this.getFixturePrediction(f.fixture.id).away,
+				];
+				this.predictionForm.prediction2xBooster = this.getFixturePrediction(
+					f.fixture.id
+				).boosted;
+			} else {
+				this.predictionForm.teamOnePredictionNumber = ["0"];
+				this.predictionForm.teamTwoPredictionNumber = ["0"];
+				this.predictionForm.prediction2xBooster = false;
+			}
 			this.showPredictionDialog = true;
+			this.prediction.homeTeam = f.teams.home;
+			this.prediction.awayTeam = f.teams.away;
+			this.prediction.fixtureId = f.fixture.id;
+		},
+		getFixturePrediction(fixture_id) {
+			if (this.fixtureDetail.predictions) {
+				const predictions = this.fixtureDetail.predictions.filter((p) => {
+					return p.fixture_id == fixture_id;
+				});
+				if (predictions[0]) {
+					return {
+						home: predictions[0].home,
+						away: predictions[0].away,
+						boosted: predictions[0].boosted,
+					};
+				}
+			}
+		},
+		updatePredictionValue(fixture_id, data) {
+			let predictions = this.tournamentData.predictions;
+			let predictionFromDetail = this.fixtureDetail.predictions;
+
+			console.log("predictions from tournament data", predictions);
+			console.log("predictions from detail page", predictionFromDetail);
+			console.log("api return data", data);
+			console.log("looking prediction for #" + fixture_id);
+
+			predictionFromDetail.push(data);
+
+			if (predictions.length <= 0) {
+				predictions.push(data);
+			} else {
+				// check for tournament data prediction
+
+				let existingPredictionIndex = -1;
+				const checkPredictionExist = predictions.find((p, index) => {
+					if (parseInt(p.fixture_id) === fixture_id) {
+						existingPredictionIndex = index;
+						return p;
+					}
+				});
+				if (checkPredictionExist) {
+					console.log("exist ", checkPredictionExist);
+					predictions[existingPredictionIndex].home = data.home;
+					predictions[existingPredictionIndex].away = data.away;
+					predictions[existingPredictionIndex].boosted = data.boosted;
+					console.log("updated", predictions[existingPredictionIndex]);
+				} else {
+					predictions.push(data);
+				}
+			}
+
+			console.log("update prediction", predictions);
+			// this.fixtureDetail.predictions = predictions;
+		},
+		async onSavePredictionHandler() {
+			let week = "";
+			if (this.selectedGameWeek) {
+				week = this.selectedGameWeek.week;
+			} else {
+				week = this.currentGameWeek.week;
+			}
+
+			const response = await this.savePredictionAction({
+				fixture_id: this.prediction.fixtureId,
+				home_team: this.prediction.homeTeam,
+				away_team: this.prediction.awayTeam,
+				home: this.predictionForm.teamOnePredictionNumber[0],
+				away: this.predictionForm.teamTwoPredictionNumber[0],
+				boosted: this.predictionForm.prediction2xBooster,
+				week: week,
+			});
+
+			if (response.code === 200) {
+				// update fixture prediction value in store
+
+				console.log("rrr", response.results);
+				this.updatePredictionValue(this.prediction.fixtureId, response.results);
+
+				this.prediction = {
+					homeTeam: null,
+					awayTeam: null,
+					date: null,
+					fixtureId: null,
+				};
+				this.predictionForm = {
+					teamOnePredictionNumber: ["0"],
+					teamTwoPredictionNumber: ["0"],
+					prediction2xBooster: false,
+				};
+				this.showPredictionDialog = false;
+			} else {
+				this.showDialogAction({
+					title: "Whoops!",
+					body: response.message,
+				});
+			}
 		},
 	},
 	beforeRouteEnter(to, from, next) {
@@ -350,33 +544,40 @@ export default {
 		});
 	},
 	async mounted() {
-		if (this.prevRoute.path.includes("/lineups")) {
-			console.log("old data from " + this.prevRoute.path);
-		} else if (this.prevRoute.path.includes("/events")) {
-			console.log("old data from " + this.prevRoute.path);
-		} else {
-			let get = "";
-			if (this.teams) {
-				get = "fixtures,predictions,venues";
+		if (!this.currentGameWeek) {
+			await this.getGameWeekAction();
+		}
+
+		this.fixtureGameWeek = this.currentGameWeek.week;
+		if (this.prevRoute) {
+			if (this.prevRoute.path.includes("/lineups")) {
+				console.log("old data from " + this.prevRoute.path);
+			} else if (this.prevRoute.path.includes("/events")) {
+				console.log("old data from " + this.prevRoute.path);
 			} else {
-				get = "fixtures,teams,predictions,venues";
-			}
-
-			const response = await this.getTournamentIndexAction({
-				fixture_id: this.id,
-				venue_id: this.venue,
-				get: get,
-			});
-
-			if (response.code === 200) {
-				if (response.results.teams) {
-					this.setTeamsAction(response.results.teams);
+				let get = "";
+				if (this.teams) {
+					get = "fixtures,predictions,venues";
+				} else {
+					get = "fixtures,teams,predictions,venues";
 				}
-			} else {
-				this.showDialogAction({
-					title: "Whoops!",
-					body: response.results.message,
+
+				const response = await this.getTournamentIndexAction({
+					fixture_id: this.id,
+					venue_id: this.venue,
+					get: get,
 				});
+
+				if (response.code === 200) {
+					if (response.results.teams) {
+						this.setTeamsAction(response.results.teams);
+					}
+				} else {
+					this.showDialogAction({
+						title: "Whoops!",
+						body: response.results.message,
+					});
+				}
 			}
 		}
 	},
