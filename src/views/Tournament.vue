@@ -588,6 +588,9 @@ export default {
 				} else {
 					get = "fixtures,teams,predictions";
 				}
+
+				this.toggleLoading(true);
+
 				const response = await this.getTournamentIndexAction({
 					...fixtureParams,
 					get,
@@ -617,8 +620,6 @@ export default {
 		}
 
 		this.fixtureGameWeek = this.currentGameWeek.week;
-
-		// this.toggleLoading(true);
 
 		// if (this.teams.length <= 0) {
 		// 	await this.getPremierLeagueTeamListAction();
