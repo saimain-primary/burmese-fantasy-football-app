@@ -1,4 +1,11 @@
 export default {
+  data() {
+    return {
+      refreshing: false,
+      registration: null,
+      updateExists: false,
+    };
+  },
   created() {
     document.addEventListener("swUpdated", this.updateAvailable, {
       once: true,

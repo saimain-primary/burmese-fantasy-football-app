@@ -48,8 +48,6 @@ export default {
 	data: () => ({
 		pageName: "",
 		back: "",
-		registration: null,
-		updateExists: false,
 	}),
 	mixins: [update],
 	mounted() {

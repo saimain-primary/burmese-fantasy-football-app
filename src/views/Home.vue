@@ -24,7 +24,7 @@
 					</p>
 					<v-card class="py-3">
 						<p class="text-center font-weight-medium text-body-1 mb-2">
-							Game Week {{ currentGameWeek.week }} Result
+							Game Week {{ currentGameWeek ? currentGameWeek.week : 0 }} Result
 						</p>
 						<div
 							class="
@@ -128,7 +128,7 @@
 				</div>
 				<div class="mt-3">
 					<p class="text-body-2 font-weight-medium text-grey-darken-3">
-						Game Week 11 Deadline
+						Game Week {{ currentGameWeek ? currentGameWeek.week : 0 }} Deadline
 					</p>
 					<v-card class="gameweek-deadline-card mt-3">
 						<p class="text-center">Don't miss your chance</p>
@@ -157,7 +157,8 @@
 				</div>
 				<div class="mt-3">
 					<p class="text-body-2 font-weight-medium text-grey-darken-3">
-						Game Week {{ currentGameWeek.week }} Top Predictor
+						Game Week {{ currentGameWeek ? currentGameWeek.week : 0 }} Top
+						Predictor
 					</p>
 					<v-card class="mt-3 py-5 px-10">
 						<div class="d-flex align-center">
