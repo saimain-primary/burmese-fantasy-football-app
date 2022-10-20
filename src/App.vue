@@ -51,6 +51,7 @@ export default {
 	}),
 	mixins: [update],
 	mounted() {
+		console.log('update', update);
 		console.log(process.env.NODE_ENV);
 	},
 	watch: {

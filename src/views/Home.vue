@@ -48,7 +48,10 @@
 								<p class="mb-0 text-caption">Highest</p>
 							</div>
 						</div>
-						<div class="px-5 mt-1 text-center">
+						<div
+							class="px-5 mt-1 text-center"
+							v-if="!authenticated && user == null"
+						>
 							<v-btn size="small" color="primary">Sign Up Now</v-btn>
 						</div>
 					</v-card>
