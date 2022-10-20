@@ -138,8 +138,9 @@
 			<v-col>
 				<v-alert
 					v-if="
+						tournamentData.predictions &&
 						tournamentData.predictions.some((p) => p.boosted === true).length <=
-						0
+							0
 					"
 					class="mb-3"
 					color="success"
