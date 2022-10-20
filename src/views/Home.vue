@@ -253,9 +253,8 @@ export default {
 	async mounted() {
 		this.$gtag.event("home");
 		if (!this.teams) {
-			get = "teams";
 			const response = await this.getTournamentIndexAction({
-				get,
+				get: "teams",
 			});
 			if (response.code === 200) {
 				if (response.results.teams) {

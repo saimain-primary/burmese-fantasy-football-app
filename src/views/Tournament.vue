@@ -137,7 +137,10 @@
 		<v-row>
 			<v-col>
 				<v-alert
-					v-if="!tournamentData.predictions.some((p) => p.boosted === true)"
+					v-if="
+						tournamentData.predictions.some((p) => p.boosted === true).length <=
+						0
+					"
 					class="mb-3"
 					color="success"
 					text="Don't forget to use your 2x booster to win the double points."
