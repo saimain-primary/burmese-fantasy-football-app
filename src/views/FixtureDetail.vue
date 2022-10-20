@@ -465,7 +465,7 @@ export default {
 			console.log("predictions from detail page", predictionFromDetail);
 			console.log("api return data", data);
 			console.log("looking prediction for #" + fixture_id);
-
+			predictionFromDetail = [];
 			predictionFromDetail.push(data);
 
 			if (predictions.length <= 0) {
@@ -492,7 +492,7 @@ export default {
 			}
 
 			console.log("update prediction", predictions);
-			// this.fixtureDetail.predictions = predictions;
+			this.fixtureDetail.predictions = predictionFromDetail;
 		},
 		async onSavePredictionHandler() {
 			let week = "";
