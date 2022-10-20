@@ -230,6 +230,8 @@ export default {
 	methods: {
 		...mapActions({
 			getGameWeekAction: "gameweek/getGameWeekAction",
+			getTournamentIndexAction: "getTournamentIndexAction",
+			setTeamsAction: "setTeamsAction",
 		}),
 		async install() {
 			this.deferredPrompt.prompt();
