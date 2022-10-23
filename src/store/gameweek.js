@@ -51,10 +51,10 @@ export default {
       return response.data;
     },
     async getGameWeekAction({ commit }) {
-      commit("toggleLoading", true, { root: true });
+      // commit("toggleLoading", true, { root: true });
       const response = await axios.get("/gameweek");
       commit("storeGameWeekList", response.data.results);
-      commit("toggleLoading", false, { root: true });
+      // commit("toggleLoading", false, { root: true });
       return response.data;
     },
     async changeCurrentGameWeekAction({ commit }, data) {

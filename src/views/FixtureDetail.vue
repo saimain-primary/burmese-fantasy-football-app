@@ -104,12 +104,20 @@
 
 			<v-card class="mx-3 mt-5 py-3 px-3 text-center">
 				<p class="text-center font-weight-medium text-uppercase text-overline">
-					<span v-if="fixtureDetail.predictions.length > 0"
+					<span
+						v-if="
+							fixtureDetail.predictions && fixtureDetail.predictions.length > 0
+						"
 						>Your Prediction</span
 					>
 					<span v-else>You have not predict in this match</span>
 				</p>
-				<div class="text-center" v-if="fixtureDetail.predictions.length > 0">
+				<div
+					class="text-center"
+					v-if="
+						fixtureDetail.predictions && fixtureDetail.predictions.length > 0
+					"
+				>
 					<p class="text-h5 font-weight-medium">
 						{{ fixtureDetail.predictions[0].home }}
 						:

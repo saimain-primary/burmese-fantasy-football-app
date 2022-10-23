@@ -84,7 +84,7 @@ export default createStore({
     },
 
     async getTournamentIndexAction({ commit }, query) {
-      commit("toggleLoading", true);
+      // commit("toggleLoading", true);
       console.log("q", query);
       const response = await axios.get("/tournament", {
         params: query,
@@ -98,7 +98,7 @@ export default createStore({
         commit("storeTournamentData", response.data.results);
       }
 
-      commit("toggleLoading", false);
+      // commit("toggleLoading", false);
 
       return response.data;
     },

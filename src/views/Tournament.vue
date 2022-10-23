@@ -138,14 +138,17 @@
 		</v-row>
 	</v-container>
 
+	<v-container>
+		<v-row>
+			<v-col> </v-col>
+		</v-row>
+	</v-container>
 	<v-container v-if="tournamentData.fixtures">
 		<v-row>
 			<v-col>
-				<template v-if="this.tournamentData.predictions">
+				<template v-if="tournamentData.predictions">
 					<v-alert
-						v-if="
-							!this.tournamentData.predictions.some((p) => p.boosted === true)
-						"
+						v-if="!tournamentData.predictions.some((p) => p.boosted === true)"
 						class="mb-3"
 						color="success"
 						text="Don't forget to use your 2x booster to win the double points."
@@ -162,111 +165,123 @@
 				</template>
 
 				<p class="mb-3 font-weight-medium text-body-1">Matches</p>
-				<v-card
-					v-for="(f, index) in sortByDateFixtureList"
-					:key="index"
-					class="pa-5 mb-3"
-				>
-					<div class="d-flex justify-space-between align-center">
-						<p class="font-weight-bold text-body-2">
-							{{
-								moment(new Date(f.fixture.date), moment.ISO_8601).format(
-									"ddd D MMM YYYY"
-								)
-							}}
-						</p>
-						<v-btn
-							:to="'/fixture/' + f.fixture.id + '/' + f.fixture.venue.id"
-							variant="text"
-							append-icon="mdi-arrow-right"
-							size="small"
-							color="primary"
-							>View Detail
-						</v-btn>
-					</div>
-					<v-divider class="my-3"></v-divider>
-					<div
-						class="d-flex text-center mt-5 justify-space-between align-center"
-					>
-						<div
-							class="d-flex flex-column justify-center align-center"
-							style="width: 100px"
+
+				<template v-if="loading">
+					<div v-for="index in 3" :key="index" class="loading-skeleton mb-3">
+						<v-card
+							elevation="0"
+							class="bg-grey-lighten-4 py-3 px-3"
+							style="height: 150px"
 						>
-							<v-avatar size="40" large class="rounded-circle">
-								<v-img
-									class="rounded-circle"
-									:lazy-src="logo"
-									:src="f.teams.home.logo"
-								></v-img>
-							</v-avatar>
-							<p class="mt-3 text-caption font-weight-medium">
-								{{ f.teams.home.name }}
+						</v-card>
+					</div>
+				</template>
+				<template v-else>
+					<v-card
+						v-for="(f, index) in sortByDateFixtureList"
+						:key="index"
+						class="pa-5 mb-3"
+					>
+						<div class="d-flex justify-space-between align-center">
+							<p class="font-weight-bold text-body-2">
+								{{
+									moment(new Date(f.fixture.date), moment.ISO_8601).format(
+										"ddd D MMM YYYY"
+									)
+								}}
 							</p>
+							<v-btn
+								:to="'/fixture/' + f.fixture.id + '/' + f.fixture.venue.id"
+								variant="text"
+								append-icon="mdi-arrow-right"
+								size="small"
+								color="primary"
+								>View Detail
+							</v-btn>
 						</div>
-						<div>
-							<p class="text-caption mb-2 text-success">
-								{{ f.fixture.status.long }}
-							</p>
+						<v-divider class="my-3"></v-divider>
+						<div
+							class="d-flex text-center mt-5 justify-space-between align-center"
+						>
 							<div
-								class="border rounded py-1 px-3"
-								style="width: 100px; margin: 0 auto"
+								class="d-flex flex-column justify-center align-center"
+								style="width: 100px"
 							>
-								<p class="text-caption">
-									{{
-										moment(new Date(f.fixture.date), moment.ISO_8601).format(
-											"h:mm A "
-										)
-									}}
+								<v-avatar size="40" large class="rounded-circle">
+									<v-img
+										class="rounded-circle"
+										:lazy-src="logo"
+										:src="f.teams.home.logo"
+									></v-img>
+								</v-avatar>
+								<p class="mt-3 text-caption font-weight-medium">
+									{{ f.teams.home.name }}
+								</p>
+							</div>
+							<div>
+								<p class="text-caption mb-2 text-success">
+									{{ f.fixture.status.long }}
+								</p>
+								<div
+									class="border rounded py-1 px-3"
+									style="width: 100px; margin: 0 auto"
+								>
+									<p class="text-caption">
+										{{
+											moment(new Date(f.fixture.date), moment.ISO_8601).format(
+												"h:mm A "
+											)
+										}}
+									</p>
+								</div>
+							</div>
+							<div
+								class="d-flex flex-column justify-center align-center"
+								style="width: 100px"
+							>
+								<v-avatar size="40" large class="rounded-circle">
+									<v-img
+										class="rounded-circle"
+										:lazy-src="logo"
+										:src="f.teams.away.logo"
+									></v-img>
+								</v-avatar>
+								<p class="mt-3 text-caption font-weight-medium">
+									{{ f.teams.away.name }}
 								</p>
 							</div>
 						</div>
-						<div
-							class="d-flex flex-column justify-center align-center"
-							style="width: 100px"
-						>
-							<v-avatar size="40" large class="rounded-circle">
-								<v-img
-									class="rounded-circle"
-									:lazy-src="logo"
-									:src="f.teams.away.logo"
-								></v-img>
-							</v-avatar>
-							<p class="mt-3 text-caption font-weight-medium">
-								{{ f.teams.away.name }}
-							</p>
+						<div class="text-caption mt-5">
+							<div
+								v-if="getFixturePrediction(f.fixture.id)"
+								class="d-flex justify-space-between align-center"
+							>
+								<p>Your Prediction</p>
+								<p class="font-weight-medium">
+									<span
+										v-if="getFixturePrediction(f.fixture.id).boosted"
+										class="text-success text-uppercase font-weight-medium"
+										style="font-size: 10px"
+										>2x Boosted</span
+									>
+									{{
+										getFixturePrediction(f.fixture.id).home +
+										" : " +
+										getFixturePrediction(f.fixture.id).away
+									}}
+								</p>
+							</div>
+							<div
+								v-if="f.goals.home !== null"
+								class="d-flex justify-space-between align-center"
+							>
+								<p class="">Full Time Result</p>
+								<p class="font-weight-medium">
+									{{ f.goals.home + " : " + f.goals.away }}
+								</p>
+							</div>
 						</div>
-					</div>
-					<div class="text-caption mt-5">
-						<div
-							v-if="getFixturePrediction(f.fixture.id)"
-							class="d-flex justify-space-between align-center"
-						>
-							<p>Your Prediction</p>
-							<p class="font-weight-medium">
-								<span
-									v-if="getFixturePrediction(f.fixture.id).boosted"
-									class="text-success text-uppercase font-weight-medium"
-									style="font-size: 10px"
-									>2x Boosted</span
-								>
-								{{
-									getFixturePrediction(f.fixture.id).home +
-									" : " +
-									getFixturePrediction(f.fixture.id).away
-								}}
-							</p>
-						</div>
-						<div
-							v-if="f.goals.home !== null"
-							class="d-flex justify-space-between align-center"
-						>
-							<p class="">Full Time Result</p>
-							<p class="font-weight-medium">
-								{{ f.goals.home + " : " + f.goals.away }}
-							</p>
-						</div>
-					</div>
-					<!-- <v-alert
+						<!-- <v-alert
             class="mt-3 text-center"
             height="28px"
             density="compact"
@@ -276,20 +291,21 @@
               >You got <span class="text-primary">+4</span> Pts</span
             >
           </v-alert> -->
-					<div class="text-center mt-3">
-						<v-btn
-							size="small"
-							@click="predictionDialogHandler(f)"
-							color="primary"
-							:hidden="f.fixture.status.short !== 'NS'"
-						>
-							<span v-if="getFixturePrediction(f.fixture.id)">
-								Change Predict
-							</span>
-							<span v-else> Predict Match </span>
-						</v-btn>
-					</div>
-				</v-card>
+						<div class="text-center mt-3">
+							<v-btn
+								size="small"
+								@click="predictionDialogHandler(f)"
+								color="primary"
+								:hidden="f.fixture.status.short !== 'NS'"
+							>
+								<span v-if="getFixturePrediction(f.fixture.id)">
+									Change Predict
+								</span>
+								<span v-else> Predict Match </span>
+							</v-btn>
+						</div>
+					</v-card>
+				</template>
 			</v-col>
 		</v-row>
 	</v-container>
@@ -338,6 +354,7 @@ export default {
 		showFilterDialog: false,
 		logo: logo,
 		nodata: nodata,
+		loading: true,
 		leagues: ["Premier League", "World Cup 2022"],
 		showPredictionDialog: false,
 		currentFormData: {
@@ -560,6 +577,7 @@ export default {
 		});
 	},
 	async mounted() {
+		this.loading = true;
 		this.$gtag.event("tournament");
 
 		if (this.prevRoute) {
@@ -589,7 +607,7 @@ export default {
 					get = "fixtures,teams,predictions";
 				}
 
-				this.toggleLoading(true);
+				// this.toggleLoading(true);
 
 				const response = await this.getTournamentIndexAction({
 					...fixtureParams,
@@ -621,11 +639,12 @@ export default {
 
 		this.fixtureGameWeek = this.currentGameWeek.week;
 
+		this.loading = false;
 		// if (this.teams.length <= 0) {
 		// 	await this.getPremierLeagueTeamListAction();
 		// }
 
-		this.toggleLoading(false);
+		// this.toggleLoading(false);
 	},
 };
 </script>
@@ -656,5 +675,18 @@ body
 	> div
 	> label {
 	font-size: 14px !important;
+}
+
+@keyframes loading-skeleton {
+	from {
+		opacity: 0.4;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.loading-skeleton {
+	animation: loading-skeleton 1s infinite alternate;
 }
 </style>

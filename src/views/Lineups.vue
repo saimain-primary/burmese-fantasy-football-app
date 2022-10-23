@@ -312,7 +312,7 @@
 
 									<v-list lines="one">
 										<v-list-item
-											v-for="(p, index) in getGoalkeeper(0)"
+											v-for="(p, index) in getGoalkeeper(1)"
 											:key="index"
 										>
 											<template v-slot:prepend>
