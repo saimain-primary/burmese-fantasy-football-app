@@ -266,12 +266,39 @@
                 </p>
               </div>
               <div
-                v-if="f.goals.home !== null"
+                v-if="f.score.halftime.home !== null"
                 class="d-flex justify-space-between align-center"
               >
-                <p class="">Full Time Result</p>
-                <p class="font-weight-medium">
-                  {{ f.goals.home + " : " + f.goals.away }}
+                <p>Half Time</p>
+                <p>
+                  {{ f.score.halftime.home + " : " + f.score.halftime.away }}
+                </p>
+              </div>
+              <div
+                v-if="f.score.fulltime.home !== null"
+                class="d-flex justify-space-between align-center"
+              >
+                <p>Full Time</p>
+                <p>
+                  {{ f.score.fulltime.home + " : " + f.score.fulltime.away }}
+                </p>
+              </div>
+              <div
+                v-if="f.score.extratime.home"
+                class="d-flex justify-space-between align-center"
+              >
+                <p>Extra Time</p>
+                <p>
+                  {{ f.score.extratime.home + " : " + f.score.extratime.away }}
+                </p>
+              </div>
+              <div
+                v-if="f.score.penalty.home"
+                class="d-flex justify-space-between align-center"
+              >
+                <p>Penalty</p>
+                <p>
+                  {{ f.score.penalty.home + " : " + f.score.penalty.away }}
                 </p>
               </div>
             </div>
