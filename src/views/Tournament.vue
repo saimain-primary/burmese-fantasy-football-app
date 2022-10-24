@@ -185,7 +185,7 @@
 								}}
 							</p>
 							<v-btn
-								:to="'/fixture/' + f.fixture.id + '/' + f.fixture.venue.id"
+								:to="'/fixture/' + f.fixture.id"
 								variant="text"
 								append-icon="mdi-arrow-right"
 								size="small"
