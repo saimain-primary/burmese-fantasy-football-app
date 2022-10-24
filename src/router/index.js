@@ -11,7 +11,6 @@ import ChangePassword from "../views/ChangePassword.vue";
 import FixtureDetail from "../views/FixtureDetail.vue";
 import ManageGameWeek from "../views/ManageGameWeek.vue";
 import Lineups from "../views/Lineups.vue";
-import Event from "../views/Event.vue";
 import store from "@/store";
 const routes = [
   {
@@ -25,7 +24,7 @@ const routes = [
     component: Tournament,
   },
   {
-    path: "/fixture/:id/:venue",
+    path: "/fixture/:id",
     name: "Match Details",
     component: FixtureDetail,
     props: true,
@@ -35,12 +34,6 @@ const routes = [
     path: "/lineups",
     name: "Line Ups",
     component: Lineups,
-    meta: { back: true },
-  },
-  {
-    path: "/events",
-    name: "Match Events",
-    component: Event,
     meta: { back: true },
   },
   {

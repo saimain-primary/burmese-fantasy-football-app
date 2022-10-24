@@ -242,19 +242,11 @@
 									style="width: 120px; margin: 0 auto"
 								>
 									<p class="border px-4 py-1 rounded text-h6">
-										{{
-											f.score.fulltime.home !== null
-												? f.score.fulltime.home
-												: f.score.halftime.home
-										}}
+										{{ f.goals.home }}
 									</p>
 									<span class="mx-3">:</span>
 									<p class="border px-4 py-1 rounded text-h6">
-										{{
-											f.score.fulltime.away !== null
-												? f.score.fulltime.away
-												: f.score.halftime.away
-										}}
+										{{ f.goals.away }}
 									</p>
 								</div>
 								<p class="text-caption mt-1 text-success font-weight-medium">

@@ -27,19 +27,6 @@
 	</template>
 	<template v-else>
 		<v-card elevation="0" class="mx-auto">
-			<v-img
-				v-if="fixtureDetail.venues"
-				class="align-end text-white"
-				height="200"
-				:src="fixtureDetail.venues[0].image"
-				cover
-			>
-				<v-card-title class="text-body-1 stadium-text-bg"
-					><v-icon icon="mdi-map-marker-radius" size="small"></v-icon>
-					{{ fixtureDetail.venues[0].name }}</v-card-title
-				>
-			</v-img>
-
 			<template v-if="fixtureDetail.fixtures">
 				<v-card class="gameweek-deadline-card mx-3 mt-5 px-5 py-5">
 					<p class="text-caption text-center">
@@ -106,52 +93,264 @@
 					</div>
 				</v-card>
 
-				<v-card class="mx-3 mt-5 py-3 px-3 text-center">
-					<p
-						class="text-center font-weight-medium text-uppercase text-overline"
-					>
-						<span
-							v-if="
-								fixtureDetail.predictions &&
-								fixtureDetail.predictions.length > 0
+				<v-tabs
+					class="mt-4"
+					v-model="tab"
+					fixed-tabs
+					color="primary"
+					bg-color="transparent"
+				>
+					<v-tab value="one">Summery</v-tab>
+					<v-tab value="two">Stats</v-tab>
+					<v-tab value="three">Lineups</v-tab>
+				</v-tabs>
+
+				<v-window class="mt-5" v-model="tab">
+					<v-window-item value="one">
+						<v-card class="mx-3 mb-5 py-3 px-3 text-center">
+							<p
+								class="
+									text-center
+									font-weight-medium
+									text-uppercase text-overline
+								"
+							>
+								<span
+									v-if="
+										fixtureDetail.predictions &&
+										fixtureDetail.predictions.length > 0
+									"
+									>Your Prediction</span
+								>
+								<span v-else>You have not predict in this match</span>
+							</p>
+							<div
+								class="text-center"
+								v-if="
+									fixtureDetail.predictions &&
+									fixtureDetail.predictions.length > 0
+								"
+							>
+								<p class="text-h5 font-weight-medium">
+									{{ fixtureDetail.predictions[0].home }}
+									-
+									{{ fixtureDetail.predictions[0].away }}
+								</p>
+								<p
+									v-if="fixtureDetail.predictions[0].boosted"
+									class="text-overline text-success"
+								>
+									Using 2x Booster
+								</p>
+							</div>
+							<v-btn
+								class="mt-2"
+								size="small"
+								@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
+								color="primary"
+								:hidden="
+									fixtureDetail.fixtures[0].fixture.status.short !== 'NS'
+								"
+							>
+								<span
+									v-if="
+										getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)
+									"
+								>
+									Change Predict
+								</span>
+								<span v-else> Predict Match </span>
+							</v-btn>
+						</v-card>
+						<div
+							class="
+								bg-grey-lighten-3
+								py-1
+								px-2
+								d-flex
+								justify-space-between
+								align-center
 							"
-							>Your Prediction</span
 						>
-						<span v-else>You have not predict in this match</span>
-					</p>
-					<div
-						class="text-center"
-						v-if="
-							fixtureDetail.predictions && fixtureDetail.predictions.length > 0
-						"
-					>
-						<p class="text-h5 font-weight-medium">
-							{{ fixtureDetail.predictions[0].home }}
-							:
-							{{ fixtureDetail.predictions[0].away }}
-						</p>
-						<p
-							v-if="fixtureDetail.predictions[0].boosted"
-							class="text-overline text-success"
+							<p class="text-overline">First Half</p>
+							<p class="text-overline">
+								{{
+									fixtureDetail.fixtures[0].score.halftime.home
+										? fixtureDetail.fixtures[0].score.halftime.home
+										: 0
+								}}
+								-
+								{{
+									fixtureDetail.fixtures[0].score.halftime.away
+										? fixtureDetail.fixtures[0].score.halftime.away
+										: "0"
+								}}
+							</p>
+						</div>
+						<div v-for="(e, index) in firstHalfTimeEvents" :key="index">
+							<div
+								class="d-flex px-3 py-2 align-center"
+								:class="{
+									'justify-end':
+										e.team.id === fixtureDetail.fixtures[0].teams.away.id,
+								}"
+							>
+								<p style="width: 35px" class="text-caption font-weight-medium">
+									{{ e.time.elapsed }}'
+								</p>
+								<p class="text-caption border px-1 py-1 rounded mr-5">
+									<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
+										>mdi-cards</v-icon
+									>
+
+									<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
+
+									<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
+
+									<v-icon v-else>mdi-asterisk</v-icon>
+								</p>
+								<p class="text-subtitle-2">
+									{{ e.player.name }}
+									<span class="text-grey-darken-1" v-if="e.assist.name">{{
+										"( " + e.assist.name + " )"
+									}}</span>
+								</p>
+							</div>
+						</div>
+						<div
+							class="
+								bg-grey-lighten-3
+								py-1
+								px-2
+								d-flex
+								justify-space-between
+								align-center
+							"
 						>
-							Using 2x Booster
-						</p>
-					</div>
-					<v-btn
-						class="mt-2"
-						size="small"
-						@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
-						color="primary"
-						:hidden="fixtureDetail.fixtures[0].fixture.status.short !== 'NS'"
-					>
-						<span
-							v-if="getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)"
+							<p class="text-overline">Second Half</p>
+							<p class="text-overline">
+								{{
+									fixtureDetail.fixtures[0].score.fulltime.home
+										? fixtureDetail.fixtures[0].score.fulltime.home
+										: 0
+								}}
+								-
+								{{
+									fixtureDetail.fixtures[0].score.fulltime.away
+										? fixtureDetail.fixtures[0].score.fulltime.away
+										: "0"
+								}}
+							</p>
+						</div>
+						<div v-for="(e, index) in secondHalfTimeEvents" :key="index">
+							<div
+								v-if="e.team.id === fixtureDetail.fixtures[0].teams.away.id"
+								class="d-flex px-3 py-2 align-center justify-end"
+							>
+								<p class="text-subtitle-2">
+									<span class="text-grey-darken-1" v-if="e.assist.name">{{
+										"( " + e.assist.name + " )"
+									}}</span>
+									{{ e.player.name }}
+								</p>
+								<p class="text-caption border px-1 py-1 rounded ml-5">
+									<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
+										>mdi-cards</v-icon
+									>
+
+									<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
+
+									<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
+
+									<v-icon v-else>mdi-asterisk</v-icon>
+								</p>
+								<p
+									style="width: 35px"
+									class="text-caption text-right font-weight-medium"
+								>
+									{{ e.time.elapsed }}'
+								</p>
+							</div>
+							<div v-else class="d-flex px-3 py-2 align-center justify-start">
+								<p style="width: 35px" class="text-caption font-weight-medium">
+									{{ e.time.elapsed }}'
+								</p>
+								<p class="text-caption border px-1 py-1 rounded mr-5">
+									<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
+										>mdi-cards</v-icon
+									>
+
+									<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
+
+									<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
+
+									<v-icon v-else>mdi-asterisk</v-icon>
+								</p>
+								<p class="text-subtitle-2">
+									{{ e.player.name }}
+									<span class="text-grey-darken-1" v-if="e.assist.name">{{
+										"( " + e.assist.name + " )"
+									}}</span>
+								</p>
+							</div>
+						</div>
+						<div
+							class="
+								bg-grey-lighten-3
+								py-1
+								px-2
+								d-flex
+								justify-space-between
+								align-center
+							"
 						>
-							Change Predict
-						</span>
-						<span v-else> Predict Match </span>
-					</v-btn>
-				</v-card>
+							<p class="text-overline">Match Information</p>
+						</div>
+						<div class="px-3 py-3">
+							<div
+								class="
+									font-weight-regular
+									d-flex
+									justify-space-between
+									align-center
+									text-subtitle-2
+								"
+							>
+								<p>
+									<v-icon>mdi-whistle-outline</v-icon>
+									Referee
+								</p>
+								<p class="">
+									{{ fixtureDetail.fixtures[0].fixture.referee }}
+								</p>
+							</div>
+							<div
+								class="
+									mt-3
+									font-weight-regular
+									d-flex
+									justify-space-between
+									align-center
+									text-subtitle-2
+								"
+							>
+								<p>
+									<v-icon>mdi-soccer-field</v-icon>
+									Venue
+								</p>
+								<p>
+									{{ fixtureDetail.fixtures[0].fixture.venue.name }} ({{
+										fixtureDetail.fixtures[0].fixture.venue.city
+									}})
+								</p>
+							</div>
+						</div>
+					</v-window-item>
+
+					<v-window-item value="two"> Two </v-window-item>
+
+					<v-window-item value="three"> Three </v-window-item>
+				</v-window>
 
 				<v-container>
 					<v-row>
@@ -168,18 +367,7 @@
 									</span>
 								</v-card-text>
 							</v-card>
-							<v-card
-								@click="$router.push('/events')"
-								color="primary"
-								class="mt-3"
-							>
-								<v-card-text>
-									Match Events
-									<span class="float-right">
-										<v-icon icon="mdi-arrow-right"></v-icon>
-									</span>
-								</v-card-text>
-							</v-card>
+
 							<v-card color="primary" class="mt-3">
 								<v-card-text>
 									Players
@@ -289,7 +477,7 @@ import "moment-timezone";
 
 export default {
 	name: "Fixture",
-	props: ["id", "venue"],
+	props: ["id"],
 	components: { BottomNavigation, ScrollPicker },
 	computed: {
 		...mapGetters({
@@ -300,9 +488,20 @@ export default {
 			tournamentData: "tournamentData",
 			teams: "teams",
 		}),
+		firstHalfTimeEvents() {
+			return this.fixtureDetail.fixtures[0].events.filter((e) => {
+				return e.time.elapsed <= 45;
+			});
+		},
+		secondHalfTimeEvents() {
+			return this.fixtureDetail.fixtures[0].events.filter((e) => {
+				return e.time.elapsed > 45;
+			});
+		},
 	},
 	data: () => ({
 		loading: false,
+		tab: null,
 		page: "tournament",
 		logo: logo,
 		teamOnePredictionNumber: ["0"],
@@ -503,6 +702,7 @@ export default {
 	},
 	async mounted() {
 		this.loading = true;
+
 		if (!this.currentGameWeek) {
 			await this.getGameWeekAction();
 		}
@@ -516,16 +716,17 @@ export default {
 			} else {
 				let get = "";
 				if (this.teams) {
-					get = "fixtures,predictions,venues";
+					get = "fixtures,predictions";
 				} else {
-					get = "fixtures,teams,predictions,venues";
+					get = "fixtures,teams,predictions";
 				}
 
 				const response = await this.getTournamentIndexAction({
 					fixture_id: this.id,
-					venue_id: this.venue,
 					get: get,
 				});
+
+				console.log(this.firstHalfTimeEvents);
 
 				if (response.code === 200) {
 					if (response.results.teams) {
