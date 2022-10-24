@@ -170,6 +170,88 @@
 								d-flex
 								justify-space-between
 								align-center
+								mb-3
+							"
+						>
+							<p class="text-overline">Score</p>
+						</div>
+
+						<div
+							class="
+								d-flex
+								justify-space-between
+								align-center
+								text-overline
+								px-3
+							"
+						>
+							<p>Half Time</p>
+							<p class="">
+								{{ fixtureDetail.fixtures[0].score.halftime.home }}
+								-
+								{{ fixtureDetail.fixtures[0].score.halftime.away }}
+							</p>
+						</div>
+						<div
+							class="
+								d-flex
+								justify-space-between
+								align-center
+								text-overline
+								px-3
+							"
+						>
+							<p>Full Time</p>
+							<p class="">
+								{{ fixtureDetail.fixtures[0].score.fulltime.home }}
+								-
+								{{ fixtureDetail.fixtures[0].score.fulltime.away }}
+							</p>
+						</div>
+						<div
+							v-if="fixtureDetail.fixtures[0].score.extratime.home"
+							class="
+								d-flex
+								justify-space-between
+								align-center
+								text-overline
+								px-3
+							"
+						>
+							<p>Extra Time</p>
+							<p class="">
+								{{ fixtureDetail.fixtures[0].score.extratime.home }}
+								-
+								{{ fixtureDetail.fixtures[0].score.extratime.away }}
+							</p>
+						</div>
+						<div
+							v-if="fixtureDetail.fixtures[0].score.penalty.home"
+							class="
+								d-flex
+								justify-space-between
+								align-center
+								text-overline
+								px-3
+							"
+						>
+							<p>Penalty</p>
+							<p class="">
+								{{ fixtureDetail.fixtures[0].score.penalty.home }}
+								-
+								{{ fixtureDetail.fixtures[0].score.penalty.away }}
+							</p>
+						</div>
+
+						<div
+							class="
+								bg-grey-lighten-3
+								py-1
+								mb-3
+								px-2
+								d-flex
+								justify-space-between
+								align-center
 							"
 						>
 							<p class="text-overline">First Half</p>
@@ -221,6 +303,7 @@
 							class="
 								bg-grey-lighten-3
 								py-1
+								mb-3
 								px-2
 								d-flex
 								justify-space-between
