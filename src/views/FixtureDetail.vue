@@ -1,331 +1,280 @@
 <template>
-	<v-card elevation="0" class="mx-auto">
-		<v-img
-			v-if="fixtureDetail.venues"
-			class="align-end text-white"
-			height="200"
-			:src="fixtureDetail.venues[0].image"
-			cover
+	<template v-if="loading">
+		<v-card
+			elevation="0"
+			class="bg-grey-lighten-4 py-3 px-3"
+			style="height: 200px"
 		>
-			<v-card-title class="text-body-1 stadium-text-bg"
-				><v-icon icon="mdi-map-marker-radius" size="small"></v-icon>
-				{{ fixtureDetail.venues[0].name }}</v-card-title
+		</v-card>
+		<v-card
+			elevation="0"
+			class="bg-grey-lighten-4 mt-5 py-3 px-3 mx-3"
+			style="height: 160px"
+		>
+		</v-card>
+		<v-card
+			elevation="0"
+			class="bg-grey-lighten-4 mt-3 py-3 px-3 mx-3"
+			style="height: 100px"
+		>
+		</v-card>
+		<v-card
+			elevation="0"
+			class="bg-grey-lighten-4 mt-3 py-3 px-3 mx-3"
+			style="height: 200px"
+		>
+		</v-card>
+	</template>
+	<template v-else>
+		<v-card elevation="0" class="mx-auto">
+			<v-img
+				v-if="fixtureDetail.venues"
+				class="align-end text-white"
+				height="200"
+				:src="fixtureDetail.venues[0].image"
+				cover
 			>
-		</v-img>
+				<v-card-title class="text-body-1 stadium-text-bg"
+					><v-icon icon="mdi-map-marker-radius" size="small"></v-icon>
+					{{ fixtureDetail.venues[0].name }}</v-card-title
+				>
+			</v-img>
 
-		<template v-if="fixtureDetail.fixtures">
-			<div
-				class="
-					pt-4
-					px-3
-					font-weight-medium
-					d-flex
-					justify-space-between
-					align-center
-				"
-			>
-				<p
-					class="
-						text-body-1 text-grey-darken-4 text-uppercase
-						font-weight-medium
-					"
-				>
-					{{ fixtureDetail.fixtures[0].fixture.status.long }}
-				</p>
-				<div
-					class="text-right text-caption font-weight-medium text-grey-darken-1"
-				>
-					<p class="">Kickoff Time</p>
-					<p>
+			<template v-if="fixtureDetail.fixtures">
+				<v-card class="gameweek-deadline-card mx-3 mt-5 px-5 py-5">
+					<p class="text-caption text-center">
 						{{
 							moment(
 								new Date(fixtureDetail.fixtures[0].fixture.date),
 								moment.ISO_8601
-							).format("ddd D MMM YYYY , h:mm A")
+							).format("D MM YYYY , hh:mm A")
 						}}
 					</p>
-				</div>
-			</div>
-			<v-divider class="my-5 mx-3"></v-divider>
-			<p class="text-center font-weight-medium text-uppercase text-overline">
-				Match Result
-			</p>
-			<v-card
-				class="
-					d-flex
-					mx-3
-					justify-space-between
-					px-5
-					py-5
-					align-center
-					gameweek-deadline-card
-				"
-			>
-				<div class="d-flex align-center justify-center" style="width: 100px">
-					<p class="mr-3 text-body-1 text-center">
-						{{ getTeamCode(fixtureDetail.fixtures[0].teams.home.id) }}
-					</p>
-					<v-avatar size="40" large class="rounded-circle">
-						<v-img
-							class="rounded-circle"
-							lazy-src="../assets/logo.jpg"
-							:src="fixtureDetail.fixtures[0].teams.home.logo"
-						></v-img>
-					</v-avatar>
-				</div>
-				<div class="mx-3 text-center" style="width: 100px">
-					<p class="text-h5 font-weight-medium">
-						{{
-							fixtureDetail.fixtures[0].goals.home
-								? fixtureDetail.fixtures[0].goals.home
-								: 0
-						}}
-						:
-						{{
-							fixtureDetail.fixtures[0].goals.away
-								? fixtureDetail.fixtures[0].goals.away
-								: 0
-						}}
-					</p>
-				</div>
-				<div class="d-flex align-center justify-center" style="width: 100px">
-					<v-avatar size="40" large class="rounded-circle">
-						<v-img
-							class="rounded-circle"
-							lazy-src="../assets/logo.jpg"
-							:src="fixtureDetail.fixtures[0].teams.away.logo"
-						></v-img>
-					</v-avatar>
-					<p class="ml-3 text-body-1 text-center">
-						{{ getTeamCode(fixtureDetail.fixtures[0].teams.away.id) }}
-					</p>
-				</div>
-			</v-card>
+					<div class="d-flex justify-space-between align-center">
+						<div
+							class="d-flex flex-column align-center justify-center"
+							style="width: 100px"
+						>
+							<div class="pa-1 bg-white rounded-lg">
+								<v-avatar size="50" large class="rounded-circle">
+									<v-img
+										class="rounded-circle"
+										lazy-src="../assets/logo.jpg"
+										:src="fixtureDetail.fixtures[0].teams.home.logo"
+									></v-img>
+								</v-avatar>
+							</div>
+							<p class="text-subtitle-2 font-weight-medium mt-2 text-center">
+								{{ fixtureDetail.fixtures[0].teams.home.name }}
+							</p>
+						</div>
+						<div class="mx-3 text-center" style="width: 150px">
+							<p class="text-h4 font-weight-medium">
+								{{
+									fixtureDetail.fixtures[0].goals.home
+										? fixtureDetail.fixtures[0].goals.home
+										: 0
+								}}
+								-
+								{{
+									fixtureDetail.fixtures[0].goals.away
+										? fixtureDetail.fixtures[0].goals.away
+										: 0
+								}}
+							</p>
+							<p class="text-caption mt-1">
+								{{ fixtureDetail.fixtures[0].fixture.status.long }}
+							</p>
+						</div>
+						<div
+							class="d-flex flex-column align-center justify-center"
+							style="width: 100px"
+						>
+							<div class="pa-1 bg-white rounded-lg">
+								<v-avatar size="50" large class="rounded-circle">
+									<v-img
+										class="rounded-circle"
+										lazy-src="../assets/logo.jpg"
+										:src="fixtureDetail.fixtures[0].teams.away.logo"
+									></v-img>
+								</v-avatar>
+							</div>
+							<p class="text-subtitle-2 font-weight-medium mt-2 text-center">
+								{{ fixtureDetail.fixtures[0].teams.away.name }}
+							</p>
+						</div>
+					</div>
+				</v-card>
 
-			<v-card class="mx-3 mt-5 py-3 px-3 text-center">
-				<p class="text-center font-weight-medium text-uppercase text-overline">
-					<span
+				<v-card class="mx-3 mt-5 py-3 px-3 text-center">
+					<p
+						class="text-center font-weight-medium text-uppercase text-overline"
+					>
+						<span
+							v-if="
+								fixtureDetail.predictions &&
+								fixtureDetail.predictions.length > 0
+							"
+							>Your Prediction</span
+						>
+						<span v-else>You have not predict in this match</span>
+					</p>
+					<div
+						class="text-center"
 						v-if="
 							fixtureDetail.predictions && fixtureDetail.predictions.length > 0
 						"
-						>Your Prediction</span
 					>
-					<span v-else>You have not predict in this match</span>
-				</p>
-				<div
-					class="text-center"
-					v-if="
-						fixtureDetail.predictions && fixtureDetail.predictions.length > 0
-					"
-				>
-					<p class="text-h5 font-weight-medium">
-						{{ fixtureDetail.predictions[0].home }}
-						:
-						{{ fixtureDetail.predictions[0].away }}
-					</p>
-					<p
-						v-if="fixtureDetail.predictions[0].boosted"
-						class="text-overline text-success"
-					>
-						Using 2x Booster
-					</p>
-				</div>
-				<v-btn
-					class="mt-2"
-					size="small"
-					@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
-					color="primary"
-					:hidden="fixtureDetail.fixtures[0].fixture.status.short !== 'NS'"
-				>
-					<span
-						v-if="getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)"
-					>
-						Change Predict
-					</span>
-					<span v-else> Predict Match </span>
-				</v-btn>
-			</v-card>
-
-			<v-card-text
-				v-if="fixtureDetail.fixtures[0].fixture.status.short !== 'NS'"
-			>
-				<p class="text-overline">Scores</p>
-				<v-divider class="mb-2 mt-1"></v-divider>
-				<div
-					v-if="fixtureDetail.fixtures[0].score.halftime.home !== null"
-					class="d-flex justify-space-between align-center"
-				>
-					<p>Half Time</p>
-					<p>
-						{{
-							fixtureDetail.fixtures[0].score.halftime.home +
-							" : " +
-							fixtureDetail.fixtures[0].score.halftime.away
-						}}
-					</p>
-				</div>
-				<div
-					v-if="fixtureDetail.fixtures[0].score.fulltime.home !== null"
-					class="d-flex justify-space-between align-center"
-				>
-					<p>Full Time</p>
-					<p>
-						{{
-							fixtureDetail.fixtures[0].score.fulltime.home +
-							" : " +
-							fixtureDetail.fixtures[0].score.fulltime.away
-						}}
-					</p>
-				</div>
-				<div
-					v-if="fixtureDetail.fixtures[0].score.extratime.home"
-					class="d-flex justify-space-between align-center"
-				>
-					<p>Extra Time</p>
-					<p>
-						{{
-							fixtureDetail.fixtures[0].score.extratime.home +
-							" : " +
-							fixtureDetail.fixtures[0].score.extratime.away
-						}}
-					</p>
-				</div>
-				<div
-					v-if="fixtureDetail.fixtures[0].score.penalty.home"
-					class="d-flex justify-space-between align-center"
-				>
-					<p>Penalty</p>
-					<p>
-						{{
-							fixtureDetail.fixtures[0].score.penalty.home +
-							" : " +
-							fixtureDetail.fixtures[0].score.penalty.away
-						}}
-					</p>
-				</div>
-			</v-card-text>
-
-			<v-container>
-				<v-row>
-					<v-col>
-						<v-card
-							@click="$router.push('/lineups')"
-							color="primary"
-							class="mt-3"
-						>
-							<v-card-text>
-								Line-ups
-								<span class="float-right">
-									<v-icon icon="mdi-arrow-right"></v-icon>
-								</span>
-							</v-card-text>
-						</v-card>
-						<v-card
-							@click="$router.push('/events')"
-							color="primary"
-							class="mt-3"
-						>
-							<v-card-text>
-								Match Events
-								<span class="float-right">
-									<v-icon icon="mdi-arrow-right"></v-icon>
-								</span>
-							</v-card-text>
-						</v-card>
-						<v-card color="primary" class="mt-3">
-							<v-card-text>
-								Players
-								<span class="float-right">
-									<v-icon icon="mdi-arrow-right"></v-icon>
-								</span>
-							</v-card-text>
-						</v-card>
-
-						<v-card color="primary" class="mt-3">
-							<v-card-text>
-								Statistics
-								<span class="float-right">
-									<v-icon icon="mdi-arrow-right"></v-icon>
-								</span>
-							</v-card-text>
-						</v-card>
-					</v-col>
-				</v-row>
-			</v-container>
-		</template>
-	</v-card>
-	<v-container>
-		<v-row dense>
-			<v-col>
-				<!-- prediction dialog -->
-				<v-dialog v-model="showPredictionDialog">
-					<v-card class="pt-5 pb-5 px-5 text-center">
-						<p class="text-body-1 font-weight-bold">Sun 2 Oct 2022</p>
-						<p class="text-caption">8:30 PM</p>
-						<div class="d-flex justify-space-between align-center">
-							<div v-if="prediction.homeTeam" class="d-flex align-center">
-								<p class="mr-3 text-caption font-weight-medium">
-									{{ getTeamCode(prediction.homeTeam.id) }}
-								</p>
-								<v-avatar size="40" large class="rounded-circle">
-									<v-img
-										class="rounded-circle"
-										:lazy-src="logo"
-										:src="prediction.homeTeam.logo"
-									></v-img>
-								</v-avatar>
-							</div>
-							<div class="d-flex align-center">
-								<scroll-picker
-									:options="options"
-									v-model="predictionForm.teamOnePredictionNumber"
-								/>
-								<div style="width: 30px"><span>:</span></div>
-								<scroll-picker
-									:options="options"
-									v-model="predictionForm.teamTwoPredictionNumber"
-								/>
-							</div>
-							<div v-if="prediction.homeTeam" class="d-flex align-center">
-								<v-avatar size="40" large class="rounded-circle">
-									<v-img
-										class="rounded-circle"
-										:lazy-src="logo"
-										:src="prediction.awayTeam.logo"
-									></v-img>
-								</v-avatar>
-								<p class="ml-3 text-caption font-weight-medium">
-									{{ getTeamCode(prediction.awayTeam.id) }}
-								</p>
-							</div>
-						</div>
-						<div class="mx-auto">
-							<v-checkbox
-								style="font-size: 12px"
-								hide-details
-								color="primary"
-								v-model="predictionForm.prediction2xBooster"
-								label="Use 2x Booster to double Pts"
-							></v-checkbox>
-						</div>
-						<p class="mt-1" style="font-size: 10px">
-							You can change it until 30 mins before the match start.
+						<p class="text-h5 font-weight-medium">
+							{{ fixtureDetail.predictions[0].home }}
+							:
+							{{ fixtureDetail.predictions[0].away }}
 						</p>
-						<div class="text-center">
-							<v-btn
-								@click="onSavePredictionHandler"
-								class="mt-3"
-								size="small"
-								width="160px"
+						<p
+							v-if="fixtureDetail.predictions[0].boosted"
+							class="text-overline text-success"
+						>
+							Using 2x Booster
+						</p>
+					</div>
+					<v-btn
+						class="mt-2"
+						size="small"
+						@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
+						color="primary"
+						:hidden="fixtureDetail.fixtures[0].fixture.status.short !== 'NS'"
+					>
+						<span
+							v-if="getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)"
+						>
+							Change Predict
+						</span>
+						<span v-else> Predict Match </span>
+					</v-btn>
+				</v-card>
+
+				<v-container>
+					<v-row>
+						<v-col>
+							<v-card
+								@click="$router.push('/lineups')"
 								color="primary"
-								>Save Prediction</v-btn
+								class="mt-3"
 							>
-						</div>
-					</v-card>
-				</v-dialog>
-			</v-col>
-		</v-row>
-	</v-container>
+								<v-card-text>
+									Line-ups
+									<span class="float-right">
+										<v-icon icon="mdi-arrow-right"></v-icon>
+									</span>
+								</v-card-text>
+							</v-card>
+							<v-card
+								@click="$router.push('/events')"
+								color="primary"
+								class="mt-3"
+							>
+								<v-card-text>
+									Match Events
+									<span class="float-right">
+										<v-icon icon="mdi-arrow-right"></v-icon>
+									</span>
+								</v-card-text>
+							</v-card>
+							<v-card color="primary" class="mt-3">
+								<v-card-text>
+									Players
+									<span class="float-right">
+										<v-icon icon="mdi-arrow-right"></v-icon>
+									</span>
+								</v-card-text>
+							</v-card>
+
+							<v-card color="primary" class="mt-3">
+								<v-card-text>
+									Statistics
+									<span class="float-right">
+										<v-icon icon="mdi-arrow-right"></v-icon>
+									</span>
+								</v-card-text>
+							</v-card>
+						</v-col>
+					</v-row>
+				</v-container>
+			</template>
+		</v-card>
+		<v-container>
+			<v-row dense>
+				<v-col>
+					<!-- prediction dialog -->
+					<v-dialog v-model="showPredictionDialog">
+						<v-card class="pt-5 pb-5 px-5 text-center">
+							<p class="text-body-1 font-weight-bold">Sun 2 Oct 2022</p>
+							<p class="text-caption">8:30 PM</p>
+							<div class="d-flex justify-space-between align-center">
+								<div v-if="prediction.homeTeam" class="d-flex align-center">
+									<p class="mr-3 text-caption font-weight-medium">
+										{{ getTeamCode(prediction.homeTeam.id) }}
+									</p>
+									<v-avatar size="40" large class="rounded-circle">
+										<v-img
+											class="rounded-circle"
+											:lazy-src="logo"
+											:src="prediction.homeTeam.logo"
+										></v-img>
+									</v-avatar>
+								</div>
+								<div class="d-flex align-center">
+									<scroll-picker
+										:options="options"
+										v-model="predictionForm.teamOnePredictionNumber"
+									/>
+									<div style="width: 30px"><span>:</span></div>
+									<scroll-picker
+										:options="options"
+										v-model="predictionForm.teamTwoPredictionNumber"
+									/>
+								</div>
+								<div v-if="prediction.homeTeam" class="d-flex align-center">
+									<v-avatar size="40" large class="rounded-circle">
+										<v-img
+											class="rounded-circle"
+											:lazy-src="logo"
+											:src="prediction.awayTeam.logo"
+										></v-img>
+									</v-avatar>
+									<p class="ml-3 text-caption font-weight-medium">
+										{{ getTeamCode(prediction.awayTeam.id) }}
+									</p>
+								</div>
+							</div>
+							<div class="mx-auto">
+								<v-checkbox
+									style="font-size: 12px"
+									hide-details
+									color="primary"
+									v-model="predictionForm.prediction2xBooster"
+									label="Use 2x Booster to double Pts"
+								></v-checkbox>
+							</div>
+							<p class="mt-1" style="font-size: 10px">
+								You can change it until 30 mins before the match start.
+							</p>
+							<div class="text-center">
+								<v-btn
+									@click="onSavePredictionHandler"
+									class="mt-3"
+									size="small"
+									width="160px"
+									color="primary"
+									>Save Prediction</v-btn
+								>
+							</div>
+						</v-card>
+					</v-dialog>
+				</v-col>
+			</v-row>
+		</v-container>
+	</template>
 
 	<BottomNavigation :value="page" />
 </template>
@@ -353,6 +302,7 @@ export default {
 		}),
 	},
 	data: () => ({
+		loading: false,
 		page: "tournament",
 		logo: logo,
 		teamOnePredictionNumber: ["0"],
@@ -552,6 +502,7 @@ export default {
 		});
 	},
 	async mounted() {
+		this.loading = true;
 		if (!this.currentGameWeek) {
 			await this.getGameWeekAction();
 		}
@@ -588,6 +539,8 @@ export default {
 				}
 			}
 		}
+
+		this.loading = false;
 	},
 };
 </script>
