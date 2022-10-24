@@ -11,6 +11,7 @@ export default {
       useTwoXBooster: false,
       date: null,
     },
+    predictionResultList: [],
   },
   getters: {
     isShowDialog(state) {
@@ -21,6 +22,9 @@ export default {
     },
     teams(state) {
       return state.teams;
+    },
+    predictionResultList(state) {
+      return state.predictionResultList;
     },
   },
   mutations: {
@@ -33,6 +37,9 @@ export default {
     setTeams(state, teams) {
       state.teams = teams;
     },
+    setPredictionResultList(state, data) {
+      state.predictionResultList = data;
+    },
   },
   actions: {
     showPredictionDialog({ commit }, data) {
@@ -43,6 +50,19 @@ export default {
     async savePredictionAction({ commit }, data) {
       const response = await axios.post("/predict", data);
       return response.data;
+    },
+    async getPredictionCalculatedListAction({ commit }, predictions) {
+      const prediction_ids = predictions.map((p) => {
+        return p._id;
+      });
+
+      const response = await axios.post("/calculate-point", {
+        prediction_id: prediction_ids,
+      });
+
+      commit("setPredictionResultList", response.data.results);
+
+      console.log("rsp", response);
     },
   },
 };

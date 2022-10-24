@@ -174,7 +174,7 @@
 					<v-card
 						v-for="(f, index) in sortByDateFixtureList"
 						:key="index"
-						class="py-2 px-5 mb-3"
+						class="py-5 px-5 mb-3"
 					>
 						<div class="d-flex justify-space-between align-center">
 							<p class="font-weight-bold text-body-2">
@@ -241,15 +241,21 @@
 									class="d-flex justify-space-between align-center"
 									style="width: 120px; margin: 0 auto"
 								>
-									<p class="border px-4 py-1 rounded text-h6">
+									<p
+										class="px-4 text-primary py-1 rounded-lg text-h6"
+										style="border: 1px; border-width: 2px; border-style: dashed"
+									>
 										{{ f.goals.home }}
 									</p>
-									<span class="mx-3">:</span>
-									<p class="border px-4 py-1 rounded text-h6">
+									<span class="mx-3 text-primary font-weight-medium">-</span>
+									<p
+										class="text-primary px-4 py-1 rounded-lg text-h6"
+										style="border: 1px; border-width: 2px; border-style: dashed"
+									>
 										{{ f.goals.away }}
 									</p>
 								</div>
-								<p class="text-caption mt-1 text-success font-weight-medium">
+								<p class="text-caption mt-2 text-success font-weight-medium">
 									{{ f.fixture.status.long }}
 								</p>
 							</div>
@@ -269,7 +275,6 @@
 								</p>
 							</div>
 						</div>
-
 						<div
 							v-if="getFixturePrediction(f.fixture.id)"
 							class="
@@ -290,88 +295,41 @@
 								>
 								{{
 									getFixturePrediction(f.fixture.id).home +
-									" : " +
+									" - " +
 									getFixturePrediction(f.fixture.id).away
 								}}
 							</p>
 						</div>
-						<div class="text-caption mt-5">
-							<!-- <div
-								v-if="getFixturePrediction(f.fixture.id)"
-								class="d-flex justify-space-between align-center"
-							>
-								<p>Your Prediction</p>
-								<p class="font-weight-medium">
-									<span
-										v-if="getFixturePrediction(f.fixture.id).boosted"
-										class="text-success text-uppercase font-weight-medium"
-										style="font-size: 10px"
-										>2x Boosted</span
-									>
-									{{
-										getFixturePrediction(f.fixture.id).home +
-										" : " +
-										getFixturePrediction(f.fixture.id).away
-									}}
-								</p>
-							</div> -->
-							<!-- <div
-								v-if="f.score.halftime.home !== null"
-								class="d-flex justify-space-between align-center"
-							>
-								<p>Half Time</p>
-								<p class="font-weight-medium">
-									{{ f.score.halftime.home + " : " + f.score.halftime.away }}
-								</p>
-							</div>
-							<div
-								v-if="f.score.fulltime.home !== null"
-								class="d-flex justify-space-between align-center"
-							>
-								<p>Full Time</p>
-								<p class="font-weight-medium">
-									{{ f.score.fulltime.home + " : " + f.score.fulltime.away }}
-								</p>
-							</div> -->
-							<!-- <div
-								v-if="f.score.extratime.home"
-								class="d-flex justify-space-between align-center"
-							>
-								<p>Extra Time</p>
-								<p class="font-weight-medium">
-									{{ f.score.extratime.home + " : " + f.score.extratime.away }}
-								</p>
-							</div>
-							<div
-								v-if="f.score.penalty.home"
-								class="d-flex justify-space-between align-center"
-							>
-								<p class="font-weight-medium">Penalty</p>
-								<p>
-									{{ f.score.penalty.home + " : " + f.score.penalty.away }}
-								</p>
-							</div> -->
-						</div>
 						<v-alert
 							v-if="
 								f.fixture.status.short === 'FT' &&
-								getFixturePrediction(f.fixture.id)
+								getFixturePredictionResult(f.fixture.id)
 							"
-							class="mt-3 py-3 text-center"
-							height="28px"
+							class="mt-3 py-3 d-flex justify-center align-center mx-auto"
+							style="width: 180px"
+							height="30px"
 							color="primary"
 							variant="tonal"
 						>
 							<span class="text-caption font-weight-medium text-uppercase"
-								>You got <span class="">+4</span> Pts</span
+								>You got
+								<span class=""
+									>+{{
+										getFixturePredictionResult(f.fixture.id).points
+											.boosted_total
+									}}</span
+								>
+								Pts</span
 							>
 						</v-alert>
-						<div class="text-center mt-3">
+						<div
+							v-if="f.fixture.status.short === 'NS'"
+							class="text-center mt-3"
+						>
 							<v-btn
 								size="small"
 								@click="predictionDialogHandler(f)"
 								color="primary"
-								:hidden="f.fixture.status.short !== 'NS'"
 							>
 								<span v-if="getFixturePrediction(f.fixture.id)">
 									Change Predict
@@ -406,6 +364,7 @@ import { mapGetters, mapActions } from "vuex";
 import moment from "moment";
 import "moment-timezone";
 import PredictionDialog from "../components/PredictionDialog.vue";
+import { thisExpression } from "@babel/types";
 
 export default {
 	name: "Tournament",
@@ -418,6 +377,7 @@ export default {
 			selectedGameWeek: "fixture/selectedGameWeek",
 			teams: "teams",
 			tournamentData: "tournamentData",
+			predictionResultList: "prediction/predictionResultList",
 		}),
 		sortByDateFixtureList() {
 			return this.tournamentData.fixtures.sort(
@@ -489,7 +449,8 @@ export default {
 			getGameWeekAction: "gameweek/getGameWeekAction",
 			storeSelectedGameWeekAction: "fixture/storeSelectedGameWeekAction",
 			savePredictionAction: "prediction/savePredictionAction",
-
+			getPredictionCalculatedListAction:
+				"prediction/getPredictionCalculatedListAction",
 			getTournamentIndexAction: "getTournamentIndexAction",
 			setTeamsAction: "setTeamsAction",
 		}),
@@ -548,6 +509,7 @@ export default {
 				return null;
 			}
 		},
+
 		updatePredictionValue(fixture_id, data) {
 			console.log("data", data);
 			console.log("looking prediction for #" + fixture_id);
@@ -649,6 +611,15 @@ export default {
 				}
 			}
 		},
+		getFixturePredictionResult(fixture_id) {
+			if (this.predictionResultList) {
+				const prediction_result = this.predictionResultList.filter((p) => {
+					return p.fixture_id === fixture_id;
+				});
+
+				return prediction_result[0];
+			}
+		},
 	},
 	beforeRouteEnter(to, from, next) {
 		next((vm) => {
@@ -695,10 +666,16 @@ export default {
 					get,
 				});
 
+				console.log("rrrr", response);
+
 				if (response.code === 200) {
 					if (response.results.teams) {
 						this.setTeamsAction(response.results.teams);
 					}
+
+					await this.getPredictionCalculatedListAction(
+						response.results.predictions
+					);
 				} else {
 					this.showDialogAction({
 						title: "Whoops!",

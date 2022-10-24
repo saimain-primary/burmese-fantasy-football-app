@@ -107,63 +107,111 @@
 
 				<v-window class="mt-5" v-model="tab">
 					<v-window-item value="one">
-						<v-card class="mx-3 mb-5 py-3 px-3 text-center">
-							<p
-								class="
-									text-center
-									font-weight-medium
-									text-uppercase text-overline
-								"
-							>
-								<span
-									v-if="
-										fixtureDetail.predictions &&
-										fixtureDetail.predictions.length > 0
-									"
-									>Your Prediction</span
-								>
-								<span v-else>You have not predict in this match</span>
-							</p>
+						<div
+							class="
+								bg-grey-lighten-3
+								py-1
+								px-2
+								d-flex
+								justify-space-between
+								align-center
+								mb-3
+							"
+						>
+							<p class="text-overline">Prediction</p>
+						</div>
+
+						<template
+							v-if="
+								fixtureDetail.predictions &&
+								fixtureDetail.predictions.length > 0
+							"
+						>
 							<div
-								class="text-center"
-								v-if="
-									fixtureDetail.predictions &&
-									fixtureDetail.predictions.length > 0
+								class="
+									d-flex
+									justify-space-between
+									align-center
+									text-body-2
+									px-3
+									mb-1
 								"
 							>
-								<p class="text-h5 font-weight-medium">
+								<p>Your Prediction</p>
+								<p class="">
 									{{ fixtureDetail.predictions[0].home }}
 									-
 									{{ fixtureDetail.predictions[0].away }}
 								</p>
-								<p
-									v-if="fixtureDetail.predictions[0].boosted"
-									class="text-overline text-success"
-								>
-									Using 2x Booster
-								</p>
 							</div>
-							<v-btn
-								class="mt-2"
-								size="small"
-								@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
-								color="primary"
-								:hidden="
-									fixtureDetail.fixtures[0].fixture.status.short !== 'NS'
+							<div
+								class="
+									mb-1
+									d-flex
+									justify-space-between
+									align-center
+									text-body-2
+									px-3
 								"
 							>
-								<span
-									v-if="
-										getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)
+								<p>Using 2x Booster</p>
+								<p class="">
+									{{ fixtureDetail.predictions[0].boosted ? "Yes" : "No" }}
+								</p>
+							</div>
+							<template
+								v-if="
+									getFixturePredictionResult(
+										fixtureDetail.fixtures[0].fixture.id
+									)
+								"
+							>
+								<div
+									v-for="(p, index) in getFixturePredictionResult(
+										fixtureDetail.fixtures[0].fixture.id
+									).points"
+									:key="index"
+									class="
+										d-flex
+										justify-space-between
+										align-center
+										text-body-2
+										px-3
+										mb-1
 									"
 								>
-									Change Predict
-								</span>
-								<span v-else> Predict Match </span>
-							</v-btn>
-						</v-card>
+									<p>{{ snackToTitle(index) }}</p>
+									<p class="">
+										{{ p }}
+									</p>
+								</div>
+							</template>
+
+							<div
+								class="text-center"
+								v-if="fixtureDetail.fixtures[0].fixture.status.short === 'NS'"
+							>
+								<v-btn
+									class="mt-2"
+									size="small"
+									@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
+									color="primary"
+								>
+									<span
+										v-if="
+											getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)
+										"
+									>
+										Change Predict
+									</span>
+									<span v-else> Predict Match </span>
+								</v-btn>
+							</div>
+						</template>
+
 						<div
 							class="
+								mt-3
 								bg-grey-lighten-3
 								py-1
 								px-2
@@ -181,8 +229,9 @@
 								d-flex
 								justify-space-between
 								align-center
-								text-overline
+								text-body-2
 								px-3
+								mb-1
 							"
 						>
 							<p>Half Time</p>
@@ -193,13 +242,7 @@
 							</p>
 						</div>
 						<div
-							class="
-								d-flex
-								justify-space-between
-								align-center
-								text-overline
-								px-3
-							"
+							class="d-flex justify-space-between align-center text-body-2 px-3"
 						>
 							<p>Full Time</p>
 							<p class="">
@@ -210,13 +253,7 @@
 						</div>
 						<div
 							v-if="fixtureDetail.fixtures[0].score.extratime.home"
-							class="
-								d-flex
-								justify-space-between
-								align-center
-								text-overline
-								px-3
-							"
+							class="d-flex justify-space-between align-center text-body-2 px-3"
 						>
 							<p>Extra Time</p>
 							<p class="">
@@ -227,13 +264,7 @@
 						</div>
 						<div
 							v-if="fixtureDetail.fixtures[0].score.penalty.home"
-							class="
-								d-flex
-								justify-space-between
-								align-center
-								text-overline
-								px-3
-							"
+							class="d-flex justify-space-between align-center text-body-2 px-3"
 						>
 							<p>Penalty</p>
 							<p class="">
@@ -245,6 +276,7 @@
 
 						<div
 							class="
+								mt-3
 								bg-grey-lighten-3
 								py-1
 								mb-3
@@ -303,6 +335,7 @@
 							class="
 								bg-grey-lighten-3
 								py-1
+								mt-3
 								mb-3
 								px-2
 								d-flex
@@ -379,6 +412,7 @@
 						</div>
 						<div
 							class="
+								mt-3
 								bg-grey-lighten-3
 								py-1
 								px-2
@@ -570,6 +604,7 @@ export default {
 			currentGameWeek: "gameweek/currentGameWeek",
 			tournamentData: "tournamentData",
 			teams: "teams",
+			predictionResultList: "prediction/predictionResultList",
 		}),
 		firstHalfTimeEvents() {
 			return this.fixtureDetail.fixtures[0].events.filter((e) => {
@@ -645,10 +680,17 @@ export default {
 			toggleLoading: "toggleLoading",
 			savePredictionAction: "prediction/savePredictionAction",
 			getGameWeekAction: "gameweek/getGameWeekAction",
-
+			getPredictionCalculatedListAction:
+				"prediction/getPredictionCalculatedListAction",
 			getTournamentIndexAction: "getTournamentIndexAction",
 			setTeamsAction: "setTeamsAction",
 		}),
+		snackToTitle(str) {
+			const a = str.replace(/^_*(.)|_+(.)/g, (s, c, d) =>
+				c ? c.toUpperCase() : " " + d.toUpperCase()
+			);
+			return a;
+		},
 		getTeamCode(id) {
 			if (this.teams) {
 				const filteredTeam = this.teams.filter((t) => {
@@ -695,6 +737,15 @@ export default {
 						boosted: predictions[0].boosted,
 					};
 				}
+			}
+		},
+		getFixturePredictionResult(fixture_id) {
+			if (this.predictionResultList) {
+				const prediction_result = this.predictionResultList.filter((p) => {
+					return p.fixture_id === fixture_id;
+				});
+
+				return prediction_result[0];
 			}
 		},
 		updatePredictionValue(fixture_id, data) {
@@ -791,6 +842,7 @@ export default {
 		}
 
 		this.fixtureGameWeek = this.currentGameWeek.week;
+
 		if (this.prevRoute) {
 			if (this.prevRoute.path.includes("/lineups")) {
 				console.log("old data from " + this.prevRoute.path);
@@ -822,6 +874,14 @@ export default {
 					});
 				}
 			}
+		}
+
+		if (this.predictionResultList.length <= 0) {
+			console.log("a,", this.fixtureDetail.predictions);
+			await this.getPredictionCalculatedListAction(
+				this.fixtureDetail.predictions
+			);
+			console.log("aa");
 		}
 
 		this.loading = false;

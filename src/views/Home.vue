@@ -197,7 +197,7 @@
 					<p class="mt-3 text-caption text-grey-lighten-1 text-center">
 						Advertisement
 					</p>
-					<v-img src="../assets/banners/aspire_shin.jpeg"></v-img>
+					<!-- <v-img src="../assets/banners/aspire_shin.jpeg"></v-img> -->
 				</div>
 			</v-col>
 		</v-row>
