@@ -66,81 +66,106 @@
 		</v-row>
 	</v-container>
 
-	<!-- <div class="d-flex mt-16 flex-column justify-space-between align-center">
-		<v-img class="" :src="nodata" width="100"></v-img>
-		<p class="text-body-2 text-grey-darken-1 mt-3"><b>No data Available!</b></p>
-	</div> -->
 	<v-container>
 		<v-row>
 			<v-col>
-				<p class="mb-3 font-weight-medium text-body-1">Top 100 Predictors</p>
-				<template v-if="loading">
-					<div v-for="index in 3" :key="index" class="loading-skeleton mb-3">
-						<v-card
-							elevation="0"
-							class="bg-grey-lighten-4 py-3 px-3"
-							style="height: 100px"
-						>
-						</v-card>
-					</div>
-				</template>
-				<template v-else>
-					<v-card
-						v-if="firstUserLeaderboard"
-						class="py-5 px-5 mb-3 gameweek-deadline-card"
-					>
-						<div class="d-flex justify-space-between align-center">
-							<div class="d-flex justify-start align-center">
-								<div class="pa-1 bg-white rounded-lg d-inline-block">
-									<v-avatar size="50" large class="rounded-circle">
-										<v-img
-											class="rounded-circle"
-											:src="
-												firstUserLeaderboard.user.favoriteTeam
-													? getTeamLogo(firstUserLeaderboard.user.favoriteTeam)
-													: logo
-											"
-											:lazy-src="logo"
-										></v-img>
-									</v-avatar>
-								</div>
-								<div class="ml-5">
-									<p class="text-h6">{{ firstUserLeaderboard.user.name }}</p>
-									<p class="text-subtitle-1">
-										{{ firstUserLeaderboard.points.boosted_total }} Points
-									</p>
-								</div>
-							</div>
-							<div class="">
-								<v-btn
-									size="x-small"
-									icon="mdi-arrow-right"
-									color="white"
-								></v-btn>
-							</div>
+				<p class="mb-3 font-weight-medium text-body-1">Top Predictors</p>
+
+				<div
+					v-if="!loading && leaderboardData.length <= 0"
+					class="d-flex mt-16 flex-column justify-space-between align-center"
+				>
+					<v-img class="" :src="nodata" width="100"></v-img>
+					<p class="text-body-2 text-grey-darken-1 mt-3">
+						<b>No data Available!</b>
+					</p>
+				</div>
+
+				<div v-else>
+					<template v-if="loading">
+						<div v-for="index in 5" :key="index" class="loading-skeleton mb-3">
+							<v-card
+								elevation="0"
+								class="bg-grey-lighten-4 py-3 px-3"
+								style="height: 100px"
+							>
+							</v-card>
 						</div>
-					</v-card>
-					<v-card
-						v-for="data in underFirstLeaderboard"
-						:key="data._id"
-						class="py-5 px-5 mb-3"
-					>
-						<v-img
-							:src="
-								data.user.favoriteTeam
-									? getTeamLogo(data.user.favoriteTeam)
-									: logo
-							"
-							:lazy-src="logo"
-							class="rounded-circle"
-							max-height="50"
-							max-width="50"
+					</template>
+					<template v-else>
+						<v-card
+							v-if="firstUserLeaderboard"
+							class="py-5 px-5 mb-3 gameweek-deadline-card"
 						>
-						</v-img>
-						<p>Prediction ID : {{ data._id }}</p>
-						<p>Prediction User : {{ data.user.name }}</p>
-					</v-card>
-				</template>
+							<div class="d-flex justify-space-between align-center">
+								<div class="d-flex justify-start align-center">
+									<div class="pa-1 bg-white rounded-lg d-inline-block">
+										<v-avatar size="50" large class="rounded-circle">
+											<v-img
+												class="rounded-circle"
+												:src="
+													firstUserLeaderboard.user.favoriteTeam
+														? getTeamLogo(
+																firstUserLeaderboard.user.favoriteTeam
+														  )
+														: logo
+												"
+												:lazy-src="logo"
+											></v-img>
+										</v-avatar>
+									</div>
+									<div class="ml-5">
+										<p class="text-h6">{{ firstUserLeaderboard.user.name }}</p>
+										<p class="text-subtitle-1">
+											{{ firstUserLeaderboard.sum }} Points
+										</p>
+									</div>
+								</div>
+								<div class="">
+									<!-- <v-btn
+										size="x-small"
+										icon="mdi-arrow-right"
+										color="white"
+									></v-btn> -->
+								</div>
+							</div>
+						</v-card>
+						<v-card
+							v-for="data in underFirstLeaderboard"
+							:key="data._id"
+							class="py-5 px-5 mb-3 gameweek-deadline-card"
+						>
+							<div class="d-flex justify-space-between align-center">
+								<div class="d-flex justify-start align-center">
+									<div class="pa-1 bg-white rounded-lg d-inline-block">
+										<v-avatar size="50" large class="rounded-circle">
+											<v-img
+												class="rounded-circle"
+												:src="
+													data.user.favoriteTeam
+														? getTeamLogo(data.user.favoriteTeam)
+														: logo
+												"
+												:lazy-src="logo"
+											></v-img>
+										</v-avatar>
+									</div>
+									<div class="ml-5">
+										<p class="text-h6">{{ data.user.name }}</p>
+										<p class="text-subtitle-1">{{ data.sum }} Points</p>
+									</div>
+								</div>
+								<div class="">
+									<!-- <v-btn
+										size="x-small"
+										icon="mdi-arrow-right"
+										color="white"
+									></v-btn> -->
+								</div>
+							</div>
+						</v-card>
+					</template>
+				</div>
 			</v-col>
 		</v-row>
 	</v-container>
@@ -175,8 +200,7 @@ export default {
 		},
 		underFirstLeaderboard() {
 			if (this.leaderboardData) {
-				this.leaderboardData.shift();
-				return this.leaderboardData;
+				return this.leaderboardData.slice(1);
 			} else {
 				return null;
 			}
@@ -215,6 +239,7 @@ export default {
 
 			const response = await this.getLeaderboardDataAction({
 				fixture_week: this.currentFormData.gameWeek,
+				leaderboard: true,
 			});
 
 			if (response.code === 200) {
