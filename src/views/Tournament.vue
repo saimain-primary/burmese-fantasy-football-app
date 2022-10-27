@@ -668,7 +668,14 @@ export default {
 				!this.prevRoute.path.includes("/fixture/") ||
 				!this.tournamentData.fixtures
 			) {
-				await this.getGameWeekAction();
+				if (
+					this.gameWeekList.length <= 0 &&
+					!this.currentGameWeek &&
+					this.gameWeekListForSelect.length <= 0
+				) {
+					await this.getGameWeekAction();
+				}
+
 				let fixtureParams = {};
 
 				let get = "";
@@ -709,9 +716,8 @@ export default {
 						this.setTeamsAction(response.results.teams);
 					}
 
-					console.log("predictions", response.results.predictions);
 					if (this.authenticated) {
-						 this.getPredictionCalculatedListAction({
+						this.getPredictionCalculatedListAction({
 							user_id: this.user._id,
 							predictions: response.results.predictions,
 						});

@@ -72,7 +72,7 @@
 				<p class="mb-3 font-weight-medium text-body-1">Top Predictors</p>
 
 				<div
-					v-if="!loading && leaderboardData.length <= 0"
+					v-if="!loading && leaderboardData && leaderboardData.length <= 0"
 					class="d-flex mt-16 flex-column justify-space-between align-center"
 				>
 					<v-img class="" :src="nodata" width="100"></v-img>
@@ -229,7 +229,6 @@ export default {
 			const team = this.teams.filter((t) => {
 				return t.team.name === name;
 			})[0];
-			console.log("logo", team.team.logo);
 			return team.team.logo;
 		},
 		async onChangeGameWeekHandler() {
@@ -263,13 +262,11 @@ export default {
 		let fixtureParams = {};
 
 		if (this.selectedGameWeek) {
-			console.log("seleted");
 			fixtureParams = {
 				fixture_week: this.selectedGameWeek,
 				leaderboard: true,
 			};
 		} else {
-			console.log("no seleted");
 			fixtureParams = {
 				fixture_week: this.currentGameWeek.week,
 				leaderboard: true,
@@ -295,8 +292,6 @@ export default {
 		});
 
 		this.loading = false;
-
-		console.log("rrrr", response);
 	},
 };
 </script>
