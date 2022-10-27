@@ -51,13 +51,15 @@ export default {
       const response = await axios.post("/predict", data);
       return response.data;
     },
-    async getPredictionCalculatedListAction({ commit }, predictions) {
-      const prediction_ids = predictions.map((p) => {
+    async getPredictionCalculatedListAction({ commit }, data) {
+      const prediction_ids = data.predictions.map((p) => {
         return p._id;
       });
 
+      console.log("prediction ids", prediction_ids);
       const response = await axios.post("/calculate-point", {
         prediction_id: prediction_ids,
+        user_id: data.user_id,
       });
 
       commit("setPredictionResultList", response.data.results);

@@ -181,9 +181,7 @@
 									"
 								>
 									<p>{{ snackToTitle(index) }}</p>
-									<p class="">
-										{{ p }}
-									</p>
+									<p class="">{{ p }} Points</p>
 								</div>
 							</template>
 
@@ -466,7 +464,28 @@
 
 					<v-window-item value="two"> Two </v-window-item>
 
-					<v-window-item value="three"> Three </v-window-item>
+					<v-window-item value="three">
+						<!-- <div
+							style="
+								border: 1px solid #222;
+								display: grid;
+								grid-template-columns: repeat(8, 1fr);
+								grid-template-rows: repeat(4, 1fr);
+							"
+						>
+							<div style="grid-column-start: 1; grid-row-start: 1">One1</div>
+							<div style="grid-column-start: 2; grid-row-start: 1">Two1</div>
+							<div style="grid-column-start: 2; grid-row-start: 2">Two2</div>
+							<div style="grid-column-start: 2; grid-row-start: 3">Two3</div>
+							<div style="grid-column-start: 2; grid-row-start: 4">Two4</div>
+							<div style="grid-column-start: 3; grid-row-start: 1">Three1</div>
+							<div style="grid-column-start: 3; grid-row-start: 2">Three2</div>
+							<div style="grid-column-start: 3; grid-row-start: 3">Three3</div>
+							<div style="grid-column-start: 4; grid-row-start: 1">Four1</div>
+							<div style="grid-column-start: 4; grid-row-start: 2">Four2</div>
+							<div style="grid-column-start: 4; grid-row-start: 3">Four3</div>
+						</div> -->
+					</v-window-item>
 				</v-window>
 
 				<v-container>
@@ -513,8 +532,8 @@
 					<!-- prediction dialog -->
 					<v-dialog v-model="showPredictionDialog">
 						<v-card class="pt-5 pb-5 px-5 text-center">
-							<p class="text-body-1 font-weight-bold">Sun 2 Oct 2022</p>
-							<p class="text-caption">8:30 PM</p>
+							<p class="text-body-1 font-weight-bold">{{ prediction.date }}</p>
+							<p class="text-caption">{{ prediction.time }}</p>
 							<div class="d-flex justify-space-between align-center">
 								<div v-if="prediction.homeTeam" class="d-flex align-center">
 									<p class="mr-3 text-caption font-weight-medium">
@@ -558,7 +577,7 @@
 									hide-details
 									color="primary"
 									v-model="predictionForm.prediction2xBooster"
-									label="Use 2x Booster to double Pts"
+									label="Use 2x Booster to double Points"
 								></v-checkbox>
 							</div>
 							<p class="mt-1" style="font-size: 10px">
@@ -584,6 +603,7 @@
 	<BottomNavigation :value="page" />
 </template>
 
+
 <script>
 import BottomNavigation from "../components/BottomNavigation.vue";
 import logo from "@/assets/logo.jpg";
@@ -605,6 +625,8 @@ export default {
 			tournamentData: "tournamentData",
 			teams: "teams",
 			predictionResultList: "prediction/predictionResultList",
+			authenticated: "auth/authenticated",
+			user: "auth/user",
 		}),
 		firstHalfTimeEvents() {
 			return this.fixtureDetail.fixtures[0].events.filter((e) => {
@@ -660,6 +682,8 @@ export default {
 		],
 		prevRoute: null,
 		prediction: {
+			date: null,
+			time: null,
 			homeTeam: null,
 			awayTeam: null,
 			date: null,
@@ -724,11 +748,19 @@ export default {
 			this.prediction.homeTeam = f.teams.home;
 			this.prediction.awayTeam = f.teams.away;
 			this.prediction.fixtureId = f.fixture.id;
+			this.prediction.date = moment(
+				new Date(f.fixture.date),
+				moment.ISO_8601
+			).format("ddd D MMM YYYY");
+			this.prediction.time = moment(
+				new Date(f.fixture.date),
+				moment.ISO_8601
+			).format("h:mm A ");
 		},
 		getFixturePrediction(fixture_id) {
 			if (this.fixtureDetail.predictions) {
 				const predictions = this.fixtureDetail.predictions.filter((p) => {
-					return p.fixture_id == fixture_id;
+					return p.fixture_id == fixture_id && p.user_id === this.user._id;
 				});
 				if (predictions[0]) {
 					return {
@@ -742,7 +774,7 @@ export default {
 		getFixturePredictionResult(fixture_id) {
 			if (this.predictionResultList) {
 				const prediction_result = this.predictionResultList.filter((p) => {
-					return p.fixture_id === fixture_id;
+					return p.fixture_id == fixture_id && p.user_id === this.user._id;
 				});
 
 				return prediction_result[0];
@@ -918,3 +950,5 @@ body
 	font-size: 14px !important;
 }
 </style>
+
+

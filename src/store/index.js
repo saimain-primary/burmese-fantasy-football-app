@@ -12,6 +12,7 @@ export default createStore({
       predictions: null,
       fixtures: null,
     },
+    leaderboardData: null,
     isLoading: false,
     teams: null,
     verifyData: {
@@ -28,9 +29,9 @@ export default createStore({
     },
     simpleTeams(state) {
       const teams = [];
-      state.teams.map((t) => {
-        teams.push(t.team.name);
-      });
+      // state.teams.map((t) => {
+      //   teams.push(t.team.name);
+      // });
       return teams;
     },
     verifyData(state) {
@@ -38,6 +39,9 @@ export default createStore({
     },
     tournamentData(state) {
       return state.tournamentData;
+    },
+    leaderboardData(state) {
+      return state.leaderboardData;
     },
   },
   mutations: {
@@ -57,6 +61,9 @@ export default createStore({
       state.tournamentData.predictions = data.predictions
         ? data.predictions
         : null;
+    },
+    setLeaderboardData(state, data) {
+      state.leaderboardData = data;
     },
   },
   actions: {
@@ -85,7 +92,6 @@ export default createStore({
 
     async getTournamentIndexAction({ commit }, query) {
       // commit("toggleLoading", true);
-      console.log("q", query);
       const response = await axios.get("/tournament", {
         params: query,
       });
@@ -99,6 +105,17 @@ export default createStore({
       }
 
       // commit("toggleLoading", false);
+
+      return response.data;
+    },
+
+    async getLeaderboardDataAction({ commit }, query) {
+      const response = await axios.get("/leaderboard", {
+        params: query,
+      });
+
+      commit("setLeaderboardData", response.data.results);
+      console.log(response);
 
       return response.data;
     },

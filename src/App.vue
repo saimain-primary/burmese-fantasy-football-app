@@ -51,7 +51,15 @@ export default {
 	}),
 	mixins: [update],
 	mounted() {
-		console.log('update', update);
+		// let Script = document.createElement("script");
+		// Script.setAttribute(
+		// 	"src",
+		// 	"https://widgets.api-sports.io/2.0.3/widgets.js"
+		// );
+		// Script.setAttribute("type", "module");
+		// document.head.appendChild(Script);
+
+		console.log("update", update);
 		console.log(process.env.NODE_ENV);
 	},
 	watch: {

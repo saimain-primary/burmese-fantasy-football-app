@@ -43,7 +43,7 @@ export default {
     async getMeAction({ commit, state, dispatch }, token) {
       if (token) {
         commit("setToken", token);
-        commit("toggleLoading", true, { root: true });
+        // commit("toggleLoading", true, { root: true });
       }
 
       if (!state.token) {
@@ -54,13 +54,15 @@ export default {
         const response = await axios.get("/me");
         commit("setUser", response.data.results);
 
-        const teamResponse = await axios.get("/teams", {
-          params: {
-            name: response.data.results.favoriteTeam,
-          },
-        });
+        if (!state.favoriteTeam) {
+          const teamResponse = await axios.get("/teams", {
+            params: {
+              name: response.data.results.favoriteTeam,
+            },
+          });
 
-        commit("setFavoriteTeam", teamResponse.data.results.response[0]);
+          commit("setFavoriteTeam", teamResponse.data.results.response[0]);
+        }
         commit("toggleLoading", false, { root: true });
         return response.data;
       } catch (error) {

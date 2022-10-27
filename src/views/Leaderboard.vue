@@ -5,8 +5,13 @@
 				<v-card color="primary">
 					<div class="d-flex flex-no-wrap justify-space-between">
 						<div>
-							<v-card-title class="text-h5">Premier League </v-card-title>
-							<v-card-subtitle>Game Week 1</v-card-subtitle>
+							<v-card-title class="text-h6">Premier League </v-card-title>
+							<v-card-subtitle
+								>Game Week
+								{{
+									selectedGameWeek ? selectedGameWeek : fixtureGameWeek
+								}}</v-card-subtitle
+							>
 							<!-- <v-card-subtitle>October 2022</v-card-subtitle> -->
 							<v-card-actions>
 								<v-dialog v-model="showFilterDialog">
@@ -33,14 +38,18 @@
 											class=""
 										></v-select>
 										<v-select
-											model-value="Game Week 1"
-											:items="gameweeks"
+											:items="gameWeekListForSelect"
+											item-title="name"
+											item-value="week"
+											v-model="currentFormData.gameWeek"
 											label="Game Week"
 											variant="outlined"
 											color="primary"
 											class=""
 										></v-select>
-										<v-btn color="primary">Filter</v-btn>
+										<v-btn @click="onChangeGameWeekHandler" color="primary"
+											>Change</v-btn
+										>
 									</v-card>
 								</v-dialog>
 							</v-card-actions>
@@ -57,13 +66,82 @@
 		</v-row>
 	</v-container>
 
-	<div class="d-flex mt-16 flex-column justify-space-between align-center">
+	<!-- <div class="d-flex mt-16 flex-column justify-space-between align-center">
 		<v-img class="" :src="nodata" width="100"></v-img>
 		<p class="text-body-2 text-grey-darken-1 mt-3"><b>No data Available!</b></p>
-	</div>
+	</div> -->
 	<v-container>
 		<v-row>
-			<v-col> </v-col>
+			<v-col>
+				<p class="mb-3 font-weight-medium text-body-1">Top 100 Predictors</p>
+				<template v-if="loading">
+					<div v-for="index in 3" :key="index" class="loading-skeleton mb-3">
+						<v-card
+							elevation="0"
+							class="bg-grey-lighten-4 py-3 px-3"
+							style="height: 100px"
+						>
+						</v-card>
+					</div>
+				</template>
+				<template v-else>
+					<v-card
+						v-if="firstUserLeaderboard"
+						class="py-5 px-5 mb-3 gameweek-deadline-card"
+					>
+						<div class="d-flex justify-space-between align-center">
+							<div class="d-flex justify-start align-center">
+								<div class="pa-1 bg-white rounded-lg d-inline-block">
+									<v-avatar size="50" large class="rounded-circle">
+										<v-img
+											class="rounded-circle"
+											:src="
+												firstUserLeaderboard.user.favoriteTeam
+													? getTeamLogo(firstUserLeaderboard.user.favoriteTeam)
+													: logo
+											"
+											:lazy-src="logo"
+										></v-img>
+									</v-avatar>
+								</div>
+								<div class="ml-5">
+									<p class="text-h6">{{ firstUserLeaderboard.user.name }}</p>
+									<p class="text-subtitle-1">
+										{{ firstUserLeaderboard.points.boosted_total }} Points
+									</p>
+								</div>
+							</div>
+							<div class="">
+								<v-btn
+									size="x-small"
+									icon="mdi-arrow-right"
+									color="white"
+								></v-btn>
+							</div>
+						</div>
+					</v-card>
+					<v-card
+						v-for="data in underFirstLeaderboard"
+						:key="data._id"
+						class="py-5 px-5 mb-3"
+					>
+						<v-img
+							:src="
+								data.user.favoriteTeam
+									? getTeamLogo(data.user.favoriteTeam)
+									: logo
+							"
+							:lazy-src="logo"
+							class="rounded-circle"
+							max-height="50"
+							max-width="50"
+						>
+						</v-img>
+						<p>Prediction ID : {{ data._id }}</p>
+						<p>Prediction User : {{ data.user.name }}</p>
+					</v-card>
+				</template>
+			</v-col>
 		</v-row>
 	</v-container>
 
@@ -73,19 +151,127 @@
 <script>
 import BottomNavigation from "../components/BottomNavigation.vue";
 import nodata from "@/assets/no_data.svg";
+import logo from "@/assets/logo.jpg";
 
+import { mapGetters, mapActions } from "vuex";
 export default {
-	name: "Tournament",
+	name: "Leaderboard",
 	components: { BottomNavigation },
+	computed: {
+		...mapGetters({
+			gameWeekListForSelect: "gameweek/gameWeekListForSelect",
+			currentGameWeek: "gameweek/currentGameWeek",
+			gameWeekList: "gameweek/gameWeekList",
+			selectedGameWeek: "fixture/selectedGameWeek",
+			leaderboardData: "leaderboardData",
+			teams: "teams",
+		}),
+		firstUserLeaderboard() {
+			if (this.leaderboardData) {
+				return this.leaderboardData[0];
+			} else {
+				return null;
+			}
+		},
+		underFirstLeaderboard() {
+			if (this.leaderboardData) {
+				this.leaderboardData.shift();
+				return this.leaderboardData;
+			} else {
+				return null;
+			}
+		},
+	},
 	data: () => ({
+		loading: false,
 		showFilterDialog: false,
-
 		nodata: nodata,
+		logo: logo,
 		leagues: ["Premier League", "World Cup 2022"],
-		gameweeks: ["Game Week 1", "Game Week 2", "Game Week 3"],
+		currentFormData: {
+			gameWeek: null,
+		},
+		fixtureGameWeek: null,
 	}),
-	mounted() {
+	methods: {
+		...mapActions({
+			getGameWeekAction: "gameweek/getGameWeekAction",
+			storeSelectedGameWeekAction: "fixture/storeSelectedGameWeekAction",
+			getTournamentIndexAction: "getTournamentIndexAction",
+			setTeamsAction: "setTeamsAction",
+			getLeaderboardDataAction: "getLeaderboardDataAction",
+		}),
+		getTeamLogo(name) {
+			const team = this.teams.filter((t) => {
+				return t.team.name === name;
+			})[0];
+			console.log("logo", team.team.logo);
+			return team.team.logo;
+		},
+		async onChangeGameWeekHandler() {
+			this.loading = true;
+
+			this.showFilterDialog = false;
+
+			const response = await this.getLeaderboardDataAction({
+				fixture_week: this.currentFormData.gameWeek,
+			});
+
+			if (response.code === 200) {
+				this.storeSelectedGameWeekAction(this.currentFormData.gameWeek);
+			} else {
+				this.showDialogAction({
+					title: "Whoops!",
+					body: response.results.message,
+				});
+			}
+			this.loading = false;
+		},
+	},
+	async mounted() {
+		this.loading = true;
 		this.$gtag.event("leaderboard");
+
+		await this.getGameWeekAction();
+
+		let get = "";
+		let fixtureParams = {};
+
+		if (this.selectedGameWeek) {
+			console.log("seleted");
+			fixtureParams = {
+				fixture_week: this.selectedGameWeek,
+				leaderboard: true,
+			};
+		} else {
+			console.log("no seleted");
+			fixtureParams = {
+				fixture_week: this.currentGameWeek.week,
+				leaderboard: true,
+			};
+			this.fixtureGameWeek = this.currentGameWeek.week;
+		}
+
+		if (!this.teams) {
+			get = "teams";
+			const teamResponse = await this.getTournamentIndexAction({
+				...fixtureParams,
+				get,
+			});
+			if (teamResponse.code === 200) {
+				if (teamResponse.results.teams) {
+					this.setTeamsAction(teamResponse.results.teams);
+				}
+			}
+		}
+
+		const response = await this.getLeaderboardDataAction({
+			...fixtureParams,
+		});
+
+		this.loading = false;
+
+		console.log("rrrr", response);
 	},
 };
 </script>

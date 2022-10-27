@@ -5,8 +5,8 @@
 				<!-- prediction dialog -->
 				<v-dialog v-model="showPredictionDialog">
 					<v-card class="pt-5 pb-5 px-5 text-center">
-						<p class="text-body-1 font-weight-bold">Sun 2 Oct 2022</p>
-						<p class="text-caption">8:30 PM</p>
+						<p class="text-body-1 font-weight-bold">{{ prediction.date }}</p>
+						<p class="text-caption">{{ prediction.time }}</p>
 						<div class="d-flex justify-space-between align-center">
 							<div v-if="prediction.homeTeam" class="d-flex align-center">
 								<p class="mr-3 text-caption font-weight-medium">
@@ -50,7 +50,7 @@
 								hide-details
 								color="primary"
 								v-model="predictionForm.prediction2xBooster"
-								label="Use 2x Booster to double Pts"
+								label="Use 2x Booster to double Points"
 							></v-checkbox>
 						</div>
 						<p class="mt-1" style="font-size: 10px">
@@ -275,63 +275,69 @@
 								</p>
 							</div>
 						</div>
-						<div
-							v-if="getFixturePrediction(f.fixture.id)"
-							class="
-								my-4
-								text-subtitle-2
-								d-flex
-								justify-space-between
-								align-center
-							"
-						>
-							<p>Your Prediction</p>
-							<p>
-								<span
-									v-if="getFixturePrediction(f.fixture.id).boosted"
-									class="text-success text-uppercase font-weight-medium"
-									style="font-size: 10px"
-									>2x Boosted</span
-								>
-								{{
-									getFixturePrediction(f.fixture.id).home +
-									" - " +
-									getFixturePrediction(f.fixture.id).away
-								}}
-							</p>
-						</div>
-						<v-alert
-							v-if="
-								f.fixture.status.short === 'FT' &&
-								getFixturePredictionResult(f.fixture.id)
-							"
-							class="mt-3 py-3 d-flex justify-center align-center mx-auto"
-							style="width: 180px"
-							height="30px"
-							color="primary"
-							variant="tonal"
-						>
-							<span class="text-caption font-weight-medium text-uppercase"
-								>You got
-								<span class=""
-									>+{{
-										getFixturePredictionResult(f.fixture.id).points
-											.boosted_total
-									}}</span
-								>
-								Pts</span
+						<template v-if="authenticated">
+							<div
+								v-if="getFixturePrediction(f.fixture.id)"
+								class="
+									my-4
+									text-subtitle-2
+									d-flex
+									justify-space-between
+									align-center
+								"
 							>
-						</v-alert>
-						<div
-							v-if="f.fixture.status.short === 'NS'"
-							class="text-center mt-3"
-						>
+								<p>Your Prediction</p>
+								<p>
+									<span
+										v-if="getFixturePrediction(f.fixture.id).boosted"
+										class="text-success text-uppercase font-weight-medium"
+										style="font-size: 10px"
+										>2x Boosted</span
+									>
+									{{
+										getFixturePrediction(f.fixture.id).home +
+										" - " +
+										getFixturePrediction(f.fixture.id).away
+									}}
+								</p>
+							</div>
+							<v-alert
+								v-if="
+									f.fixture.status.short === 'FT' &&
+									getFixturePredictionResult(f.fixture.id)
+								"
+								class="mt-3 py-3 d-flex justify-center align-center mx-auto"
+								style="width: 180px"
+								height="30px"
+								color="primary"
+								variant="tonal"
+							>
+								<span class="text-caption font-weight-medium text-uppercase"
+									>You got
+									<span class=""
+										>+{{
+											getFixturePredictionResult(f.fixture.id).points
+												.boosted_total
+												? getFixturePredictionResult(f.fixture.id).points
+														.boosted_total
+												: getFixturePredictionResult(f.fixture.id).points.total
+										}}</span
+									>
+									Points</span
+								>
+							</v-alert>
+						</template>
+
+						<!-- v-if="f.fixture.status.short === 'NS'" -->
+						<div class="text-center mt-3">
 							<v-btn
 								size="small"
 								@click="predictionDialogHandler(f)"
 								color="primary"
 							>
-								<span v-if="getFixturePrediction(f.fixture.id)">
+								<span
+									v-if="authenticated && getFixturePrediction(f.fixture.id)"
+								>
 									Change Predict
 								</span>
 								<span v-else> Predict Match </span>
@@ -364,7 +370,6 @@ import { mapGetters, mapActions } from "vuex";
 import moment from "moment";
 import "moment-timezone";
 import PredictionDialog from "../components/PredictionDialog.vue";
-import { thisExpression } from "@babel/types";
 
 export default {
 	name: "Tournament",
@@ -378,6 +383,8 @@ export default {
 			teams: "teams",
 			tournamentData: "tournamentData",
 			predictionResultList: "prediction/predictionResultList",
+			authenticated: "auth/authenticated",
+			user: "auth/user",
 		}),
 		sortByDateFixtureList() {
 			return this.tournamentData.fixtures.sort(
@@ -433,6 +440,7 @@ export default {
 			homeTeam: null,
 			awayTeam: null,
 			date: null,
+			time: null,
 			fixtureId: null,
 		},
 		predictionForm: {
@@ -455,26 +463,48 @@ export default {
 			setTeamsAction: "setTeamsAction",
 		}),
 		predictionDialogHandler(f) {
-			console.log("open dialog for ", this.getFixturePrediction(f.fixture.id));
-			if (this.getFixturePrediction(f.fixture.id)) {
-				this.predictionForm.teamOnePredictionNumber = [
-					this.getFixturePrediction(f.fixture.id).home,
-				];
-				this.predictionForm.teamTwoPredictionNumber = [
-					this.getFixturePrediction(f.fixture.id).away,
-				];
-				this.predictionForm.prediction2xBooster = this.getFixturePrediction(
-					f.fixture.id
-				).boosted;
+			if (!this.authenticated) {
+				this.showDialogAction({
+					title: "Unauthenticated!",
+					body: "You need to login account before prediction the match or register new account and play for free now.",
+					link: "/login",
+					linkText: "Login",
+					close: true,
+				});
 			} else {
-				this.predictionForm.teamOnePredictionNumber = ["0"];
-				this.predictionForm.teamTwoPredictionNumber = ["0"];
-				this.predictionForm.prediction2xBooster = false;
+				console.log(
+					"open dialog for ",
+					this.getFixturePrediction(f.fixture.id)
+				);
+
+				if (this.getFixturePrediction(f.fixture.id)) {
+					this.predictionForm.teamOnePredictionNumber = [
+						this.getFixturePrediction(f.fixture.id).home,
+					];
+					this.predictionForm.teamTwoPredictionNumber = [
+						this.getFixturePrediction(f.fixture.id).away,
+					];
+					this.predictionForm.prediction2xBooster = this.getFixturePrediction(
+						f.fixture.id
+					).boosted;
+				} else {
+					this.predictionForm.teamOnePredictionNumber = ["0"];
+					this.predictionForm.teamTwoPredictionNumber = ["0"];
+					this.predictionForm.prediction2xBooster = false;
+				}
+				this.showPredictionDialog = true;
+				this.prediction.homeTeam = f.teams.home;
+				this.prediction.awayTeam = f.teams.away;
+				this.prediction.fixtureId = f.fixture.id;
+				this.prediction.date = moment(
+					new Date(f.fixture.date),
+					moment.ISO_8601
+				).format("ddd D MMM YYYY");
+				this.prediction.time = moment(
+					new Date(f.fixture.date),
+					moment.ISO_8601
+				).format("h:mm A ");
 			}
-			this.showPredictionDialog = true;
-			this.prediction.homeTeam = f.teams.home;
-			this.prediction.awayTeam = f.teams.away;
-			this.prediction.fixtureId = f.fixture.id;
 		},
 		async onChangeGameWeekHandler() {
 			// const response = await this.getFixtureListAction({
@@ -520,7 +550,10 @@ export default {
 			} else {
 				let existingPredictionIndex = -1;
 				const checkPredictionExist = predictions.find((p, index) => {
-					if (parseInt(p.fixture_id) === fixture_id) {
+					if (
+						parseInt(p.fixture_id) === fixture_id &&
+						p.user_id === this.user._id
+					) {
 						existingPredictionIndex = index;
 						return p;
 					}
@@ -600,7 +633,7 @@ export default {
 		getFixturePrediction(fixture_id) {
 			if (this.tournamentData.predictions) {
 				const predictions = this.tournamentData.predictions.filter((p) => {
-					return p.fixture_id == fixture_id;
+					return p.fixture_id == fixture_id && p.user_id === this.user._id;
 				});
 				if (predictions[0]) {
 					return {
@@ -614,7 +647,7 @@ export default {
 		getFixturePredictionResult(fixture_id) {
 			if (this.predictionResultList) {
 				const prediction_result = this.predictionResultList.filter((p) => {
-					return p.fixture_id === fixture_id;
+					return p.fixture_id == fixture_id && p.user_id === this.user._id;
 				});
 
 				return prediction_result[0];
@@ -642,21 +675,24 @@ export default {
 				if (this.selectedGameWeek) {
 					console.log("seleted");
 					fixtureParams = {
-						fixture_week: this.selectedGameWeek.week,
+						fixture_week: this.selectedGameWeek,
 					};
 				} else {
 					console.log("no seleted");
 					fixtureParams = {
-						fixture_from: this.currentGameWeek.startDate,
-						fixture_to: this.currentGameWeek.endDate,
+						fixture_week: this.currentGameWeek.week,
 					};
 					this.fixtureGameWeek = this.currentGameWeek.week;
 				}
 
 				if (this.teams) {
-					get = "fixtures,predictions";
+					get = "fixtures";
 				} else {
-					get = "fixtures,teams,predictions";
+					get = "fixtures,teams";
+				}
+
+				if (this.authenticated) {
+					get = get.concat(",", "predictions");
 				}
 
 				// this.toggleLoading(true);
@@ -673,9 +709,13 @@ export default {
 						this.setTeamsAction(response.results.teams);
 					}
 
-					await this.getPredictionCalculatedListAction(
-						response.results.predictions
-					);
+					console.log("predictions", response.results.predictions);
+					if (this.authenticated) {
+						 this.getPredictionCalculatedListAction({
+							user_id: this.user._id,
+							predictions: response.results.predictions,
+						});
+					}
 				} else {
 					this.showDialogAction({
 						title: "Whoops!",

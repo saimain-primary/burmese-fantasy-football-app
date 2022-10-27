@@ -40,6 +40,7 @@ export default {
   mutations: {},
   actions: {
     showDialogAction({ state }, data) {
+      console.log("data for dialog", data);
       state.dialogData.show = true;
       state.dialogData.persistent = data.persistent ? data.persistent : true;
       state.dialogData.title = data.title;
@@ -48,6 +49,16 @@ export default {
       state.dialogData.link = data.link ? data.link : null;
       state.dialogData.linkText = data.linkText;
       state.dialogData.close = data.close ? data.close : true;
+    },
+    closeDialogAction({ state }) {
+      state.dialogData.show = false;
+      state.dialogData.link = null;
+      state.dialogData.linkText = "";
+      state.dialogData.persistent = true;
+      state.dialogData.title = "";
+      state.dialogData.body = "";
+      state.dialogData.list = null;
+      state.dialogData.close = true;
     },
   },
   modules: {},
