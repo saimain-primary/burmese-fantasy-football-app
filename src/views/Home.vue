@@ -38,19 +38,30 @@
 						>
 							<div class="text-center">
 								<p class="mb-0 text-h5 font-weight-medium">
-									{{ homeData ? homeData.average_score : 0 }}
+									<span v-if="homeData">
+										{{ homeData.average_score ? homeData.average_score : 0 }}
+									</span>
+									<span v-else> 0 </span>
 								</p>
 								<p class="mb-0 text-caption">Average</p>
 							</div>
 							<div class="text-center">
 								<p class="mb-0 text-h4 font-weight-bold text-primary">
-									{{ homeData ? homeData.your_score.sum : 0 }}
+									<span v-if="homeData">
+										{{ homeData.your_score ? homeData.your_score.sum : 0 }}
+									</span>
+									<span v-else> 0 </span>
 								</p>
 								<p class="mb-0 text-caption">Your Score</p>
 							</div>
 							<div class="text-center">
 								<p class="mb-0 text-h5 font-weight-medium">
-									{{ homeData ? homeData.highest_score.sum : 0 }}
+									<span v-if="homeData">
+										{{
+											homeData.highest_score ? homeData.highest_score.sum : 0
+										}}
+									</span>
+									<span v-else> 0 </span>
 								</p>
 								<p class="mb-0 text-caption">Highest</p>
 							</div>
@@ -59,7 +70,9 @@
 							class="px-5 mt-1 text-center"
 							v-if="!authenticated && user == null"
 						>
-							<v-btn size="small" color="primary">Sign Up Now</v-btn>
+							<v-btn to="/signup" size="small" color="primary"
+								>Sign Up Now</v-btn
+							>
 						</div>
 					</v-card>
 				</v-col>
@@ -67,7 +80,7 @@
 		</v-container>
 	</div>
 
-	<v-container class="mt-10">
+	<v-container :class="authenticated ? 'mt-10' : 'mt-16'">
 		<v-row>
 			<v-col>
 				<p class="mt-10 text-body-2 font-weight-medium text-grey-darken-3">

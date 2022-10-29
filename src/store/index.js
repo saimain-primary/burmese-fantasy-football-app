@@ -29,11 +29,13 @@ export default createStore({
       return state.isLoading;
     },
     simpleTeams(state) {
-      const teams = [];
-      // state.teams.map((t) => {
-      //   teams.push(t.team.name);
-      // });
-      return teams;
+      if (state.teams) {
+        const teams = [];
+        state.teams.map((t) => {
+          teams.push(t.team.name);
+        });
+        return teams;
+      }
     },
     verifyData(state) {
       return state.verifyData;
