@@ -74,7 +74,7 @@
 					:showPredictionDialog="showPredictionDialog"
 					@closePredictionDialog="closePredictionDialog"
 				/> -->
-				<v-card color="primary">
+				<v-card class="text-white gd-bg">
 					<div class="d-flex flex-no-wrap justify-space-between">
 						<div>
 							<v-card-title class="text-h6">Premier League </v-card-title>
@@ -783,6 +783,15 @@ body
 	font-size: 14px !important;
 }
 
+.gd-bg {
+	background: #4c2fe3;
+	background: linear-gradient(
+		90deg,
+		rgba(76, 47, 227, 1) 0%,
+		rgba(58, 58, 226, 1) 56%,
+		rgba(115, 100, 246, 1) 100%
+	);
+}
 @keyframes loading-skeleton {
 	from {
 		opacity: 0.4;

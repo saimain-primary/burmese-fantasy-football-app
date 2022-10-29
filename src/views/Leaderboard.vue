@@ -2,7 +2,7 @@
 	<v-container>
 		<v-row>
 			<v-col>
-				<v-card color="primary">
+				<v-card class="text-white gd-bg">
 					<div class="d-flex flex-no-wrap justify-space-between">
 						<div>
 							<v-card-title class="text-h6">Premier League </v-card-title>
@@ -87,7 +87,7 @@
 							<v-card
 								elevation="0"
 								class="bg-grey-lighten-4 py-3 px-3"
-								style="height: 100px"
+								style="height: 120px"
 							>
 							</v-card>
 						</div>
@@ -99,7 +99,9 @@
 						>
 							<div class="d-flex justify-space-between align-center">
 								<div class="d-flex justify-start align-center">
-									<div class="pa-1 bg-white rounded-lg d-inline-block">
+									<div
+										class="pa-1 bg-white rounded-lg d-inline-block elevation-1"
+									>
 										<v-avatar size="50" large class="rounded-circle">
 											<v-img
 												class="rounded-circle"
@@ -116,28 +118,30 @@
 									</div>
 									<div class="ml-5">
 										<p class="text-h6">{{ firstUserLeaderboard.user.name }}</p>
-										<p class="text-subtitle-1">
+										<p class="text-subtitle-1 font-weight-medium">
 											{{ firstUserLeaderboard.sum }} Points
 										</p>
 									</div>
 								</div>
 								<div class="">
-									<!-- <v-btn
+									<v-btn
 										size="x-small"
 										icon="mdi-arrow-right"
 										color="white"
-									></v-btn> -->
+									></v-btn>
 								</div>
 							</div>
 						</v-card>
 						<v-card
 							v-for="data in underFirstLeaderboard"
 							:key="data._id"
-							class="py-5 px-5 mb-3 gameweek-deadline-card"
+							class="py-5 px-5 mb-3"
 						>
 							<div class="d-flex justify-space-between align-center">
 								<div class="d-flex justify-start align-center">
-									<div class="pa-1 bg-white rounded-lg d-inline-block">
+									<div
+										class="pa-1 bg-white rounded-lg d-inline-block elevation-1"
+									>
 										<v-avatar size="50" large class="rounded-circle">
 											<v-img
 												class="rounded-circle"
@@ -151,16 +155,20 @@
 										</v-avatar>
 									</div>
 									<div class="ml-5">
-										<p class="text-h6">{{ data.user.name }}</p>
-										<p class="text-subtitle-1">{{ data.sum }} Points</p>
+										<p class="text-subtitle-1 font-weight-medium">
+											{{ data.user.name }}
+										</p>
+										<p class="text-body-2 font-weight-medium">
+											{{ data.sum }} Points
+										</p>
 									</div>
 								</div>
 								<div class="">
-									<!-- <v-btn
+									<v-btn
 										size="x-small"
 										icon="mdi-arrow-right"
 										color="white"
-									></v-btn> -->
+									></v-btn>
 								</div>
 							</div>
 						</v-card>

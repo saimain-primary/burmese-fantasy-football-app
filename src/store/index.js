@@ -12,6 +12,7 @@ export default createStore({
       predictions: null,
       fixtures: null,
     },
+    homeData: null,
     leaderboardData: null,
     isLoading: false,
     teams: null,
@@ -43,6 +44,9 @@ export default createStore({
     leaderboardData(state) {
       return state.leaderboardData;
     },
+    homeData(state) {
+      return state.homeData;
+    },
   },
   mutations: {
     setTeams(state, teams) {
@@ -64,6 +68,9 @@ export default createStore({
     },
     setLeaderboardData(state, data) {
       state.leaderboardData = data;
+    },
+    setHomeData(state, data) {
+      state.homeData = data;
     },
   },
   actions: {
@@ -115,6 +122,17 @@ export default createStore({
       });
 
       commit("setLeaderboardData", response.data.results);
+      console.log(response);
+
+      return response.data;
+    },
+
+    async getHomeDataAction({ commit }, query) {
+      const response = await axios.get("/home", {
+        params: query,
+      });
+
+      commit("setHomeData", response.data.results);
       console.log(response);
 
       return response.data;

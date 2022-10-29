@@ -421,45 +421,23 @@
 						>
 							<p class="text-overline">Match Information</p>
 						</div>
-						<div class="px-3 py-3">
-							<div
-								class="
-									font-weight-regular
-									d-flex
-									justify-space-between
-									align-center
-									text-subtitle-2
+						<v-list lines="two">
+							<v-list-item
+								title="Referee"
+								:subtitle="fixtureDetail.fixtures[0].fixture.referee"
+								prepend-icon="mdi-whistle-outline"
+							></v-list-item>
+							<v-list-item
+								title="Venue"
+								:subtitle="
+									fixtureDetail.fixtures[0].fixture.venue.name +
+									' (' +
+									fixtureDetail.fixtures[0].fixture.venue.city +
+									')'
 								"
-							>
-								<p>
-									<v-icon>mdi-whistle-outline</v-icon>
-									Referee
-								</p>
-								<p class="">
-									{{ fixtureDetail.fixtures[0].fixture.referee }}
-								</p>
-							</div>
-							<div
-								class="
-									mt-3
-									font-weight-regular
-									d-flex
-									justify-space-between
-									align-center
-									text-subtitle-2
-								"
-							>
-								<p>
-									<v-icon>mdi-soccer-field</v-icon>
-									Venue
-								</p>
-								<p>
-									{{ fixtureDetail.fixtures[0].fixture.venue.name }} ({{
-										fixtureDetail.fixtures[0].fixture.venue.city
-									}})
-								</p>
-							</div>
-						</div>
+								prepend-icon="mdi-soccer-field"
+							></v-list-item>
+						</v-list>
 					</v-window-item>
 
 					<v-window-item value="two"> Two </v-window-item>

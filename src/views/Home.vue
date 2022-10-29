@@ -24,7 +24,8 @@
 					</p>
 					<v-card class="py-3">
 						<p class="text-center font-weight-medium text-body-1 mb-2">
-							Game Week {{ currentGameWeek ? currentGameWeek.week : 0 }} Result
+							Game Week
+							{{ homePageGameWeek ? homePageGameWeek.week : 0 }} Result
 						</p>
 						<div
 							class="
@@ -36,15 +37,21 @@
 							"
 						>
 							<div class="text-center">
-								<p class="mb-0 text-h5 font-weight-medium">0</p>
+								<p class="mb-0 text-h5 font-weight-medium">
+									{{ homeData ? homeData.average_score : 0 }}
+								</p>
 								<p class="mb-0 text-caption">Average</p>
 							</div>
 							<div class="text-center">
-								<p class="mb-0 text-h4 font-weight-bold text-primary">0</p>
+								<p class="mb-0 text-h4 font-weight-bold text-primary">
+									{{ homeData ? homeData.your_score.sum : 0 }}
+								</p>
 								<p class="mb-0 text-caption">Your Score</p>
 							</div>
 							<div class="text-center">
-								<p class="mb-0 text-h5 font-weight-medium">0</p>
+								<p class="mb-0 text-h5 font-weight-medium">
+									{{ homeData ? homeData.highest_score.sum : 0 }}
+								</p>
 								<p class="mb-0 text-caption">Highest</p>
 							</div>
 						</div>
@@ -60,78 +67,83 @@
 		</v-container>
 	</div>
 
-	<v-container class="mt-16">
+	<v-container class="mt-10">
 		<v-row>
 			<v-col>
 				<p class="mt-10 text-body-2 font-weight-medium text-grey-darken-3">
 					Recent Matches
 				</p>
 
-				<div class="recent-matches-div px-1 py-3">
-					<v-card class="py-3 px-5 mr-3" style="min-width: 280px">
-						<p class="font-weight-bold text-caption mb-3 text-center">
-							Sun 2 Oct 2022 10:00 PM
-						</p>
-						<div class="d-flex justify-space-between align-center">
-							<div class="d-flex align-center">
-								<p class="mr-3 text-caption font-weight-medium">MUN</p>
-								<v-avatar size="40" large class="rounded-circle">
-									<v-img
-										class="rounded-circle"
-										lazy-src="../assets/logo.jpg"
-										src="https://media.api-sports.io/football/teams/33.png"
-									></v-img>
-								</v-avatar>
+				<div v-if="!homeData" class="recent-matches-div px-1 py-3">
+					<div
+						v-for="index in 3"
+						:key="index"
+						class="loading-skeleton mb-3 mr-3"
+						style="min-width: 290px"
+					>
+						<v-card
+							elevation="0"
+							class="bg-grey-lighten-4 py-3 px-3"
+							style="height: 100px"
+						>
+						</v-card>
+					</div>
+				</div>
+				<div v-else class="recent-matches-div px-1 py-3">
+					<div
+						v-for="(f, index) in homeData.recent_matches"
+						:key="index"
+						style="min-width: 290px"
+					>
+						<v-card class="py-3 px-5 mr-3">
+							<p class="font-weight-bold text-caption mb-3 text-center">
+								{{
+									moment(new Date(f.fixture.date), moment.ISO_8601).format(
+										"ddd D MMM YYYY h:mm A "
+									)
+								}}
+							</p>
+							<div class="d-flex justify-space-between align-center">
+								<div class="d-flex align-center">
+									<p class="mr-3 text-caption font-weight-medium">
+										{{ getTeamCode(f.teams.home.id) }}
+									</p>
+									<v-avatar size="40" large class="rounded-circle">
+										<v-img
+											class="rounded-circle"
+											lazy-src="../assets/logo.jpg"
+											:src="f.teams.home.logo"
+										></v-img>
+									</v-avatar>
+								</div>
+								<div
+									class="border rounded py-1 px-3 mx-3"
+									style="margin: 0 auto"
+								>
+									<p class="text-caption">
+										{{ f.goals.home + " - " + f.goals.away }}
+									</p>
+								</div>
+								<div class="d-flex align-center">
+									<v-avatar size="40" large class="rounded-circle">
+										<v-img
+											class="rounded-circle"
+											lazy-src="../assets/logo.jpg"
+											:src="f.teams.away.logo"
+										></v-img>
+									</v-avatar>
+									<p class="ml-3 text-caption font-weight-medium">
+										{{ getTeamCode(f.teams.away.id) }}
+									</p>
+								</div>
 							</div>
-							<div class="border rounded py-1 px-3 mx-3" style="margin: 0 auto">
-								<p class="text-caption">1 : 1</p>
-							</div>
-							<div class="d-flex align-center">
-								<v-avatar size="40" large class="rounded-circle">
-									<v-img
-										class="rounded-circle"
-										lazy-src="../assets/logo.jpg"
-										src="https://media.api-sports.io/football/teams/31.png"
-									></v-img>
-								</v-avatar>
-								<p class="ml-3 text-caption font-weight-medium">MUN</p>
-							</div>
-						</div>
-					</v-card>
-					<v-card class="py-3 px-5 mr-3" style="min-width: 280px">
-						<p class="font-weight-bold text-caption mb-3 text-center">
-							Sun 2 Oct 2022 10:00 PM
-						</p>
-						<div class="d-flex justify-space-between align-center">
-							<div class="d-flex align-center">
-								<p class="mr-3 text-caption font-weight-medium">MUN</p>
-								<v-avatar size="40" large class="rounded-circle">
-									<v-img
-										class="rounded-circle"
-										lazy-src="../assets/logo.jpg"
-										src="https://media.api-sports.io/football/teams/33.png"
-									></v-img>
-								</v-avatar>
-							</div>
-							<div class="border rounded py-1 px-3 mx-3" style="margin: 0 auto">
-								<p class="text-caption">1 : 1</p>
-							</div>
-							<div class="d-flex align-center">
-								<v-avatar size="40" large class="rounded-circle">
-									<v-img
-										class="rounded-circle"
-										lazy-src="../assets/logo.jpg"
-										src="https://media.api-sports.io/football/teams/31.png"
-									></v-img>
-								</v-avatar>
-								<p class="ml-3 text-caption font-weight-medium">MUN</p>
-							</div>
-						</div>
-					</v-card>
+						</v-card>
+					</div>
 				</div>
 				<div class="mt-3">
 					<p class="text-body-2 font-weight-medium text-grey-darken-3">
-						Game Week 0 Deadline
+						Game Week
+						{{ homePageGameWeek ? homePageGameWeek.week : 0 }} Deadline
 					</p>
 					<v-card class="gameweek-deadline-card mt-3">
 						<p class="text-center">Don't miss your chance</p>
@@ -160,7 +172,8 @@
 				</div>
 				<div class="mt-3">
 					<p class="text-body-2 font-weight-medium text-grey-darken-3">
-						Game Week 0 Top Predictor
+						Game Week {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
+						Predictor
 					</p>
 					<v-card class="mt-3 py-5 px-10">
 						<div class="d-flex align-center">
@@ -210,7 +223,8 @@
 import BottomNavigation from "../components/BottomNavigation.vue";
 import { mapGetters, mapActions } from "vuex";
 import logo from "@/assets/logo.jpg";
-
+import moment from "moment";
+import "moment-timezone";
 export default {
 	name: "Home",
 	components: { BottomNavigation },
@@ -219,7 +233,9 @@ export default {
 			authenticated: "auth/authenticated",
 			user: "auth/user",
 			currentGameWeek: "gameweek/currentGameWeek",
+			homePageGameWeek: "gameweek/homePageGameWeek",
 			teams: "teams",
+			homeData: "homeData",
 		}),
 		checkDeviceIOS() {
 			return this.isIOSMobile(navigator.userAgent);
@@ -232,10 +248,13 @@ export default {
 		};
 	},
 	methods: {
+		moment,
+
 		...mapActions({
 			getGameWeekAction: "gameweek/getGameWeekAction",
 			getTournamentIndexAction: "getTournamentIndexAction",
 			setTeamsAction: "setTeamsAction",
+			getHomeDataAction: "getHomeDataAction",
 		}),
 		async install() {
 			this.deferredPrompt.prompt();
@@ -245,6 +264,16 @@ export default {
 				return true;
 			} else {
 				return false;
+			}
+		},
+		getTeamCode(id) {
+			if (this.teams) {
+				const team = this.teams.filter((t) => {
+					return t.team.id === id;
+				});
+				return team[0].team.code;
+			} else {
+				return null;
 			}
 		},
 	},
@@ -281,6 +310,11 @@ export default {
 				});
 			}
 		}
+
+		await this.getHomeDataAction({
+			fixture_week: this.homePageGameWeek.week,
+			leaderboard: true,
+		});
 	},
 };
 </script>
@@ -310,6 +344,7 @@ export default {
 }
 
 .recent-matches-div {
+	width: 100%;
 	overflow-x: auto;
 	display: flex;
 }
