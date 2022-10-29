@@ -164,15 +164,30 @@
 							class="d-flex justify-space-between align-center py-3 mt-3 px-5"
 						>
 							<div class="text-center">
-								<p class="text-h5 font-weight-medium">1</p>
+								<p class="text-h5 font-weight-medium">
+									<span v-if="homeData">
+										{{ homeData.deadline ? homeData.deadline.days : 0 }}
+									</span>
+									<span v-else> 0 </span>
+								</p>
 								<p class="text-caption">Days</p>
 							</div>
 							<div class="text-center">
-								<p class="text-h5 font-weight-medium">1</p>
+								<p class="text-h5 font-weight-medium">
+									<span v-if="homeData">
+										{{ homeData.deadline ? homeData.deadline.hours : 0 }}
+									</span>
+									<span v-else> 0 </span>
+								</p>
 								<p class="text-caption">Hours</p>
 							</div>
 							<div class="text-center">
-								<p class="text-h5 font-weight-medium">1</p>
+								<p class="text-h5 font-weight-medium">
+									<span v-if="homeData">
+										{{ homeData.deadline ? homeData.deadline.mins : 0 }}
+									</span>
+									<span v-else> 0 </span>
+								</p>
 								<p class="text-caption">Mins</p>
 							</div>
 						</div>
@@ -198,17 +213,67 @@
 								></v-img>
 							</v-avatar>
 							<div class="">
-								<p>
-									<span class="text-body-1 font-weight-medium">Sai Main</span
-									><span class="text-caption text-uppercase"> (Yangon) </span>
+								<div
+									v-if="!homeData"
+									class="loading-skeleton mb-3 mr-3"
+									style="min-width: 160px"
+								>
+									<v-card
+										elevation="0"
+										class="bg-grey-lighten-4 py-3 px-3"
+										style="height: 10px"
+									>
+									</v-card>
+								</div>
+								<p v-else>
+									<span class="text-body-1 font-weight-medium">
+										<span v-if="homeData">
+											{{
+												homeData.highest_score
+													? homeData.highest_score.user.name
+													: "-"
+											}}
+										</span>
+										<span v-else> - </span></span
+									><span class="text-caption text-uppercase">
+										(
+										<span v-if="homeData">
+											{{
+												homeData.highest_score
+													? homeData.highest_score.user.region
+													: "-"
+											}}
+										</span>
+										<span v-else> - </span>)
+									</span>
 								</p>
-								<p class="text-caption font-weight-medium">
+								<div
+									v-if="!homeData"
+									class="loading-skeleton mb-3 mr-3"
+									style="min-width: 160px"
+								>
+									<v-card
+										elevation="0"
+										class="bg-grey-lighten-4 py-3 px-3"
+										style="height: 10px"
+									>
+									</v-card>
+								</div>
+								<p v-else class="text-caption font-weight-medium">
 									Total Points :
-									<span class="text-primary text-body-1 font-weight-medium"
-										>100 Pts</span
+									<span class="text-primary text-body-1 font-weight-medium">
+										<span v-if="homeData">
+											{{
+												homeData.highest_score
+													? homeData.highest_score.sum
+													: "-"
+											}}
+										</span>
+										<span v-else> - </span> Pts</span
 									>
 								</p>
 								<v-btn
+									v-if="homeData"
 									to="/leaderboard"
 									color="primary"
 									class="mt-3"
