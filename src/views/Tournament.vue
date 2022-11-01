@@ -328,9 +328,9 @@
 							</v-alert>
 						</template>
 
-						<!-- v-if="f.fixture.status.short === 'NS'" -->
 						<div class="text-center mt-3">
 							<v-btn
+								v-if="f.fixture.status.short === 'NS'"
 								size="small"
 								@click="predictionDialogHandler(f)"
 								color="primary"

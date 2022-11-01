@@ -203,13 +203,28 @@
 						Game Week {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
 						Predictor
 					</p>
-					<v-card class="mt-3 py-5 px-10">
+
+					<div v-if="!homeData" class="px-1 py-3">
+						<div class="loading-skeleton mb-3 mr-3">
+							<v-card
+								elevation="0"
+								class="bg-grey-lighten-4 py-3 px-3"
+								style="height: 140px"
+							>
+							</v-card>
+						</div>
+					</div>
+					<v-card v-else class="mt-3 py-5 px-10">
 						<div class="d-flex align-center">
 							<v-avatar size="60" large class="rounded-circle mr-8">
 								<v-img
 									class="rounded-circle"
 									lazy-src="../assets/logo.jpg"
-									src="https://media.api-sports.io/football/teams/33.png"
+									:src="
+										homeData.highest_score.user.profileImage
+											? getProfileImage(homeData.highest_score.user)
+											: getTeamLogo(homeData.highest_score.user.favoriteTeam)
+									"
 								></v-img>
 							</v-avatar>
 							<div class="">
@@ -333,6 +348,7 @@ export default {
 			getTournamentIndexAction: "getTournamentIndexAction",
 			setTeamsAction: "setTeamsAction",
 			getHomeDataAction: "getHomeDataAction",
+			toggleSnackBarAction: "general/toggleSnackBarAction",
 		}),
 		async install() {
 			this.deferredPrompt.prompt();
@@ -343,6 +359,9 @@ export default {
 			} else {
 				return false;
 			}
+		},
+		getProfileImage(user) {
+			return process.env.VUE_APP_API_DOMAIN + user.profileImage;
 		},
 		getTeamCode(id) {
 			if (this.teams) {

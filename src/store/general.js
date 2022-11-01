@@ -28,10 +28,18 @@ export default {
       list: null,
       close: true,
     },
+    snackBar: {
+      show: false,
+      text: "",
+      close: true,
+    },
   },
   getters: {
     dialogData(state) {
       return state.dialogData;
+    },
+    snackBar(state) {
+      return state.snackBar;
     },
     regions(state) {
       return state.regions;
@@ -59,6 +67,17 @@ export default {
       state.dialogData.body = "";
       state.dialogData.list = null;
       state.dialogData.close = true;
+    },
+    toggleSnackBarAction({ state }, data) {
+      if (!data.show) {
+        state.snackBar.show = false;
+        state.snackBar.text = "";
+        state.snackBar.close = true;
+      } else {
+        state.snackBar.show = true;
+        state.snackBar.text = data.text;
+        state.snackBar.close = data.close;
+      }
     },
   },
   modules: {},

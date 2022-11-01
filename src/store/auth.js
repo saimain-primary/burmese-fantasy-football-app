@@ -63,6 +63,7 @@ export default {
 
         //   commit("setFavoriteTeam", teamResponse.data.results.response[0]);
         // }
+
         commit("toggleLoading", false, { root: true });
         return response.data;
       } catch (error) {

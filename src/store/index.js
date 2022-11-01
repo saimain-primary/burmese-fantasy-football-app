@@ -20,6 +20,7 @@ export default createStore({
       phone: "",
       password: "",
     },
+    leaderboardDetail: null,
   },
   getters: {
     teams(state) {
@@ -49,6 +50,9 @@ export default createStore({
     homeData(state) {
       return state.homeData;
     },
+    leaderboardDetail(state) {
+      return state.leaderboardDetail;
+    },
   },
   mutations: {
     setTeams(state, teams) {
@@ -73,6 +77,9 @@ export default createStore({
     },
     setHomeData(state, data) {
       state.homeData = data;
+    },
+    setLeaderboardDetail(state, data) {
+      state.leaderboardDetail = data;
     },
   },
   actions: {
@@ -136,6 +143,27 @@ export default createStore({
 
       commit("setHomeData", response.data.results);
       console.log(response);
+
+      return response.data;
+    },
+
+    async updateAccountAction({ commit }, data) {
+      commit("toggleLoading", true);
+
+      const response = await axios.put("/me", data);
+      commit("auth/setUser", response.data.results, { root: true });
+
+      return response.data;
+    },
+
+    async getLeaderboardDetailAction({ commit }, data) {
+      const response = await axios.get("/leaderboard-detail/" + data.user_id, {
+        params: {
+          fixture_week: data.fixture_week,
+        },
+      });
+
+      commit("setLeaderboardDetail", response.data.results);
 
       return response.data;
     },

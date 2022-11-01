@@ -13,6 +13,7 @@
 				></v-progress-circular
 			></v-card>
 		</v-dialog>
+
 		<TopBar :pageName="pageName" :back="this.$route.meta.back" />
 		<v-main class="my-auto">
 			<v-banner v-if="updateExists" style="background: #ff5252; color: #fff">
@@ -20,13 +21,13 @@
 					We have some updates for the App. Please click reload for the updates
 					and new features.
 				</template>
-
 				<template v-slot:actions>
 					<v-btn color="white" @click="refreshApp">Reload</v-btn>
 				</template>
 			</v-banner>
 			<router-view />
 		</v-main>
+		<SnackBar></SnackBar>
 		<Dialog></Dialog>
 	</v-app>
 </template>
@@ -34,12 +35,13 @@
 <script>
 import TopBar from "./components/TopBar.vue";
 import Dialog from "./components/Dialog.vue";
+import SnackBar from "./components/SnackBar.vue";
 import { mapActions, mapGetters } from "vuex";
 import update from "./mixins/update";
 
 export default {
 	name: "App",
-	components: { TopBar, Dialog },
+	components: { TopBar, Dialog, SnackBar },
 	computed: {
 		...mapGetters({
 			isLoading: "isLoading",
@@ -48,6 +50,7 @@ export default {
 	data: () => ({
 		pageName: "",
 		back: "",
+		snackbar: false,
 	}),
 	mixins: [update],
 	mounted() {
@@ -61,6 +64,7 @@ export default {
 
 		console.log("update", update);
 		console.log(process.env.NODE_ENV);
+		console.log(process.env.VUE_APP_API_DOMAIN);
 	},
 	watch: {
 		$route(to, from) {

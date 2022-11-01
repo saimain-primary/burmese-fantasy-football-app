@@ -3,11 +3,21 @@
 		<div class="text-center avatar-div">
 			<v-avatar size="100" variant="elevated" class="avatar" color="white">
 				<v-img
-					:src="favoriteTeam ? favoriteTeam.team.logo : logo"
+					v-if="user"
+					:src="user.profileImage ? profileImageComputed : logo"
 					:lazy-src="logo"
 					class="rounded-circle"
 					max-height="100"
 					max-width="100"
+				>
+				</v-img>
+				<v-img
+					v-else
+					class="rounded-circle"
+					max-height="100"
+					:lazy-src="logo"
+					max-width="100"
+					:src="logo"
 				>
 				</v-img>
 			</v-avatar>
@@ -29,6 +39,16 @@
 						</v-list-item-subtitle>
 						<v-list-item-subtitle
 							>Favorite Team : {{ user.favoriteTeam }}</v-list-item-subtitle
+						>
+						<v-list-item class="mt-3"
+							><v-btn
+								to="/profile/edit"
+								color="primary"
+								size="small"
+								variant="flat"
+								class=""
+								>Edit Profile</v-btn
+							></v-list-item
 						>
 					</template>
 
@@ -138,13 +158,22 @@ export default {
 			dialogLink: null,
 			dialogLinkText: "",
 		},
+		profileImage: null,
 	}),
 	computed: {
 		...mapGetters({
 			authenticated: "auth/authenticated",
 			user: "auth/user",
 			favoriteTeam: "auth/favoriteTeam",
+			teams: "teams",
 		}),
+		profileImageComputed() {
+			if (this.authenticated) {
+				return process.env.VUE_APP_API_DOMAIN + this.user.profileImage;
+			} else {
+				return null;
+			}
+		},
 	},
 	methods: {
 		...mapActions({
@@ -152,6 +181,8 @@ export default {
 			getMeAction: "auth/getMeAction",
 			getFavoriteTeamAction: "auth/getFavoriteTeamAction",
 			logoutAction: "auth/logoutAction",
+			getTournamentIndexAction: "getTournamentIndexAction",
+			setTeamsAction: "setTeamsAction",
 		}),
 		showDataDialog(data) {
 			switch (data) {
@@ -213,6 +244,22 @@ export default {
 	},
 	async mounted() {
 		this.$gtag.event("profile");
+
+		if (!this.teams) {
+			const response = await this.getTournamentIndexAction({
+				get: "teams",
+			});
+			if (response.code === 200) {
+				if (response.results.teams) {
+					this.setTeamsAction(response.results.teams);
+				}
+			} else {
+				this.showDialogAction({
+					title: "Whoops!",
+					body: response.results.message,
+				});
+			}
+		}
 	},
 };
 </script>

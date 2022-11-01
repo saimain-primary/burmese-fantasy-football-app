@@ -106,11 +106,11 @@
 											<v-img
 												class="rounded-circle"
 												:src="
-													firstUserLeaderboard.user.favoriteTeam
-														? getTeamLogo(
+													firstUserLeaderboard.user.profileImage
+														? getProfileImage(firstUserLeaderboard.user)
+														: getTeamLogo(
 																firstUserLeaderboard.user.favoriteTeam
 														  )
-														: logo
 												"
 												:lazy-src="logo"
 											></v-img>
@@ -125,6 +125,7 @@
 								</div>
 								<div class="">
 									<v-btn
+										@click="viewDetail(firstUserLeaderboard)"
 										size="x-small"
 										icon="mdi-arrow-right"
 										color="white"
@@ -146,9 +147,9 @@
 											<v-img
 												class="rounded-circle"
 												:src="
-													data.user.favoriteTeam
-														? getTeamLogo(data.user.favoriteTeam)
-														: logo
+													data.user.profileImage
+														? getProfileImage(data.user)
+														: getTeamLogo(data.user.favoriteTeam)
 												"
 												:lazy-src="logo"
 											></v-img>
@@ -165,6 +166,7 @@
 								</div>
 								<div class="">
 									<v-btn
+										@click="viewDetail(data)"
 										size="x-small"
 										icon="mdi-arrow-right"
 										color="white"
@@ -198,6 +200,9 @@ export default {
 			selectedGameWeek: "fixture/selectedGameWeek",
 			leaderboardData: "leaderboardData",
 			teams: "teams",
+			authenticated: "auth/authenticated",
+			user: "auth/user",
+			favoriteTeam: "auth/favoriteTeam",
 		}),
 		firstUserLeaderboard() {
 			if (this.leaderboardData) {
@@ -239,6 +244,9 @@ export default {
 			})[0];
 			return team.team.logo;
 		},
+		getProfileImage(user) {
+			return process.env.VUE_APP_API_DOMAIN + user.profileImage;
+		},
 		async onChangeGameWeekHandler() {
 			this.loading = true;
 
@@ -259,12 +267,24 @@ export default {
 			}
 			this.loading = false;
 		},
+		viewDetail(data) {
+			this.$router.push({
+				path: `/leaderboard/${data.user_id}`,
+			});
+			console.log("data", data);
+		},
 	},
 	async mounted() {
 		this.loading = true;
 		this.$gtag.event("leaderboard");
 
-		await this.getGameWeekAction();
+		if (
+			this.gameWeekList.length <= 0 &&
+			!this.currentGameWeek &&
+			this.gameWeekListForSelect.length <= 0
+		) {
+			await this.getGameWeekAction();
+		}
 
 		let get = "";
 		let fixtureParams = {};

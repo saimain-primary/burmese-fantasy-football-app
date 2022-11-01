@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Tournament from "../views/Tournament.vue";
 import Leaderboard from "../views/Leaderboard.vue";
 import Profile from "../views/Profile.vue";
+import EditProfile from "../views/EditProfile.vue";
 import Login from "../views/Login.vue";
 import Signup from "../views/Signup.vue";
 import Verify from "../views/Verify.vue";
@@ -11,6 +12,7 @@ import ChangePassword from "../views/ChangePassword.vue";
 import FixtureDetail from "../views/FixtureDetail.vue";
 import ManageGameWeek from "../views/ManageGameWeek.vue";
 import Lineups from "../views/Lineups.vue";
+import LeaderboardDetail from "../views/LeaderboardDetail.vue";
 import store from "@/store";
 const routes = [
   {
@@ -42,9 +44,38 @@ const routes = [
     component: Leaderboard,
   },
   {
+    path: "/leaderboard/:id",
+    name: "Leaderboard Detail",
+    component: LeaderboardDetail,
+    props: true,
+    meta: { back: true },
+  },
+  {
     path: "/profile",
     name: "my profile",
     component: Profile,
+  },
+  {
+    path: "/profile/edit",
+    name: "edit profile",
+    component: EditProfile,
+    props: true,
+    meta: { back: true },
+    beforeEnter: (to, from, next) => {
+      let user = store.getters["auth/user"];
+      if (user) {
+        if (!store.getters["auth/authenticated"]) {
+          return next({
+            path: "/profile",
+          });
+        }
+        next();
+      } else {
+        return next({
+          path: "/profile",
+        });
+      }
+    },
   },
   {
     path: "/signup",
