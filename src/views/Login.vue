@@ -73,8 +73,8 @@ export default {
     showPassword: false,
     showConfirmPassword: false,
     formData: {
-      phone: "09756783439",
-      password: "111111",
+      phone: "",
+      password: "",
     },
     formRules: {
       phone: [(v) => !!v || "Phone is required"],

@@ -155,8 +155,7 @@
 				</div>
 				<div class="mt-3">
 					<p class="text-body-2 font-weight-medium text-grey-darken-3">
-						Game Week
-						{{ homePageGameWeek ? homePageGameWeek.week : 0 }} Deadline
+						Next Game Week Deadline
 					</p>
 					<v-card class="gameweek-deadline-card mt-3">
 						<p class="text-center">Don't miss your chance</p>
@@ -198,107 +197,110 @@
 						</div>
 					</v-card>
 				</div>
-				<div class="mt-3">
-					<p class="text-body-2 font-weight-medium text-grey-darken-3">
-						Game Week {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
-						Predictor
-					</p>
-
-					<div v-if="!homeData" class="px-1 py-3">
-						<div class="loading-skeleton mb-3 mr-3">
-							<v-card
-								elevation="0"
-								class="bg-grey-lighten-4 py-3 px-3"
-								style="height: 140px"
-							>
-							</v-card>
-						</div>
-					</div>
-					<v-card v-else class="mt-3 py-5 px-10">
-						<div class="d-flex align-center">
-							<v-avatar size="60" large class="rounded-circle mr-8">
-								<v-img
-									class="rounded-circle"
-									lazy-src="../assets/logo.jpg"
-									:src="
-										homeData.highest_score.user.profileImage
-											? getProfileImage(homeData.highest_score.user)
-											: getTeamLogo(homeData.highest_score.user.favoriteTeam)
-									"
-								></v-img>
-							</v-avatar>
-							<div class="">
-								<div
-									v-if="!homeData"
-									class="loading-skeleton mb-3 mr-3"
-									style="min-width: 160px"
+				<template v-if="homeData">
+					<div class="mt-3" v-if="homeData.highest_score">
+						<p class="text-body-2 font-weight-medium text-grey-darken-3">
+							Game Week {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
+							Predictor
+						</p>
+	
+						<div v-if="!homeData" class="px-1 py-3">
+							<div class="loading-skeleton mb-3 mr-3">
+								<v-card
+									elevation="0"
+									class="bg-grey-lighten-4 py-3 px-3"
+									style="height: 140px"
 								>
-									<v-card
-										elevation="0"
-										class="bg-grey-lighten-4 py-3 px-3"
-										style="height: 10px"
-									>
-									</v-card>
-								</div>
-								<p v-else>
-									<span class="text-body-1 font-weight-medium">
-										<span v-if="homeData">
-											{{
-												homeData.highest_score
-													? homeData.highest_score.user.name
-													: "-"
-											}}
-										</span>
-										<span v-else> - </span></span
-									><span class="text-caption text-uppercase">
-										(
-										<span v-if="homeData">
-											{{
-												homeData.highest_score
-													? homeData.highest_score.user.region
-													: "-"
-											}}
-										</span>
-										<span v-else> - </span>)
-									</span>
-								</p>
-								<div
-									v-if="!homeData"
-									class="loading-skeleton mb-3 mr-3"
-									style="min-width: 160px"
-								>
-									<v-card
-										elevation="0"
-										class="bg-grey-lighten-4 py-3 px-3"
-										style="height: 10px"
-									>
-									</v-card>
-								</div>
-								<p v-else class="text-caption font-weight-medium">
-									Total Points :
-									<span class="text-primary text-body-1 font-weight-medium">
-										<span v-if="homeData">
-											{{
-												homeData.highest_score
-													? homeData.highest_score.sum
-													: "-"
-											}}
-										</span>
-										<span v-else> - </span> Pts</span
-									>
-								</p>
-								<v-btn
-									v-if="homeData"
-									to="/leaderboard"
-									color="primary"
-									class="mt-3"
-									size="small"
-									>View Leaderboard</v-btn
-								>
+								</v-card>
 							</div>
 						</div>
-					</v-card>
-				</div>
+						<v-card v-else class="mt-3 py-5 px-10">
+							<div class="d-flex align-center">
+								<v-avatar size="60" large class="rounded-circle mr-8">
+									<v-img
+										class="rounded-circle"
+										lazy-src="../assets/logo.jpg"
+										:src="
+											homeData.highest_score.user.profileImage
+												? getProfileImage(homeData.highest_score.user)
+												: getTeamLogo(homeData.highest_score.user.favoriteTeam)
+										"
+									></v-img>
+								</v-avatar>
+								<div class="">
+									<div
+										v-if="!homeData"
+										class="loading-skeleton mb-3 mr-3"
+										style="min-width: 160px"
+									>
+										<v-card
+											elevation="0"
+											class="bg-grey-lighten-4 py-3 px-3"
+											style="height: 10px"
+										>
+										</v-card>
+									</div>
+									<p v-else>
+										<span class="text-body-1 font-weight-medium">
+											<span v-if="homeData">
+												{{
+													homeData.highest_score
+														? homeData.highest_score.user.name
+														: "-"
+												}}
+											</span>
+											<span v-else> - </span></span
+										><span class="text-caption text-uppercase">
+											(
+											<span v-if="homeData">
+												{{
+													homeData.highest_score
+														? homeData.highest_score.user.region
+														: "-"
+												}}
+											</span>
+											<span v-else> - </span>)
+										</span>
+									</p>
+									<div
+										v-if="!homeData"
+										class="loading-skeleton mb-3 mr-3"
+										style="min-width: 160px"
+									>
+										<v-card
+											elevation="0"
+											class="bg-grey-lighten-4 py-3 px-3"
+											style="height: 10px"
+										>
+										</v-card>
+									</div>
+									<p v-else class="text-caption font-weight-medium">
+										Total Points :
+										<span class="text-primary text-body-1 font-weight-medium">
+											<span v-if="homeData">
+												{{
+													homeData.highest_score
+														? homeData.highest_score.sum
+														: "-"
+												}}
+											</span>
+											<span v-else> - </span> Pts</span
+										>
+									</p>
+									<v-btn
+										v-if="homeData"
+										to="/leaderboard"
+										color="primary"
+										class="mt-3"
+										size="small"
+										>View Leaderboard</v-btn
+									>
+								</div>
+							</div>
+						</v-card>
+					</div>
+				</template>
+				
 				<div>
 					<p class="mt-3 text-caption text-grey-lighten-1 text-center">
 						Advertisement
@@ -410,6 +412,7 @@ export default {
 
 		await this.getHomeDataAction({
 			fixture_week: this.homePageGameWeek.week,
+			current_week: this.currentGameWeek.week,
 			leaderboard: true,
 		});
 	},

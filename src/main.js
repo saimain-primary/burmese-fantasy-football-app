@@ -18,8 +18,10 @@ axios.defaults.baseURL =
 
 loadFonts();
 
-store.dispatch("auth/getMeAction", localStorage.getItem("token"));
-createApp(App)
+Promise.all([
+  store.dispatch("auth/getMeAction", localStorage.getItem("token"))
+]).finally(() => {
+  createApp(App)
   .use(router)
   .use(store)
   .use(vuetify)
@@ -28,3 +30,5 @@ createApp(App)
     router,
   })
   .mount("#app");
+
+})
