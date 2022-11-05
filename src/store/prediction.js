@@ -52,19 +52,20 @@ export default {
       return response.data;
     },
     async getPredictionCalculatedListAction({ commit }, data) {
-      console.log("d", data);
-      const prediction_ids = data.predictions.map((p) => {
-        return p._id;
-      });
-
-      const response = await axios.post("/calculate-point", {
-        prediction_id: prediction_ids,
-        user_id: data.user_id,
-      });
-
-      commit("setPredictionResultList", response.data.results);
-
-      console.log("rsp", response);
+      if (data.predictions) {
+        const prediction_ids = data.predictions.map((p) => {
+          return p._id;
+        });
+  
+        const response = await axios.post("/calculate-point", {
+          prediction_id: prediction_ids,
+          user_id: data.user_id,
+        });
+  
+        commit("setPredictionResultList", response.data.results);
+  
+        console.log("rsp", response);
+      }
     },
   },
 };
