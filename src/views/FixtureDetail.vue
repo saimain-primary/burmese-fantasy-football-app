@@ -107,7 +107,8 @@
 
 				<!-- <v-window class="mt-5" v-model="tab"> -->
 				<!-- <v-window-item value="one"> -->
-				<div
+				<v-card class="px-3">
+					<div
 					class="
 						bg-grey-lighten-3
 						py-1
@@ -204,6 +205,7 @@
 						</v-btn>
 					</div>
 				</template>
+				
 
 				<div
 					class="
@@ -434,6 +436,7 @@
 						prepend-icon="mdi-soccer-field"
 					></v-list-item>
 				</v-list>
+				</v-card>
 				<!-- </v-window-item> -->
 
 				<!-- </v-window> -->
