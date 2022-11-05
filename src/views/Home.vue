@@ -364,6 +364,12 @@ export default {
 		getProfileImage(user) {
 			return process.env.VUE_APP_API_DOMAIN + user.profileImage;
 		},
+		getTeamLogo(name) {
+			const team = this.teams.filter((t) => {
+				return t.team.name === name;
+			})[0];
+			return team.team.logo;
+		},
 		getTeamCode(id) {
 			if (this.teams) {
 				const team = this.teams.filter((t) => {
