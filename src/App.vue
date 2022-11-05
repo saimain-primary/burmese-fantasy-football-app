@@ -15,7 +15,7 @@
 		</v-dialog>
 
 		<TopBar :pageName="pageName" :back="this.$route.meta.back" />
-		<v-main class="my-auto">
+		<v-main class="my-auto overflow-y-auto" style="height:100vh">
 			<v-banner v-if="updateExists" style="background: #ff5252; color: #fff">
 				<template v-slot:text>
 					We have some updates for the App. Please click reload for the updates

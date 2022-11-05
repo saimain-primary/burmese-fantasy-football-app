@@ -111,165 +111,167 @@
 					Game Week {{ fixtureGameWeek }} Results
 				</p>
 
-				<template v-if="loading">
-					<div v-for="index in 2" :key="index" class="loading-skeleton mb-3">
-						<v-card
-							elevation="0"
-							class="bg-grey-lighten-4 py-3 px-3"
-							style="height: 300px"
-						>
-						</v-card>
-					</div>
-				</template>
-
-				<template v-else>
-					<div v-if="leaderboardDetail?.results">
-						<v-card
-							v-for="(data, index) in leaderboardDetail?.results"
-							:key="index"
-							class="py-5 px-5 mb-5"
-						>
-							<div class="d-flex justify-center align-center">
-								<p class="font-weight-bold text-body-2">
-									{{
-										moment(new Date(data.fixture.date), moment.ISO_8601).format(
-											"ddd D MMM YYYY h:mm A "
-										)
-									}}
-								</p>
-							</div>
-							<v-divider class="my-3"></v-divider>
-							<div
-								class="
-									d-flex
-									text-center
-									mt-5
-									justify-space-between
-									align-center
-								"
+				<div class="" style="overflow-y:scroll">
+					<template v-if="loading">
+						<div v-for="index in 2" :key="index" class="loading-skeleton mb-3">
+							<v-card
+								elevation="0"
+								class="bg-grey-lighten-4 py-3 px-3"
+								style="height: 300px"
 							>
-								<div
-									class="d-flex flex-column justify-center align-center"
-									style="width: 100px"
-								>
-									<v-avatar size="40" large class="rounded-circle">
-										<v-img
-											class="rounded-circle"
-											:lazy-src="logo"
-											:src="data.teams.home_team.logo"
-										></v-img>
-									</v-avatar>
-									<p class="mt-3 text-caption font-weight-medium">
-										{{ data.teams.home_team.name }}
+							</v-card>
+						</div>
+					</template>
+	
+					<div v-else class="d-flex flex-column">
+						<div class="" v-if="leaderboardDetail?.results">
+							<v-card
+								v-for="(data, index) in leaderboardDetail?.results"
+								:key="index"
+								class="py-5 px-5 mb-5"
+							>
+								<div class="d-flex justify-center align-center">
+									<p class="font-weight-bold text-body-2">
+										{{
+											moment(new Date(data.fixture.date), moment.ISO_8601).format(
+												"ddd D MMM YYYY h:mm A "
+											)
+										}}
 									</p>
 								</div>
-								<div>
+								<v-divider class="my-3"></v-divider>
+								<div
+									class="
+										d-flex
+										text-center
+										mt-5
+										justify-space-between
+										align-center
+									"
+								>
 									<div
-										class="d-flex justify-space-between align-center"
-										style="width: 120px; margin: 0 auto"
+										class="d-flex flex-column justify-center align-center"
+										style="width: 100px"
 									>
-										<p
-											class="px-4 text-primary py-1 rounded-lg text-h6"
-											style="
-												border: 1px;
-												border-width: 2px;
-												border-style: dashed;
-											"
-										>
-											{{ data.results.home }}
-										</p>
-										<span class="mx-3 text-primary font-weight-medium">-</span>
-										<p
-											class="text-primary px-4 py-1 rounded-lg text-h6"
-											style="
-												border: 1px;
-												border-width: 2px;
-												border-style: dashed;
-											"
-										>
-											{{ data.results.away }}
+										<v-avatar size="40" large class="rounded-circle">
+											<v-img
+												class="rounded-circle"
+												:lazy-src="logo"
+												:src="data.teams.home_team.logo"
+											></v-img>
+										</v-avatar>
+										<p class="mt-3 text-caption font-weight-medium">
+											{{ data.teams.home_team.name }}
 										</p>
 									</div>
-									<p class="text-caption mt-2 text-success font-weight-medium">
-										{{ data.fixture.status.long }}
-									</p>
-								</div>
-								<div
-									class="d-flex flex-column justify-center align-center"
-									style="width: 100px"
-								>
-									<v-avatar size="40" large class="rounded-circle">
-										<v-img
-											class="rounded-circle"
-											:lazy-src="logo"
-											:src="data.teams.away_team.logo"
-										></v-img>
-									</v-avatar>
-									<p class="mt-3 text-caption font-weight-medium">
-										{{ data.teams.away_team.name }}
-									</p>
-								</div>
-							</div>
-							<div class="mt-5">
-								<div
-									class="
-										d-flex
-										justify-space-between
-										align-center
-										text-body-2
-										mb-3
-									"
-								>
-									<p>Prediction</p>
-									<p class="">
-										<span
-											v-if="data.predicts?.boosted"
-											class="text-success text-uppercase font-weight-medium"
-											style="font-size: 10px"
-											>2x Boosted</span
+									<div>
+										<div
+											class="d-flex justify-space-between align-center"
+											style="width: 120px; margin: 0 auto"
 										>
-										{{ data.predicts?.home }} - {{ data.predicts?.away }}
-									</p>
+											<p
+												class="px-4 text-primary py-1 rounded-lg text-h6"
+												style="
+													border: 1px;
+													border-width: 2px;
+													border-style: dashed;
+												"
+											>
+												{{ data.results.home }}
+											</p>
+											<span class="mx-3 text-primary font-weight-medium">-</span>
+											<p
+												class="text-primary px-4 py-1 rounded-lg text-h6"
+												style="
+													border: 1px;
+													border-width: 2px;
+													border-style: dashed;
+												"
+											>
+												{{ data.results.away }}
+											</p>
+										</div>
+										<p class="text-caption mt-2 text-success font-weight-medium">
+											{{ data.fixture.status.long }}
+										</p>
+									</div>
+									<div
+										class="d-flex flex-column justify-center align-center"
+										style="width: 100px"
+									>
+										<v-avatar size="40" large class="rounded-circle">
+											<v-img
+												class="rounded-circle"
+												:lazy-src="logo"
+												:src="data.teams.away_team.logo"
+											></v-img>
+										</v-avatar>
+										<p class="mt-3 text-caption font-weight-medium">
+											{{ data.teams.away_team.name }}
+										</p>
+									</div>
 								</div>
-								<div
-									class="
-										bg-grey-lighten-3
-										px-3
-										d-flex
-										justify-center
-										align-center
-										mb-3
-									"
-								>
-									<p class="text-overline">Points Breakdown</p>
+								<div class="mt-5">
+									<div
+										class="
+											d-flex
+											justify-space-between
+											align-center
+											text-body-2
+											mb-3
+										"
+									>
+										<p>Prediction</p>
+										<p class="">
+											<span
+												v-if="data.predicts?.boosted"
+												class="text-success text-uppercase font-weight-medium"
+												style="font-size: 10px"
+												>2x Boosted</span
+											>
+											{{ data.predicts?.home }} - {{ data.predicts?.away }}
+										</p>
+									</div>
+									<div
+										class="
+											bg-grey-lighten-3
+											px-3
+											d-flex
+											justify-center
+											align-center
+											mb-3
+										"
+									>
+										<p class="text-overline">Points Breakdown</p>
+									</div>
+									<div
+										v-for="(p, index) in data.points[0]"
+										:key="index"
+										class="
+											d-flex
+											justify-space-between
+											align-center
+											text-body-2
+											mb-1
+										"
+									>
+										<p>{{ snackToTitle(index) }}</p>
+										<p class="">{{ p }} Points</p>
+									</div>
 								</div>
-								<div
-									v-for="(p, index) in data.points[0]"
-									:key="index"
-									class="
-										d-flex
-										justify-space-between
-										align-center
-										text-body-2
-										mb-1
-									"
-								>
-									<p>{{ snackToTitle(index) }}</p>
-									<p class="">{{ p }} Points</p>
-								</div>
-							</div>
-						</v-card>
+							</v-card>
+						</div>
+						<div
+							v-else
+							class="d-flex mt-16 flex-column justify-space-between align-center"
+						>
+							<v-img class="" :src="nodata" width="100"></v-img>
+							<p class="text-body-2 text-grey-darken-1 mt-3">
+								<b>No data Available!</b>
+							</p>
+						</div>
 					</div>
-					<div
-						v-else
-						class="d-flex mt-16 flex-column justify-space-between align-center"
-					>
-						<v-img class="" :src="nodata" width="100"></v-img>
-						<p class="text-body-2 text-grey-darken-1 mt-3">
-							<b>No data Available!</b>
-						</p>
-					</div>
-				</template>
+				</div>
 			</v-col>
 		</v-row>
 	</v-container>
