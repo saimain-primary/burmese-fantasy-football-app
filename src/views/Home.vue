@@ -197,24 +197,23 @@
 						</div>
 					</v-card>
 				</div>
-				<template v-if="homeData">
+				<div v-if="!homeData" class="loading-skeleton mt-5">
+					<v-card
+						elevation="0"
+						class="bg-grey-lighten-4 py-3 px-3"
+						style="height: 140px"
+					>
+					</v-card>
+				</div>
+				<template v-else>
 					<div class="mt-3" v-if="homeData.highest_score">
 						<p class="text-body-2 font-weight-medium text-grey-darken-3">
 							Game Week {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
 							Predictor
 						</p>
 	
-						<div v-if="!homeData" class="px-1 py-3">
-							<div class="loading-skeleton mb-3 mr-3">
-								<v-card
-									elevation="0"
-									class="bg-grey-lighten-4 py-3 px-3"
-									style="height: 140px"
-								>
-								</v-card>
-							</div>
-						</div>
-						<v-card v-else class="mt-3 py-5 px-10">
+						
+						<v-card v-if="homeData" class="mt-3 py-5 px-10">
 							<div class="d-flex align-center">
 								<v-avatar size="60" large class="rounded-circle mr-8">
 									<v-img
