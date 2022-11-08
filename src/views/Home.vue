@@ -80,9 +80,17 @@
 		</v-container>
 	</div>
 
+	
+
+
 	<v-container :class="authenticated ? 'mt-10' : 'mt-16'">
+
+
 		<v-row>
 			<v-col>
+
+
+				
 				<p class="mt-10 text-body-2 font-weight-medium text-grey-darken-3">
 					Recent Matches
 				</p>
@@ -153,6 +161,11 @@
 						</v-card>
 					</div>
 				</div>
+
+				<!-- <v-alert color="primary" variant="tonal" class="mt-3">
+					You are using new version of <strong>BFF</strong> and to use the old version <a href="https://v1.bffsports.com" target="_blank">click here</a>
+				  </v-alert> -->
+
 				<div class="mt-3">
 					<p class="text-body-2 font-weight-medium text-grey-darken-3">
 						Next Game Week Deadline
@@ -304,7 +317,9 @@
 					<p class="mt-3 text-caption text-grey-lighten-1 text-center">
 						Advertisement
 					</p>
-					<!-- <v-img src="../assets/banners/aspire_shin.jpeg"></v-img> -->
+					<router-link to="/tournament">
+					<v-img src="../assets/banners/bff.png"></v-img>
+					</router-link>
 				</div>
 			</v-col>
 		</v-row>

@@ -109,67 +109,26 @@
 				<!-- <v-window-item value="one"> -->
 				<v-card class="px-3">
 					<div
-					class="
-						bg-grey-lighten-3
-						py-1
-						px-2
-						mt-5
-						d-flex
-						justify-space-between
-						align-center
-						mb-3
-					"
-				>
-					<p class="text-overline">Prediction</p>
-				</div>
+						class="
+							bg-grey-lighten-3
+							py-1
+							px-2
+							mt-5
+							d-flex
+							justify-space-between
+							align-center
+							mb-3
+						"
+					>
+						<p class="text-overline">Prediction</p>
+					</div>
 
-				<template
-					v-if="
-						fixtureDetail.predictions && fixtureDetail.predictions.length > 0
-					"
-				>
-					<div
-						class="
-							d-flex
-							justify-space-between
-							align-center
-							text-body-2
-							px-3
-							mb-1
-						"
-					>
-						<p>Your Prediction</p>
-						<p class="">
-							{{ fixtureDetail.predictions[0].home }}
-							-
-							{{ fixtureDetail.predictions[0].away }}
-						</p>
-					</div>
-					<div
-						class="
-							mb-1
-							d-flex
-							justify-space-between
-							align-center
-							text-body-2
-							px-3
-						"
-					>
-						<p>Using 2x Booster</p>
-						<p class="">
-							{{ fixtureDetail.predictions[0].boosted ? "Yes" : "No" }}
-						</p>
-					</div>
 					<template
 						v-if="
-							getFixturePredictionResult(fixtureDetail.fixtures[0].fixture.id)
+							fixtureDetail.predictions && fixtureDetail.predictions.length > 0
 						"
 					>
 						<div
-							v-for="(p, index) in getFixturePredictionResult(
-								fixtureDetail.fixtures[0].fixture.id
-							).points"
-							:key="index"
 							class="
 								d-flex
 								justify-space-between
@@ -179,263 +138,305 @@
 								mb-1
 							"
 						>
-							<p>{{ snackToTitle(index) }}</p>
-							<p class="">{{ p }} Points</p>
+							<p>Your Prediction</p>
+							<p class="">
+								{{ fixtureDetail.predictions[0].home }}
+								-
+								{{ fixtureDetail.predictions[0].away }}
+							</p>
+						</div>
+						<div
+							class="
+								mb-1
+								d-flex
+								justify-space-between
+								align-center
+								text-body-2
+								px-3
+							"
+						>
+							<p>Using 2x Booster</p>
+							<p class="">
+								{{ fixtureDetail.predictions[0].boosted ? "Yes" : "No" }}
+							</p>
+						</div>
+						<template
+							v-if="
+								getFixturePredictionResult(fixtureDetail.fixtures[0].fixture.id)
+							"
+						>
+							<div
+								v-for="(p, index) in getFixturePredictionResult(
+									fixtureDetail.fixtures[0].fixture.id
+								).points"
+								:key="index"
+								class="
+									d-flex
+									justify-space-between
+									align-center
+									text-body-2
+									px-3
+									mb-1
+								"
+							>
+								<p>{{ snackToTitle(index) }}</p>
+								<p class="">{{ p }} Points</p>
+							</div>
+						</template>
+
+						<div
+							class="text-center"
+							v-if="fixtureDetail.fixtures[0].fixture.status.short === 'NS'"
+						>
+							<v-btn
+								class="mt-2"
+								size="small"
+								@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
+								color="primary"
+							>
+								<span
+									v-if="
+										getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)
+									"
+								>
+									Change Predict
+								</span>
+								<span v-else> Predict Match </span>
+							</v-btn>
 						</div>
 					</template>
 
 					<div
-						class="text-center"
-						v-if="fixtureDetail.fixtures[0].fixture.status.short === 'NS'"
-					>
-						<v-btn
-							class="mt-2"
-							size="small"
-							@click="predictionDialogHandler(fixtureDetail.fixtures[0])"
-							color="primary"
-						>
-							<span
-								v-if="
-									getFixturePrediction(fixtureDetail.fixtures[0].fixture.id)
-								"
-							>
-								Change Predict
-							</span>
-							<span v-else> Predict Match </span>
-						</v-btn>
-					</div>
-				</template>
-				
-
-				<div
-					class="
-						mt-3
-						bg-grey-lighten-3
-						py-1
-						px-2
-						d-flex
-						justify-space-between
-						align-center
-						mb-3
-					"
-				>
-					<p class="text-overline">Score</p>
-				</div>
-
-				<div
-					class="
-						d-flex
-						justify-space-between
-						align-center
-						text-body-2
-						px-3
-						mb-1
-					"
-				>
-					<p>Half Time</p>
-					<p class="">
-						{{ fixtureDetail.fixtures[0].score.halftime.home }}
-						-
-						{{ fixtureDetail.fixtures[0].score.halftime.away }}
-					</p>
-				</div>
-				<div class="d-flex justify-space-between align-center text-body-2 px-3">
-					<p>Full Time</p>
-					<p class="">
-						{{ fixtureDetail.fixtures[0].score.fulltime.home }}
-						-
-						{{ fixtureDetail.fixtures[0].score.fulltime.away }}
-					</p>
-				</div>
-				<div
-					v-if="fixtureDetail.fixtures[0].score.extratime.home"
-					class="d-flex justify-space-between align-center text-body-2 px-3"
-				>
-					<p>Extra Time</p>
-					<p class="">
-						{{ fixtureDetail.fixtures[0].score.extratime.home }}
-						-
-						{{ fixtureDetail.fixtures[0].score.extratime.away }}
-					</p>
-				</div>
-				<div
-					v-if="fixtureDetail.fixtures[0].score.penalty.home"
-					class="d-flex justify-space-between align-center text-body-2 px-3"
-				>
-					<p>Penalty</p>
-					<p class="">
-						{{ fixtureDetail.fixtures[0].score.penalty.home }}
-						-
-						{{ fixtureDetail.fixtures[0].score.penalty.away }}
-					</p>
-				</div>
-
-				<div
-					class="
-						mt-3
-						bg-grey-lighten-3
-						py-1
-						mb-3
-						px-2
-						d-flex
-						justify-space-between
-						align-center
-					"
-				>
-					<p class="text-overline">First Half</p>
-					<p class="text-overline">
-						{{
-							fixtureDetail.fixtures[0].score.halftime.home
-								? fixtureDetail.fixtures[0].score.halftime.home
-								: 0
-						}}
-						-
-						{{
-							fixtureDetail.fixtures[0].score.halftime.away
-								? fixtureDetail.fixtures[0].score.halftime.away
-								: "0"
-						}}
-					</p>
-				</div>
-				<div v-for="(e, index) in firstHalfTimeEvents" :key="index">
-					<div
-						class="d-flex px-3 py-2 align-center"
-						:class="{
-							'justify-end':
-								e.team.id === fixtureDetail.fixtures[0].teams.away.id,
-						}"
-					>
-						<p style="width: 35px" class="text-caption font-weight-medium">
-							{{ e.time.elapsed }}'
-						</p>
-						<p class="text-caption border px-1 py-1 rounded mr-5">
-							<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
-								>mdi-cards</v-icon
-							>
-
-							<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
-
-							<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
-
-							<v-icon v-else>mdi-asterisk</v-icon>
-						</p>
-						<p class="text-subtitle-2">
-							{{ e.player.name }}
-							<span class="text-grey-darken-1" v-if="e.assist.name">{{
-								"( " + e.assist.name + " )"
-							}}</span>
-						</p>
-					</div>
-				</div>
-				<div
-					class="
-						bg-grey-lighten-3
-						py-1
-						mt-3
-						mb-3
-						px-2
-						d-flex
-						justify-space-between
-						align-center
-					"
-				>
-					<p class="text-overline">Second Half</p>
-					<p class="text-overline">
-						{{
-							fixtureDetail.fixtures[0].score.fulltime.home
-								? fixtureDetail.fixtures[0].score.fulltime.home
-								: 0
-						}}
-						-
-						{{
-							fixtureDetail.fixtures[0].score.fulltime.away
-								? fixtureDetail.fixtures[0].score.fulltime.away
-								: "0"
-						}}
-					</p>
-				</div>
-				<div v-for="(e, index) in secondHalfTimeEvents" :key="index">
-					<div
-						v-if="e.team.id === fixtureDetail.fixtures[0].teams.away.id"
-						class="d-flex px-3 py-2 align-center justify-end"
-					>
-						<p class="text-subtitle-2">
-							<span class="text-grey-darken-1" v-if="e.assist.name">{{
-								"( " + e.assist.name + " )"
-							}}</span>
-							{{ e.player.name }}
-						</p>
-						<p class="text-caption border px-1 py-1 rounded ml-5">
-							<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
-								>mdi-cards</v-icon
-							>
-
-							<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
-
-							<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
-
-							<v-icon v-else>mdi-asterisk</v-icon>
-						</p>
-						<p
-							style="width: 35px"
-							class="text-caption text-right font-weight-medium"
-						>
-							{{ e.time.elapsed }}'
-						</p>
-					</div>
-					<div v-else class="d-flex px-3 py-2 align-center justify-start">
-						<p style="width: 35px" class="text-caption font-weight-medium">
-							{{ e.time.elapsed }}'
-						</p>
-						<p class="text-caption border px-1 py-1 rounded mr-5">
-							<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
-								>mdi-cards</v-icon
-							>
-
-							<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
-
-							<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
-
-							<v-icon v-else>mdi-asterisk</v-icon>
-						</p>
-						<p class="text-subtitle-2">
-							{{ e.player.name }}
-							<span class="text-grey-darken-1" v-if="e.assist.name">{{
-								"( " + e.assist.name + " )"
-							}}</span>
-						</p>
-					</div>
-				</div>
-				<div
-					class="
-						mt-3
-						bg-grey-lighten-3
-						py-1
-						px-2
-						d-flex
-						justify-space-between
-						align-center
-					"
-				>
-					<p class="text-overline">Match Information</p>
-				</div>
-				<v-list lines="two">
-					<v-list-item
-						title="Referee"
-						:subtitle="fixtureDetail.fixtures[0].fixture.referee"
-						prepend-icon="mdi-whistle-outline"
-					></v-list-item>
-					<v-list-item
-						title="Venue"
-						:subtitle="
-							fixtureDetail.fixtures[0].fixture.venue.name +
-							' (' +
-							fixtureDetail.fixtures[0].fixture.venue.city +
-							')'
+						class="
+							mt-3
+							bg-grey-lighten-3
+							py-1
+							px-2
+							d-flex
+							justify-space-between
+							align-center
+							mb-3
 						"
-						prepend-icon="mdi-soccer-field"
-					></v-list-item>
-				</v-list>
+					>
+						<p class="text-overline">Score</p>
+					</div>
+
+					<div
+						class="
+							d-flex
+							justify-space-between
+							align-center
+							text-body-2
+							px-3
+							mb-1
+						"
+					>
+						<p>Half Time</p>
+						<p class="">
+							{{ fixtureDetail.fixtures[0].score.halftime.home }}
+							-
+							{{ fixtureDetail.fixtures[0].score.halftime.away }}
+						</p>
+					</div>
+					<div
+						class="d-flex justify-space-between align-center text-body-2 px-3"
+					>
+						<p>Full Time</p>
+						<p class="">
+							{{ fixtureDetail.fixtures[0].score.fulltime.home }}
+							-
+							{{ fixtureDetail.fixtures[0].score.fulltime.away }}
+						</p>
+					</div>
+					<div
+						v-if="fixtureDetail.fixtures[0].score.extratime.home"
+						class="d-flex justify-space-between align-center text-body-2 px-3"
+					>
+						<p>Extra Time</p>
+						<p class="">
+							{{ fixtureDetail.fixtures[0].score.extratime.home }}
+							-
+							{{ fixtureDetail.fixtures[0].score.extratime.away }}
+						</p>
+					</div>
+					<div
+						v-if="fixtureDetail.fixtures[0].score.penalty.home"
+						class="d-flex justify-space-between align-center text-body-2 px-3"
+					>
+						<p>Penalty</p>
+						<p class="">
+							{{ fixtureDetail.fixtures[0].score.penalty.home }}
+							-
+							{{ fixtureDetail.fixtures[0].score.penalty.away }}
+						</p>
+					</div>
+
+					<div
+						class="
+							mt-3
+							bg-grey-lighten-3
+							py-1
+							mb-3
+							px-2
+							d-flex
+							justify-space-between
+							align-center
+						"
+					>
+						<p class="text-overline">First Half</p>
+						<p class="text-overline">
+							{{
+								fixtureDetail.fixtures[0].score.halftime.home
+									? fixtureDetail.fixtures[0].score.halftime.home
+									: 0
+							}}
+							-
+							{{
+								fixtureDetail.fixtures[0].score.halftime.away
+									? fixtureDetail.fixtures[0].score.halftime.away
+									: "0"
+							}}
+						</p>
+					</div>
+					<div v-for="(e, index) in firstHalfTimeEvents" :key="index">
+						<div
+							class="d-flex px-3 py-2 align-center"
+							:class="{
+								'justify-end':
+									e.team.id === fixtureDetail.fixtures[0].teams.away.id,
+							}"
+						>
+							<p style="width: 35px" class="text-caption font-weight-medium">
+								{{ e.time.elapsed }}'
+							</p>
+							<p class="text-caption border px-1 py-1 rounded mr-5">
+								<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
+									>mdi-cards</v-icon
+								>
+
+								<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
+
+								<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
+
+								<v-icon v-else>mdi-asterisk</v-icon>
+							</p>
+							<p class="text-subtitle-2">
+								{{ e.player.name }}
+								<span class="text-grey-darken-1" v-if="e.assist.name">{{
+									"( " + e.assist.name + " )"
+								}}</span>
+							</p>
+						</div>
+					</div>
+					<div
+						class="
+							bg-grey-lighten-3
+							py-1
+							mt-3
+							mb-3
+							px-2
+							d-flex
+							justify-space-between
+							align-center
+						"
+					>
+						<p class="text-overline">Second Half</p>
+						<p class="text-overline">
+							{{
+								fixtureDetail.fixtures[0].score.fulltime.home
+									? fixtureDetail.fixtures[0].score.fulltime.home
+									: 0
+							}}
+							-
+							{{
+								fixtureDetail.fixtures[0].score.fulltime.away
+									? fixtureDetail.fixtures[0].score.fulltime.away
+									: "0"
+							}}
+						</p>
+					</div>
+					<div v-for="(e, index) in secondHalfTimeEvents" :key="index">
+						<div
+							v-if="e.team.id === fixtureDetail.fixtures[0].teams.away.id"
+							class="d-flex px-3 py-2 align-center justify-end"
+						>
+							<p class="text-subtitle-2">
+								<span class="text-grey-darken-1" v-if="e.assist.name">{{
+									"( " + e.assist.name + " )"
+								}}</span>
+								{{ e.player.name }}
+							</p>
+							<p class="text-caption border px-1 py-1 rounded ml-5">
+								<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
+									>mdi-cards</v-icon
+								>
+
+								<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
+
+								<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
+
+								<v-icon v-else>mdi-asterisk</v-icon>
+							</p>
+							<p
+								style="width: 35px"
+								class="text-caption text-right font-weight-medium"
+							>
+								{{ e.time.elapsed }}'
+							</p>
+						</div>
+						<div v-else class="d-flex px-3 py-2 align-center justify-start">
+							<p style="width: 35px" class="text-caption font-weight-medium">
+								{{ e.time.elapsed }}'
+							</p>
+							<p class="text-caption border px-1 py-1 rounded mr-5">
+								<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
+									>mdi-cards</v-icon
+								>
+
+								<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
+
+								<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
+
+								<v-icon v-else>mdi-asterisk</v-icon>
+							</p>
+							<p class="text-subtitle-2">
+								{{ e.player.name }}
+								<span class="text-grey-darken-1" v-if="e.assist.name">{{
+									"( " + e.assist.name + " )"
+								}}</span>
+							</p>
+						</div>
+					</div>
+					<div
+						class="
+							mt-3
+							bg-grey-lighten-3
+							py-1
+							px-2
+							d-flex
+							justify-space-between
+							align-center
+						"
+					>
+						<p class="text-overline">Match Information</p>
+					</div>
+					<v-list lines="two">
+						<v-list-item
+							title="Referee"
+							:subtitle="fixtureDetail.fixtures[0].fixture.referee"
+							prepend-icon="mdi-whistle-outline"
+						></v-list-item>
+						<v-list-item
+							title="Venue"
+							:subtitle="
+								fixtureDetail.fixtures[0].fixture.venue.name +
+								' (' +
+								fixtureDetail.fixtures[0].fixture.venue.city +
+								')'
+							"
+							prepend-icon="mdi-soccer-field"
+						></v-list-item>
+					</v-list>
 				</v-card>
 				<!-- </v-window-item> -->
 
@@ -601,38 +602,7 @@ export default {
 		teamTwoPredictionNumber: ["0"],
 		showPredictionDialog: false,
 		prediction2xBooster: false,
-		options: [
-			[
-				{
-					label: "0",
-					value: "0",
-				},
-				{
-					label: "1",
-					value: "1",
-				},
-				{
-					label: "2",
-					value: "2",
-				},
-				{
-					label: "3",
-					value: "3",
-				},
-				{
-					label: "4",
-					value: "4",
-				},
-				{
-					label: "4",
-					value: "4",
-				},
-				{
-					label: "4",
-					value: "4",
-				},
-			],
-		],
+		options: [[]],
 		prevRoute: null,
 		prediction: {
 			date: null,
@@ -821,6 +791,16 @@ export default {
 	},
 	async mounted() {
 		this.loading = true;
+
+		for (let index = 0; index < 21; index++) {
+			this.options[0].push(
+				{
+					label: index.toString(),
+					value: index.toString(),
+				}
+			)
+			
+		}
 
 		if (!this.currentGameWeek) {
 			await this.getGameWeekAction();
