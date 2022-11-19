@@ -145,15 +145,13 @@ export default {
 	},
 	async mounted() {
 		let get = "";
-		if (!this.teams) {
-			get = "teams";
-			const teamResponse = await this.getTournamentIndexAction({
-				get,
-			});
-			if (teamResponse.code === 200) {
-				if (teamResponse.results.teams) {
-					this.setTeamsAction(teamResponse.results.teams);
-				}
+		get = "teams";
+		const teamResponse = await this.getTournamentIndexAction({
+			get,
+		});
+		if (teamResponse.code === 200) {
+			if (teamResponse.results.teams) {
+				this.setTeamsAction(teamResponse.results.teams);
 			}
 		}
 	},
