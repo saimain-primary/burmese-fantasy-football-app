@@ -10,7 +10,12 @@ export default {
       predictions: null,
       venues: null,
     },
-    selectedGameWeek: null,
+    selectedGameWeek: {
+      league_id: null,
+			league_name: null,
+			gameWeek: null,
+			logo: null
+    },
   },
   getters: {
     fixtureList(state) {
@@ -98,8 +103,8 @@ export default {
       commit("storeVenuesDetail", response.data.results.response[0]);
     },
 
-    async storeSelectedGameWeekAction({ commit }, gameweek) {
-      await commit("storeSelectedGameWeek", gameweek);
+    async storeSelectedGameWeekAction({ commit }, data) {
+      await commit("storeSelectedGameWeek", data);
     },
   },
 };

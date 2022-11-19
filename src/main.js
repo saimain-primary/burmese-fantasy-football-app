@@ -30,11 +30,13 @@ Promise.all([
   .use(VueGtag, {
     config: { id: "G-PJJCRGQ8Z5" },
     router,
-  }).use(VueHotjar, {
-    id: 3112019,
-    isProduction: true,
-    snippetVersion: 6
   })
   .mount("#app");
 
+
+  // .use(VueHotjar, {
+  //   id: 3112019,
+  //   isProduction: true,
+  //   snippetVersion: 6
+  // })
 })

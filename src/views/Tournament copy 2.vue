@@ -14,10 +14,10 @@
 								</p>
 								<v-avatar size="40" rounded="0" large class="">
 									<v-img
-										class=""
-										:lazy-src="logo"
-										:src="prediction.homeTeam.logo"
-									></v-img>
+									class=""
+									:lazy-src="logo"
+									:src="prediction.homeTeam.logo"
+								></v-img>
 								</v-avatar>
 							</div>
 							<div class="d-flex align-center">
@@ -34,10 +34,10 @@
 							<div v-if="prediction.homeTeam" class="d-flex align-center">
 								<v-avatar size="40" rounded="0" large class="">
 									<v-img
-										class=""
-										:lazy-src="logo"
-										:src="prediction.awayTeam.logo"
-									></v-img>
+									class=""
+									:lazy-src="logo"
+									:src="prediction.awayTeam.logo"
+								></v-img>
 								</v-avatar>
 								<p class="ml-3 text-caption font-weight-medium">
 									{{ getTeamCode(prediction.awayTeam.id) }}
@@ -77,14 +77,11 @@
 				<v-card class="text-white gd-bg">
 					<div class="d-flex flex-no-wrap justify-space-between">
 						<div>
-							<v-card-title class="text-h6">{{
-								currentFormData.league_id === 1 ? "World Cup" : "Premire League"
-							}}</v-card-title>
-							<v-card-subtitle>
+							<v-card-title class="text-h6">{{ league }}</v-card-title>
+							<v-card-subtitle
+								>Game Week
 								{{
-									selectedGameWeek.gameWeek
-										? selectedGameWeek.gameWeek
-										: fixtureGameWeek
+									selectedGameWeek ? selectedGameWeek : fixtureGameWeek
 								}}</v-card-subtitle
 							>
 							<!-- <v-card-subtitle>October 2022</v-card-subtitle> -->
@@ -107,17 +104,15 @@
 											:items="leagues"
 											model-value="1"
 											item-title="name"
-											item-value="league_id"
+											item-value="id"
 											label="League"
 											variant="outlined"
-											@update:modelValue="onLeagueChangeHandler"
 											color="primary"
 											class=""
-											v-model="currentFormData.league_id"
+											v-model="currentFormData.league"
 										></v-select>
 										<v-select
-											v-if="leagueDetail"
-											:items="leagueDetail"
+											:items="gameWeekListForSelect"
 											item-title="name"
 											item-value="week"
 											v-model="currentFormData.gameWeek"
@@ -135,7 +130,9 @@
 						</div>
 
 						<v-avatar class="ma-3" size="100" rounded="0">
-							<v-img v-if="currentFormData" :src="getLeagueLogo()"></v-img>
+							<v-img
+								src="https://media.api-sports.io/football/leagues/39.png"
+							></v-img>
 						</v-avatar>
 					</div>
 				</v-card>
@@ -390,8 +387,6 @@ export default {
 			predictionResultList: "prediction/predictionResultList",
 			authenticated: "auth/authenticated",
 			user: "auth/user",
-			leagues: "leagues",
-			leagueDetail: "leagueDetail",
 		}),
 		sortByDateFixtureList() {
 			return this.tournamentData.fixtures.sort(
@@ -404,12 +399,21 @@ export default {
 		logo: logo,
 		nodata: nodata,
 		loading: true,
+		leagues: [
+			{
+				id: 39,
+				name: "Premier League",
+			},
+			{
+				id: 1,
+				name: "World Cup 2022",
+			},
+		],
 		showPredictionDialog: false,
 		currentFormData: {
-			league_id: null,
-			league_name: null,
+			league_id: 1,
+			league_name: "World Cup",
 			gameWeek: null,
-			logo: null,
 		},
 		fixtureGameWeek: null,
 		league: null,
@@ -427,7 +431,6 @@ export default {
 			teamTwoPredictionNumber: ["0"],
 			prediction2xBooster: false,
 		},
-		gameWeekForSelect: [],
 	}),
 	methods: {
 		moment,
@@ -441,8 +444,6 @@ export default {
 				"prediction/getPredictionCalculatedListAction",
 			getTournamentIndexAction: "getTournamentIndexAction",
 			setTeamsAction: "setTeamsAction",
-			getLeaguesAction: "getLeaguesAction",
-			getLeagueDetailAction: "getLeagueDetailAction",
 		}),
 		predictionDialogHandler(f) {
 			if (!this.authenticated) {
@@ -475,7 +476,6 @@ export default {
 					this.predictionForm.prediction2xBooster = false;
 				}
 				this.showPredictionDialog = true;
-				this.prediction.leagueId = this.currentFormData.league_id;
 				this.prediction.homeTeam = f.teams.home;
 				this.prediction.awayTeam = f.teams.away;
 				this.prediction.fixtureId = f.fixture.id;
@@ -489,14 +489,6 @@ export default {
 				).format("h:mm A ");
 			}
 		},
-		async onLeagueChangeHandler() {
-			await this.$store.commit("setLeagueDetail", null);
-			const response = await this.getLeagueDetailAction(
-				this.currentFormData.league_id
-			);
-			this.currentFormData.gameWeek = "";
-			console.log("rr", response);
-		},
 		async onChangeGameWeekHandler() {
 			// const response = await this.getFixtureListAction({
 			// 	week: this.currentFormData.gameWeek,
@@ -506,13 +498,13 @@ export default {
 			this.showFilterDialog = false;
 
 			const response = await this.getTournamentIndexAction({
-				league_id: this.currentFormData.league_id,
+				league_id: this.currentFormData.league,
 				fixture_week: this.currentFormData.gameWeek,
 				get: "fixtures,predictions",
 			});
 
 			if (response.code === 200) {
-				this.storeSelectedGameWeekAction(this.currentFormData);
+				this.storeSelectedGameWeekAction(this.currentFormData.gameWeek);
 			} else {
 				this.showDialogAction({
 					title: "Whoops!",
@@ -531,13 +523,7 @@ export default {
 				return null;
 			}
 		},
-		getLeagueLogo() {
-			if (this.selectedGameWeek.league_id) {
-				return `https://media.api-sports.io/football/leagues/${this.selectedGameWeek.league_id}.png`;
-			} else {
-				return `https://media.api-sports.io/football/leagues/${this.currentFormData.league_id}.png`;
-			}
-		},
+
 		updatePredictionValue(fixture_id, data) {
 			console.log("data", data);
 			console.log("looking prediction for #" + fixture_id);
@@ -587,15 +573,13 @@ export default {
 		},
 		async onSavePredictionHandler() {
 			let week = "";
-			if (this.selectedGameWeek.gameWeek) {
-				console.log('have see')
-				week = this.selectedGameWeek.gameWeek;
+			if (this.selectedGameWeek) {
+				week = this.selectedGameWeek.week;
 			} else {
-				week = this.currentFormData.gameWeek;
+				week = this.currentGameWeek.week;
 			}
 
 			const response = await this.savePredictionAction({
-				league_id: this.currentFormData.league_id,
 				fixture_id: this.prediction.fixtureId,
 				home_team: this.prediction.homeTeam,
 				away_team: this.prediction.awayTeam,
@@ -684,30 +668,8 @@ export default {
 
 				let fixtureParams = {};
 
-				if (!this.currentGameWeek) {
-					await this.getGameWeekAction();
-				}
-
-				if (!this.leagues) {
-					await this.getLeaguesAction();
-				}
-
-				const currentLeague = this.leagues.filter((league) => {
-					return league.is_current === true;
-				});
-
-				await this.getLeagueDetailAction(currentLeague[0].league_id);
-
-				console.log("cl", currentLeague);
-				this.currentFormData.league_name = currentLeague[0].name;
-				this.currentFormData.league_id = currentLeague[0].league_id;
-				this.currentFormData.logo = currentLeague[0].logo;
-
-				console.log("cw", this.currentGameWeek);
-				this.fixtureGameWeek = this.currentGameWeek.week;
-
 				let get = "";
-				if (this.selectedGameWeek.gameWeek) {
+				if (this.selectedGameWeek) {
 					console.log("seleted");
 					fixtureParams = {
 						fixture_week: this.selectedGameWeek,
@@ -720,15 +682,14 @@ export default {
 						season: "2022",
 					};
 					this.fixtureGameWeek = this.currentGameWeek.week;
-					this.league = this.currentGameWeek.league;
+					this.league = this.currentGameWeek.league_name;
 				}
 
-				// if (this.teams) {
-				// 	get = "fixtures";
-				// } else {
-				// 	get = "fixtures,teams";
-				// }
-				get = "fixtures,teams";
+				if (this.teams) {
+					get = "fixtures";
+				} else {
+					get = "fixtures,teams";
+				}
 
 				if (this.authenticated) {
 					get = get.concat(",", "predictions");
@@ -771,8 +732,12 @@ export default {
 			}
 		}
 
+		if (!this.currentGameWeek) {
+			await this.getGameWeekAction();
+		}
 
-				
+		this.fixtureGameWeek = this.currentGameWeek.week;
+
 		this.loading = false;
 		// if (this.teams.length <= 0) {
 		// 	await this.getPremierLeagueTeamListAction();

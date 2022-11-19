@@ -80,17 +80,9 @@
 		</v-container>
 	</div>
 
-	
-
-
 	<v-container :class="authenticated ? 'mt-10' : 'mt-16'">
-
-
 		<v-row>
 			<v-col>
-
-
-				
 				<p class="mt-10 text-body-2 font-weight-medium text-grey-darken-3">
 					Recent Matches
 				</p>
@@ -224,8 +216,7 @@
 							Game Week {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
 							Predictor
 						</p>
-	
-						
+
 						<v-card v-if="homeData" class="mt-3 py-5 px-10">
 							<div class="d-flex align-center">
 								<v-avatar size="60" large class="rounded-circle mr-8">
@@ -312,13 +303,13 @@
 						</v-card>
 					</div>
 				</template>
-				
+
 				<div>
 					<p class="mt-3 text-caption text-grey-lighten-1 text-center">
 						Advertisement
 					</p>
 					<router-link to="/tournament">
-					<v-img src="../assets/banners/bff.png"></v-img>
+						<v-img src="../assets/banners/bff.png"></v-img>
 					</router-link>
 				</div>
 			</v-col>
@@ -417,6 +408,7 @@ export default {
 		if (!this.teams) {
 			const response = await this.getTournamentIndexAction({
 				get: "teams",
+				league_id : this.currentGameWeek.league
 			});
 			if (response.code === 200) {
 				if (response.results.teams) {

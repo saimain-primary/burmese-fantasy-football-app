@@ -17,7 +17,7 @@
 				>
 			</div>
 		</v-card>
-		<v-card class="px-5 py-5">
+		<v-card class="px-5 py-5 mt-5">
 			<p class="text-body-2 mb-3">Home Page Game Week</p>
 			<v-select
 				:items="gameWeekListForSelect"
@@ -36,6 +36,15 @@
 		</v-card>
 		<v-card class="px-5 py-5 mt-8">
 			<p class="text-body-2 mb-3">Add Game Week</p>
+			<v-select
+				:items="leagueForSelect"
+				label="League"
+				item-title="name"
+				item-value="id"
+				variant="outlined"
+				class="mb-2"
+				v-model="formData.league"
+			></v-select>
 			<v-text-field
 				variant="outlined"
 				v-model="formData.gameWeek"
@@ -69,7 +78,7 @@
 				>
 			</div>
 		</v-card>
-		<v-card class="px-5 py-5 mt-8">
+		<!-- <v-card class="px-5 py-5 mt-8">
 			<p class="text-body-2 mb-3">Game Week List</p>
 			<v-list lines="two">
 				<v-list-item
@@ -78,7 +87,7 @@
 					:key="gameweek._id"
 					:title="gameweek.name"
 					:subtitle="gameweek.startDate + ' to ' + gameweek.endDate"
-				>
+				> -->
 					<!-- <template v-slot:append>
             <v-btn
               color="red-lighten-1"
@@ -86,9 +95,9 @@
               variant="text"
             ></v-btn>
           </template> -->
-				</v-list-item>
+				<!-- </v-list-item>
 			</v-list>
-		</v-card>
+		</v-card> -->
 	</v-container>
 	<BottomNavigation :value="page" />
 </template>
@@ -110,7 +119,12 @@ export default {
 	},
 	data: () => ({
 		page: "profile",
+		leagueForSelect: [
+			{ name: "Premier League" , id: "39" },
+			{name: "World Cup", id: "1"},
+		],
 		formData: {
+			league : null,
 			startDate: null,
 			endDate: null,
 			gameWeek: null,

@@ -21,6 +21,8 @@ export default createStore({
       password: "",
     },
     leaderboardDetail: null,
+    leagues: null,
+    leagueDetail: null
   },
   getters: {
     teams(state) {
@@ -53,6 +55,12 @@ export default createStore({
     leaderboardDetail(state) {
       return state.leaderboardDetail;
     },
+    leagues(state) {
+      return state.leagues;
+    },
+    leagueDetail(state) {
+      return state.leagueDetail;
+    }
   },
   mutations: {
     setTeams(state, teams) {
@@ -81,6 +89,12 @@ export default createStore({
     setLeaderboardDetail(state, data) {
       state.leaderboardDetail = data;
     },
+    setLeagues(state, data) {
+      state.leagues = data;
+    },
+    setLeagueDetail(state, data) {
+      state.leagueDetail = data;
+    }
   },
   actions: {
     toggleLoading({ commit }, isLoading) {
@@ -108,7 +122,7 @@ export default createStore({
 
     async getTournamentIndexAction({ commit }, query) {
       // commit("toggleLoading", true);
-      const response = await axios.get("/tournament", {
+      const response = await axios.get("/tournament-custom", {
         params: query,
       });
 
@@ -167,6 +181,18 @@ export default createStore({
 
       return response.data;
     },
+
+    async getLeaguesAction({commit},params) {
+      const response = await axios.get("/leagues");
+      commit("setLeagues", response.data.results);
+      return response.data;
+    },
+
+    async getLeagueDetailAction({ commit }, id) {
+      const response = await axios.get('/leagues/' + id);
+      commit("setLeagueDetail", response.data.results);
+      return response.data;
+    }
   },
   modules: {
     gameweek,
