@@ -20,6 +20,7 @@ axios.defaults.baseURL =
 
 loadFonts();
 
+
 Promise.all([
   store.dispatch("auth/getMeAction", localStorage.getItem("token"))
 ]).finally(() => {
