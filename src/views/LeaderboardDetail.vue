@@ -63,16 +63,20 @@
 
 									<v-card class="pt-10 pb-5 px-5">
 										<v-select
-											disabled
 											:items="leagues"
-											model-value="Premier League"
+											model-value="1"
+											item-title="name"
+											item-value="league_id"
 											label="League"
 											variant="outlined"
+											@update:modelValue="onLeagueChangeHandler"
 											color="primary"
 											class=""
+											v-model="currentFormData.league_id"
 										></v-select>
 										<v-select
-											:items="gameWeekListForSelect"
+											v-if="leagueDetail"
+											:items="leagueDetail"
 											item-title="name"
 											item-value="week"
 											v-model="currentFormData.gameWeek"
@@ -108,10 +112,15 @@
 					</div>
 				</template>
 				<p v-else class="mb-3 font-weight-medium text-body-1">
-					Game Week {{ fixtureGameWeek }} Results
+					{{
+						selectedGameWeek.gameWeek
+							? selectedGameWeek.gameWeek
+							: fixtureGameWeek
+					}}
+					Results
 				</p>
 
-				<div class="" style="overflow-y:scroll">
+				<div class="" style="overflow-y: scroll">
 					<template v-if="loading">
 						<div v-for="index in 2" :key="index" class="loading-skeleton mb-3">
 							<v-card
@@ -122,7 +131,7 @@
 							</v-card>
 						</div>
 					</template>
-	
+
 					<div v-else class="d-flex flex-column">
 						<div class="" v-if="leaderboardDetail?.results">
 							<v-card
@@ -133,9 +142,10 @@
 								<div class="d-flex justify-center align-center">
 									<p class="font-weight-bold text-body-2">
 										{{
-											moment(new Date(data.fixture.date), moment.ISO_8601).format(
-												"ddd D MMM YYYY h:mm A "
-											)
+											moment(
+												new Date(data.fixture.date),
+												moment.ISO_8601
+											).format("ddd D MMM YYYY h:mm A ")
 										}}
 									</p>
 								</div>
@@ -153,9 +163,9 @@
 										class="d-flex flex-column justify-center align-center"
 										style="width: 100px"
 									>
-										<v-avatar size="40" large class="rounded-circle">
+										<v-avatar size="40" large rounded="0" class="">
 											<v-img
-												class="rounded-circle"
+												class=""
 												:lazy-src="logo"
 												:src="data.teams.home_team.logo"
 											></v-img>
@@ -179,7 +189,9 @@
 											>
 												{{ data.results.home }}
 											</p>
-											<span class="mx-3 text-primary font-weight-medium">-</span>
+											<span class="mx-3 text-primary font-weight-medium"
+												>-</span
+											>
 											<p
 												class="text-primary px-4 py-1 rounded-lg text-h6"
 												style="
@@ -191,7 +203,9 @@
 												{{ data.results.away }}
 											</p>
 										</div>
-										<p class="text-caption mt-2 text-success font-weight-medium">
+										<p
+											class="text-caption mt-2 text-success font-weight-medium"
+										>
 											{{ data.fixture.status.long }}
 										</p>
 									</div>
@@ -199,9 +213,9 @@
 										class="d-flex flex-column justify-center align-center"
 										style="width: 100px"
 									>
-										<v-avatar size="40" large class="rounded-circle">
+										<v-avatar size="40" large rounded="0" class="">
 											<v-img
-												class="rounded-circle"
+												class=""
 												:lazy-src="logo"
 												:src="data.teams.away_team.logo"
 											></v-img>
@@ -263,7 +277,13 @@
 						</div>
 						<div
 							v-else
-							class="d-flex mt-16 flex-column justify-space-between align-center"
+							class="
+								d-flex
+								mt-16
+								flex-column
+								justify-space-between
+								align-center
+							"
 						>
 							<v-img class="" :src="nodata" width="100"></v-img>
 							<p class="text-body-2 text-grey-darken-1 mt-3">
@@ -298,6 +318,8 @@ export default {
 			selectedGameWeek: "fixture/selectedGameWeek",
 			teams: "teams",
 			leaderboardDetail: "leaderboardDetail",
+			leagues: "leagues",
+			leagueDetail: "leagueDetail",
 		}),
 	},
 	data: () => ({
@@ -306,11 +328,14 @@ export default {
 		page: "leaderboard",
 		nodata: nodata,
 		logo: logo,
-		leagues: ["Premier League", "World Cup 2022"],
 		currentFormData: {
+			league_id: null,
+			league_name: null,
 			gameWeek: null,
+			logo: null,
 		},
 		fixtureGameWeek: null,
+		league: null,
 	}),
 	methods: {
 		moment,
@@ -320,6 +345,8 @@ export default {
 			getTournamentIndexAction: "getTournamentIndexAction",
 			setTeamsAction: "setTeamsAction",
 			getLeaderboardDetailAction: "getLeaderboardDetailAction",
+			getLeaguesAction: "getLeaguesAction",
+			getLeagueDetailAction: "getLeagueDetailAction",
 		}),
 		getTeamLogo(name) {
 			if (this.teams) {
@@ -339,6 +366,20 @@ export default {
 				c ? c.toUpperCase() : " " + d.toUpperCase()
 			);
 			return a;
+		},
+		async onLeagueChangeHandler() {
+			await this.$store.commit("setLeagueDetail", null);
+			const response = await this.getLeagueDetailAction(
+				this.currentFormData.league_id
+			);
+			
+			if (this.currentFormData.league_id === 1) {
+				this.currentFormData.league_name = "World Cup";
+			} else if (this.currentFormData.league_id === 39) {
+				this.currentFormData.league_name = "Premier League";
+			}
+			this.currentFormData.gameWeek = "";
+			console.log("rr", response);
 		},
 		async onChangeGameWeekHandler() {
 			this.loading = true;
@@ -367,28 +408,58 @@ export default {
 		console.log("aaa", this.id);
 		this.$gtag.event("leaderboard detail");
 
-		if (
-			this.gameWeekList.length <= 0 &&
-			!this.currentGameWeek &&
-			this.gameWeekListForSelect.length <= 0
-		) {
+		if (!this.currentGameWeek) {
 			await this.getGameWeekAction();
 		}
+
+		if (!this.leagues) {
+			await this.getLeaguesAction();
+		}
+
+		const currentLeague = this.leagues.filter((league) => {
+			return league.is_current === true;
+		});
+
+		console.log("leag", this.leagues);
+
+		await this.getLeagueDetailAction(currentLeague[0].league_id);
+
+		console.log("cl", currentLeague);
+		this.currentFormData.league_name = currentLeague[0].name;
+		this.currentFormData.league_id = currentLeague[0].league_id;
+		this.currentFormData.logo = currentLeague[0].logo;
+		this.currentFormData.gameWeek = this.currentGameWeek.week;
+
+		console.log("cw", this.currentGameWeek);
+
+		this.fixtureGameWeek = this.currentGameWeek.week;
 
 		let get = "";
 		let fixtureParams = {};
 
-		if (this.selectedGameWeek) {
+		if (this.selectedGameWeek.gameWeek) {
+			console.log("seleted");
+
+			this.currentFormData.league_name = this.selectedGameWeek.league_name;
+			this.currentFormData.league_id = this.selectedGameWeek.league_id;
+			this.currentFormData.logo = this.selectedGameWeek.logo;
 			fixtureParams = {
-				fixture_week: this.selectedGameWeek,
+				fixture_week: this.selectedGameWeek.gameWeek,
+				league_id: this.selectedGameWeek.league_id,
+				season: "2022",
 			};
-			this.fixtureGameWeek = this.selectedGameWeek;
 		} else {
+			console.log("no seleted");
 			fixtureParams = {
 				fixture_week: this.currentGameWeek.week,
+				league_id: this.currentGameWeek.league,
+				season: "2022",
 			};
 			this.fixtureGameWeek = this.currentGameWeek.week;
+			this.league = this.currentGameWeek.league;
 		}
+
+		console.log("fixture", fixtureParams);
 
 		if (!this.teams) {
 			get = "teams";

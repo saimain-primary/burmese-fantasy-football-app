@@ -174,6 +174,7 @@ export default createStore({
       const response = await axios.get("/leaderboard-detail/" + data.user_id, {
         params: {
           fixture_week: data.fixture_week,
+          league_id: data.league_id
         },
       });
 

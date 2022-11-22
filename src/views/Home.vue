@@ -423,6 +423,7 @@ export default {
 		}
 
 		await this.getHomeDataAction({
+			league_id : this.currentGameWeek.league,
 			fixture_week: this.homePageGameWeek.week,
 			current_week: this.currentGameWeek.week,
 			leaderboard: true,

@@ -287,7 +287,7 @@ export default {
 
 
 			if (response.code === 200) {
-				this.storeSelectedGameWeekAction(this.currentFormData.gameWeek);
+				this.storeSelectedGameWeekAction(this.currentFormData);
 			} else {
 				this.showDialogAction({
 					title: "Whoops!",
@@ -356,7 +356,7 @@ export default {
 				fixture_week: this.currentGameWeek.week,
 				leaderboard: true,
 			};
-			this.fixtureGameWeek = this.currentGameWeek.gameWeek;
+			this.fixtureGameWeek = this.currentGameWeek.week;
 		}
 		console.log('fx',fixtureParams);
 
