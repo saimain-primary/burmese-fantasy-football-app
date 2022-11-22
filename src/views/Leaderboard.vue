@@ -60,7 +60,6 @@
 							</v-card-actions>
 						</div>
 
-						
 						<v-avatar class="ma-3" size="100" rounded="0">
 							<v-img v-if="currentFormData" :src="getLeagueLogo()"></v-img>
 						</v-avatar>
@@ -264,7 +263,7 @@ export default {
 			const response = await this.getLeagueDetailAction(
 				this.currentFormData.league_id
 			);
-			
+
 			if (this.currentFormData.league_id === 1) {
 				this.currentFormData.league_name = "World Cup";
 			} else if (this.currentFormData.league_id === 39) {
@@ -283,8 +282,7 @@ export default {
 				fixture_week: this.currentFormData.gameWeek,
 				leaderboard: true,
 			});
-			console.log('respones from changing gw', response);
-
+			console.log("respones from changing gw", response);
 
 			if (response.code === 200) {
 				this.storeSelectedGameWeekAction(this.currentFormData);
@@ -349,30 +347,28 @@ export default {
 				leaderboard: true,
 			};
 		} else {
-			console.log('a',this.currentGameWeek)
+			console.log("a", this.currentGameWeek);
 			console.log("no select");
 			fixtureParams = {
-				league_id : this.currentGameWeek.league,
+				league_id: this.currentGameWeek.league,
 				fixture_week: this.currentGameWeek.week,
 				leaderboard: true,
 			};
 			this.fixtureGameWeek = this.currentGameWeek.week;
 		}
-		console.log('fx',fixtureParams);
+		console.log("fx", fixtureParams);
 
-		if (!this.teams) {
-			get = "teams";
-			const teamResponse = await this.getTournamentIndexAction({
-				...fixtureParams,
-				get,
-			});
-			if (teamResponse.code === 200) {
-				if (teamResponse.results.teams) {
-					this.setTeamsAction(teamResponse.results.teams);
-				}
+		get = "teams";
+		const teamResponse = await this.getTournamentIndexAction({
+			...fixtureParams,
+			get,
+		});
+		
+		if (teamResponse.code === 200) {
+			if (teamResponse.results.teams) {
+				this.setTeamsAction(teamResponse.results.teams);
 			}
 		}
-
 
 		const response = await this.getLeaderboardDataAction({
 			...fixtureParams,
