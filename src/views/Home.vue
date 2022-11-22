@@ -121,9 +121,8 @@
 									<p class="mr-3 text-caption font-weight-medium">
 										{{ getTeamCode(f.teams.home.id) }}
 									</p>
-									<v-avatar size="40" large class="rounded-circle">
+									<v-avatar size="40" large rounded="0">
 										<v-img
-											class="rounded-circle"
 											lazy-src="../assets/logo.jpg"
 											:src="f.teams.home.logo"
 										></v-img>
@@ -138,9 +137,8 @@
 									</p>
 								</div>
 								<div class="d-flex align-center">
-									<v-avatar size="40" large class="rounded-circle">
+									<v-avatar size="40" large rounded="0">
 										<v-img
-											class="rounded-circle"
 											lazy-src="../assets/logo.jpg"
 											:src="f.teams.away.logo"
 										></v-img>
