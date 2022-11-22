@@ -370,7 +370,7 @@ export default {
 		async onLeagueChangeHandler() {
 			await this.$store.commit("setLeagueDetail", null);
 			const response = await this.getLeagueDetailAction(
-				this.currentFormData.league_id
+				this.currentFormData.league_id,
 			);
 			
 			if (this.currentFormData.league_id === 1) {
@@ -389,11 +389,13 @@ export default {
 			const response = await this.getLeaderboardDetailAction({
 				user_id: this.id,
 				fixture_week: this.currentFormData.gameWeek,
+				league_id: this.currentFormData.league_id,
+				season: "2022",
 			});
 
 			if (response.code === 200) {
 				this.fixtureGameWeek = this.currentFormData.gameWeek;
-				this.storeSelectedGameWeekAction(this.currentFormData.gameWeek);
+				this.storeSelectedGameWeekAction(this.currentFormData);
 			} else {
 				this.showDialogAction({
 					title: "Whoops!",
