@@ -513,6 +513,13 @@ export default {
 
 			if (response.code === 200) {
 				this.storeSelectedGameWeekAction(this.currentFormData);
+
+				if (this.authenticated) {
+					this.getPredictionCalculatedListAction({
+						user_id: this.user._id,
+						predictions: response.results.predictions,
+					});
+				}
 			} else {
 				this.showDialogAction({
 					title: "Whoops!",
@@ -566,20 +573,6 @@ export default {
 				} else {
 					predictions.push(data);
 				}
-				// predictions.forEach((p) => {
-				// 	console.log("looping the predictions");
-				// 	if (p.fixture_id === fixture_id) {
-				// 		console.log("prediction data for #" + fixture_id);
-				// 		console.log("prediction", p);
-				// 		p.home = data.home;
-				// 		p.away = data.away;
-				// 		p.boosted = data.boosted;
-				// 	} else {
-				// 		console.log("no data for #", fixture_id);
-				// 		console.log("push", data);
-				// 		predictions.push(data);
-				// 	}
-				// });
 			}
 
 			console.log("update prediction", predictions);
@@ -588,7 +581,7 @@ export default {
 		async onSavePredictionHandler() {
 			let week = "";
 			if (this.selectedGameWeek.gameWeek) {
-				console.log('have see')
+				console.log("have see");
 				week = this.selectedGameWeek.gameWeek;
 			} else {
 				week = this.currentFormData.gameWeek;
@@ -771,8 +764,6 @@ export default {
 			}
 		}
 
-
-				
 		this.loading = false;
 		// if (this.teams.length <= 0) {
 		// 	await this.getPremierLeagueTeamListAction();
