@@ -24,7 +24,6 @@
 					</p>
 					<v-card class="py-3">
 						<p class="text-center font-weight-medium text-body-1 mb-2">
-							Game Week
 							{{ homePageGameWeek ? homePageGameWeek.week : 0 }} Result
 						</p>
 						<div
@@ -211,7 +210,7 @@
 				<template v-else>
 					<div class="mt-3" v-if="homeData.highest_score">
 						<p class="text-body-2 font-weight-medium text-grey-darken-3">
-							Game Week {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
+							 {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
 							Predictor
 						</p>
 
