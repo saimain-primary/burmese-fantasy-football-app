@@ -43,9 +43,8 @@
 							style="width: 100px"
 						>
 							<div class="pa-1 bg-white rounded-lg">
-								<v-avatar size="50" large class="rounded-circle">
+								<v-avatar size="50" rounded="0" large class="">
 									<v-img
-										class="rounded-circle"
 										lazy-src="../assets/logo.jpg"
 										:src="fixtureDetail.fixtures[0].teams.home.logo"
 									></v-img>
@@ -78,9 +77,8 @@
 							style="width: 100px"
 						>
 							<div class="pa-1 bg-white rounded-lg">
-								<v-avatar size="50" large class="rounded-circle">
+								<v-avatar size="50" rounded="0" large class="">
 									<v-img
-										class="rounded-circle"
 										lazy-src="../assets/logo.jpg"
 										:src="fixtureDetail.fixtures[0].teams.away.logo"
 									></v-img>
@@ -300,33 +298,55 @@
 					</div>
 					<div v-for="(e, index) in firstHalfTimeEvents" :key="index">
 						<div
-							class="d-flex px-3 py-2 align-center"
-							:class="{
-								'justify-end':
-									e.team.id === fixtureDetail.fixtures[0].teams.away.id,
-							}"
+						v-if="e.team.id === fixtureDetail.fixtures[0].teams.away.id"
+						class="d-flex px-3 py-2 align-center justify-end"
+					>
+						<p class="text-subtitle-2">
+							<span class="text-grey-darken-1" v-if="e.assist.name">{{
+								"( " + e.assist.name + " )"
+							}}</span>
+							{{ e.player.name }}
+						</p>
+						<p class="text-caption border px-1 py-1 rounded ml-5">
+							<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
+								>mdi-cards</v-icon
+							>
+
+							<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
+
+							<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
+
+							<v-icon v-else>mdi-asterisk</v-icon>
+						</p>
+						<p
+							style="width: 35px"
+							class="text-caption text-right font-weight-medium"
 						>
-							<p style="width: 35px" class="text-caption font-weight-medium">
-								{{ e.time.elapsed }}'
-							</p>
-							<p class="text-caption border px-1 py-1 rounded mr-5">
-								<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
-									>mdi-cards</v-icon
-								>
+							{{ e.time.elapsed }}'
+						</p>
+					</div>
+					<div v-else class="d-flex px-3 py-2 align-center justify-start">
+						<p style="width: 35px" class="text-caption font-weight-medium">
+							{{ e.time.elapsed }}'
+						</p>
+						<p class="text-caption border px-1 py-1 rounded mr-5">
+							<v-icon v-if="e.type === 'Card'" color="yellow-darken-1"
+								>mdi-cards</v-icon
+							>
 
-								<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
+							<v-icon v-else-if="e.type === 'subst'">mdi-sync</v-icon>
 
-								<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
+							<v-icon v-else-if="e.type === 'Goal'">mdi-soccer</v-icon>
 
-								<v-icon v-else>mdi-asterisk</v-icon>
-							</p>
-							<p class="text-subtitle-2">
-								{{ e.player.name }}
-								<span class="text-grey-darken-1" v-if="e.assist.name">{{
-									"( " + e.assist.name + " )"
-								}}</span>
-							</p>
-						</div>
+							<v-icon v-else>mdi-asterisk</v-icon>
+						</p>
+						<p class="text-subtitle-2">
+							{{ e.player.name }}
+							<span class="text-grey-darken-1" v-if="e.assist.name">{{
+								"( " + e.assist.name + " )"
+							}}</span>
+						</p>
+					</div>
 					</div>
 					<div
 						class="
@@ -815,18 +835,37 @@ export default {
 				console.log("old data from " + this.prevRoute.path);
 			} else {
 				let get = "";
+				let fixtureParams = {};
 				if (this.teams) {
 					get = "fixtures,predictions";
 				} else {
 					get = "fixtures,teams,predictions";
 				}
 
+				if (this.selectedGameWeek.gameWeek) {
+					console.log("seleted");
+					fixtureParams = {
+						league_id: this.selectedGameWeek.league_id,
+						season: "2022",
+						fixture_id: this.id,
+					};
+				} else {
+					console.log("no seleted");
+					fixtureParams = {
+						fixture_id: this.id,
+						league_id: this.currentGameWeek.league,
+						season: "2022",
+					};
+					this.fixtureGameWeek = this.currentGameWeek.week;
+					this.league = this.currentGameWeek.league;
+				}
+				
+
 				const response = await this.getTournamentIndexAction({
-					fixture_id: this.id,
+					...fixtureParams,
 					get: get,
 				});
 
-				console.log(this.firstHalfTimeEvents);
 
 				if (response.code === 200) {
 					if (response.results.teams) {

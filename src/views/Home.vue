@@ -381,7 +381,7 @@ export default {
 				const team = this.teams.filter((t) => {
 					return t.team.id === id;
 				});
-				return team[0].team.code;
+				return team[0] ? team[0].team.code : null;
 			} else {
 				return null;
 			}

@@ -78,7 +78,7 @@
 					<div class="d-flex flex-no-wrap justify-space-between">
 						<div>
 							<v-card-title class="text-h6">{{
-								currentFormData.league_id === 1 ? "World Cup" : "Premire League"
+								currentFormData.league_id === 1 ? "World Cup" : "Premier League"
 							}}</v-card-title>
 							<v-card-subtitle>
 								{{
@@ -494,6 +494,12 @@ export default {
 			const response = await this.getLeagueDetailAction(
 				this.currentFormData.league_id
 			);
+			
+			if (this.currentFormData.league_id === 1) {
+				this.currentFormData.league_name = "World Cup";
+			} else if (this.currentFormData.league_id === 39) {
+				this.currentFormData.league_name = "Premier League";
+			}
 			this.currentFormData.gameWeek = "";
 			console.log("rr", response);
 		},
@@ -510,6 +516,8 @@ export default {
 				fixture_week: this.currentFormData.gameWeek,
 				get: "fixtures,predictions",
 			});
+
+			console.log('respones from changing gw', response);
 
 			if (response.code === 200) {
 				this.storeSelectedGameWeekAction(this.currentFormData);
@@ -662,6 +670,29 @@ export default {
 				value: index.toString(),
 			});
 		}
+
+		if (!this.currentGameWeek) {
+			await this.getGameWeekAction();
+		}
+
+		if (!this.leagues) {
+			await this.getLeaguesAction();
+		}
+
+		const currentLeague = this.leagues.filter((league) => {
+			return league.is_current === true;
+		});
+
+		await this.getLeagueDetailAction(currentLeague[0].league_id);
+
+		console.log("cl", currentLeague);
+		this.currentFormData.league_name = currentLeague[0].name;
+		this.currentFormData.league_id = currentLeague[0].league_id;
+		this.currentFormData.logo = currentLeague[0].logo;
+
+		console.log("cw", this.currentGameWeek);
+		this.fixtureGameWeek = this.currentGameWeek.week;
+
 		if (this.prevRoute) {
 			if (
 				!this.prevRoute.path.includes("/fixture/") ||
@@ -677,33 +708,17 @@ export default {
 
 				let fixtureParams = {};
 
-				if (!this.currentGameWeek) {
-					await this.getGameWeekAction();
-				}
-
-				if (!this.leagues) {
-					await this.getLeaguesAction();
-				}
-
-				const currentLeague = this.leagues.filter((league) => {
-					return league.is_current === true;
-				});
-
-				await this.getLeagueDetailAction(currentLeague[0].league_id);
-
-				console.log("cl", currentLeague);
-				this.currentFormData.league_name = currentLeague[0].name;
-				this.currentFormData.league_id = currentLeague[0].league_id;
-				this.currentFormData.logo = currentLeague[0].logo;
-
-				console.log("cw", this.currentGameWeek);
-				this.fixtureGameWeek = this.currentGameWeek.week;
-
 				let get = "";
 				if (this.selectedGameWeek.gameWeek) {
 					console.log("seleted");
+
+					this.currentFormData.league_name = this.selectedGameWeek.league_name;
+					this.currentFormData.league_id = this.selectedGameWeek.league_id;
+					this.currentFormData.logo = this.selectedGameWeek.logo;
 					fixtureParams = {
-						fixture_week: this.selectedGameWeek,
+						fixture_week: this.selectedGameWeek.gameWeek,
+						league_id: this.selectedGameWeek.league_id,
+						season: "2022",
 					};
 				} else {
 					console.log("no seleted");
@@ -762,6 +777,17 @@ export default {
 			} else {
 				console.log("hello");
 			}
+		}else{
+			if (this.selectedGameWeek.gameWeek) {
+					console.log("seleted");
+					this.currentFormData.league_name = this.selectedGameWeek.league_name;
+					this.currentFormData.league_id = this.selectedGameWeek.league_id;
+					this.currentFormData.logo = this.selectedGameWeek.logo;
+				} else {
+					console.log("no seleted");
+					this.fixtureGameWeek = this.currentGameWeek.week;
+					this.league = this.currentGameWeek.league;
+				}
 		}
 
 		this.loading = false;
