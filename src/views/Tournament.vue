@@ -665,6 +665,12 @@ export default {
 				return prediction_result[0];
 			}
 		},
+		adsenseAddLoad() {
+			let inlineScript = document.createElement("script");
+			inlineScript.type = "text/javascript";
+			inlineScript.text = "(adsbygoogle = window.adsbygoogle || []).push({});";
+			document.getElementsByTagName("body")[0].appendChild(inlineScript);
+		},
 	},
 	beforeRouteEnter(to, from, next) {
 		next((vm) => {
@@ -672,6 +678,7 @@ export default {
 		});
 	},
 	async mounted() {
+		this.adsenseAddLoad();
 		this.loading = true;
 		this.$gtag.event("tournament");
 

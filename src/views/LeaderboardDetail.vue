@@ -110,7 +110,7 @@
 		></ins>
 		</div>
 	</v-container>
-	
+
 	<v-container>
 		<v-row>
 			<v-col>
@@ -417,8 +417,15 @@ export default {
 			}
 			this.loading = false;
 		},
+		adsenseAddLoad() {
+			let inlineScript = document.createElement("script");
+			inlineScript.type = "text/javascript";
+			inlineScript.text = "(adsbygoogle = window.adsbygoogle || []).push({});";
+			document.getElementsByTagName("body")[0].appendChild(inlineScript);
+		},
 	},
 	async mounted() {
+		this.adsenseAddLoad();
 		this.loading = true;
 		console.log("aaa", this.id);
 		this.$gtag.event("leaderboard detail");

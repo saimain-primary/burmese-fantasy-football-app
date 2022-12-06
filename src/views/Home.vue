@@ -396,6 +396,12 @@ export default {
 				return null;
 			}
 		},
+		adsenseAddLoad() {
+			let inlineScript = document.createElement("script");
+			inlineScript.type = "text/javascript";
+			inlineScript.text = "(adsbygoogle = window.adsbygoogle || []).push({});";
+			document.getElementsByTagName("body")[0].appendChild(inlineScript);
+		},
 	},
 	created() {
 		window.addEventListener("beforeinstallprompt", (e) => {
@@ -410,6 +416,7 @@ export default {
 		});
 	},
 	async mounted() {
+		this.adsenceAddLoad();
 		this.$gtag.event("home");
 		if (!this.currentGameWeek) {
 			await this.getGameWeekAction();

@@ -321,8 +321,15 @@ export default {
 				return `https://media.api-sports.io/football/leagues/${this.currentFormData.league_id}.png`;
 			}
 		},
+		adsenseAddLoad() {
+			let inlineScript = document.createElement("script");
+			inlineScript.type = "text/javascript";
+			inlineScript.text = "(adsbygoogle = window.adsbygoogle || []).push({});";
+			document.getElementsByTagName("body")[0].appendChild(inlineScript);
+		},
 	},
 	async mounted() {
+		this.adsenseAddLoad();
 		this.loading = true;
 		this.$gtag.event("leaderboard");
 

@@ -814,6 +814,12 @@ export default {
 				});
 			}
 		},
+		adsenseAddLoad() {
+			let inlineScript = document.createElement("script");
+			inlineScript.type = "text/javascript";
+			inlineScript.text = "(adsbygoogle = window.adsbygoogle || []).push({});";
+			document.getElementsByTagName("body")[0].appendChild(inlineScript);
+		},
 	},
 	beforeRouteEnter(to, from, next) {
 		next((vm) => {
@@ -821,6 +827,7 @@ export default {
 		});
 	},
 	async mounted() {
+		this.adsenceAddLoad();
 		this.loading = true;
 
 		for (let index = 0; index < 21; index++) {
