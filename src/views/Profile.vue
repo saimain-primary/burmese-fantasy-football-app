@@ -135,6 +135,15 @@
 					>
 					<p class="mt-5" style="font-size: 12px">Version : 2.0.0</p>
 				</div>
+
+				<ins
+					class="adsbygoogle"
+					style="display: block"
+					data-ad-client="ca-pub-5660029927918677"
+					data-ad-slot="2110480448"
+					data-ad-format="auto"
+					data-full-width-responsive="true"
+				></ins>
 			</v-col>
 		</v-row>
 	</v-container>
@@ -241,8 +250,15 @@ export default {
 		logoutHandler() {
 			this.logoutAction();
 		},
+		adsenseAddLoad() {
+			let inlineScript = document.createElement("script");
+			inlineScript.type = "text/javascript";
+			inlineScript.text = "(adsbygoogle = window.adsbygoogle || []).push({});";
+			document.getElementsByTagName("body")[0].appendChild(inlineScript);
+		},
 	},
 	async mounted() {
+		this.adsenseAddLoad();
 		this.$gtag.event("profile");
 
 		if (!this.teams) {
