@@ -416,7 +416,7 @@ export default {
 		});
 	},
 	async mounted() {
-		this.adsenceAddLoad();
+		this.adsenseAddLoad();
 		this.$gtag.event("home");
 		if (!this.currentGameWeek) {
 			await this.getGameWeekAction();
