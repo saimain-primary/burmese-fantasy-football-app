@@ -78,19 +78,6 @@
 			</v-row>
 		</v-container>
 	</div>
-	
-	<v-container class="mt-5">
-		<div class="mt-3">
-			<ins
-			class="adsbygoogle"
-			style="display: block"
-			data-ad-client="ca-pub-5660029927918677"
-			data-ad-slot="2218006245"
-			data-ad-format="auto"
-			data-full-width-responsive="true"
-		></ins>
-		</div>
-	</v-container>
 
 	<v-container :class="authenticated ? 'mt-10' : 'mt-16'">
 		<v-row>
@@ -164,6 +151,19 @@
 					</div>
 				</div>
 
+				<v-container class="mt-5">
+					<div class="mt-3">
+						<ins
+							class="adsbygoogle"
+							style="display: block"
+							data-ad-client="ca-pub-5660029927918677"
+							data-ad-slot="8433767094"
+							data-ad-format="auto"
+							data-full-width-responsive="true"
+						></ins>
+					</div>
+				</v-container>
+
 				<!-- <v-alert color="primary" variant="tonal" class="mt-3">
 					You are using new version of <strong>BFF</strong> and to use the old version <a href="https://v1.bffsports.com" target="_blank">click here</a>
 				  </v-alert> -->
@@ -223,8 +223,7 @@
 				<template v-else>
 					<div class="mt-3" v-if="homeData.highest_score">
 						<p class="text-body-2 font-weight-medium text-grey-darken-3">
-							 {{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top
-							Predictor
+							{{ homePageGameWeek ? homePageGameWeek.week : 0 }} Top Predictor
 						</p>
 
 						<v-card v-if="homeData" class="mt-3 py-5 px-10">
@@ -425,7 +424,7 @@ export default {
 		if (!this.teams) {
 			const response = await this.getTournamentIndexAction({
 				get: "teams",
-				league_id : this.currentGameWeek.league
+				league_id: this.currentGameWeek.league,
 			});
 			if (response.code === 200) {
 				if (response.results.teams) {
@@ -440,7 +439,7 @@ export default {
 		}
 
 		await this.getHomeDataAction({
-			league_id : this.currentGameWeek.league,
+			league_id: this.currentGameWeek.league,
 			fixture_week: this.homePageGameWeek.week,
 			current_week: this.currentGameWeek.week,
 			leaderboard: true,
