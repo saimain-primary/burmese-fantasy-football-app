@@ -827,7 +827,7 @@ export default {
 		});
 	},
 	async mounted() {
-		this.adsenceAddLoad();
+		this.adsenseAddLoad();
 		this.loading = true;
 
 		for (let index = 0; index < 21; index++) {
