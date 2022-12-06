@@ -135,8 +135,8 @@
 					>
 					<p class="mt-5" style="font-size: 12px">Version : 2.0.0</p>
 				</div>
-
-				<ins
+				<div class="mt-3">
+					<ins
 					class="adsbygoogle"
 					style="display: block"
 					data-ad-client="ca-pub-5660029927918677"
@@ -144,6 +144,7 @@
 					data-ad-format="auto"
 					data-full-width-responsive="true"
 				></ins>
+				</div>
 			</v-col>
 		</v-row>
 	</v-container>

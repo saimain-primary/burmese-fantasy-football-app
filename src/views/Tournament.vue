@@ -142,7 +142,18 @@
 			</v-col>
 		</v-row>
 	</v-container>
-
+	<v-container class="mt-5">
+		<div class="mt-3">
+			<ins
+			class="adsbygoogle"
+			style="display: block"
+			data-ad-client="ca-pub-5660029927918677"
+			data-ad-slot="2218006245"
+			data-ad-format="auto"
+			data-full-width-responsive="true"
+		></ins>
+		</div>
+	</v-container>
 	<v-container>
 		<v-row>
 			<v-col>
