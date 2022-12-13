@@ -101,13 +101,13 @@
 	<v-container class="mt-5">
 		<div class="mt-3">
 			<ins
-			class="adsbygoogle"
-			style="display: block"
-			data-ad-client="ca-pub-5660029927918677"
+				class="adsbygoogle"
+				style="display: block"
+				data-ad-client="ca-pub-5660029927918677"
 				data-ad-slot="8433767094"
 				data-ad-format="auto"
-			data-full-width-responsive="true"
-		></ins>
+				data-full-width-responsive="true"
+			></ins>
 		</div>
 	</v-container>
 
@@ -383,9 +383,9 @@ export default {
 		async onLeagueChangeHandler() {
 			await this.$store.commit("setLeagueDetail", null);
 			const response = await this.getLeagueDetailAction(
-				this.currentFormData.league_id,
+				this.currentFormData.league_id
 			);
-			
+
 			if (this.currentFormData.league_id === 1) {
 				this.currentFormData.league_name = "World Cup";
 			} else if (this.currentFormData.league_id === 39) {

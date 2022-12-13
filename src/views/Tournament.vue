@@ -44,6 +44,29 @@
 								</p>
 							</div>
 						</div>
+						<div class="mt-3" v-if="isPredictionDraw">
+							<v-select
+								v-model="predictionForm.winnerTeam"
+								:items="fixtureTeamOptions"
+								:rules="[(v) => !!v || 'Team is required']"
+								item-title="name"
+								item-value="id"
+								variant="outlined"
+								label="Which Team will win the match?"
+								required
+							></v-select>
+						</div>
+						<div class="mt-3">
+							<v-select
+								v-model="predictionForm.playerOfTheMatch"
+								:items="playerOptions"
+								item-title="name"
+								item-value="id"
+								variant="outlined"
+								label="Who will be player of the match?"
+								required
+							></v-select>
+						</div>
 						<div class="mx-auto">
 							<v-checkbox
 								style="font-size: 12px"
@@ -145,13 +168,13 @@
 	<v-container class="mt-5">
 		<div class="mt-3">
 			<ins
-			class="adsbygoogle"
-			style="display: block"
-			data-ad-client="ca-pub-5660029927918677"
-			data-ad-slot="8433767094"
-			data-ad-format="auto"
-			data-full-width-responsive="true"
-		></ins>
+				class="adsbygoogle"
+				style="display: block"
+				data-ad-client="ca-pub-5660029927918677"
+				data-ad-slot="8433767094"
+				data-ad-format="auto"
+				data-full-width-responsive="true"
+			></ins>
 		</div>
 	</v-container>
 	<v-container>
@@ -345,18 +368,22 @@
 						</template>
 
 						<div class="text-center mt-3">
+							<!-- v-if="f.fixture.status.short === 'NS'" -->
 							<v-btn
-								v-if="f.fixture.status.short === 'NS'"
 								size="small"
 								@click="predictionDialogHandler(f)"
 								color="primary"
+								:disabled="isProcessing"
 							>
-								<span
-									v-if="authenticated && getFixturePrediction(f.fixture.id)"
-								>
-									Change Predict
+								<span v-if="isProcessing">Please wait</span>
+								<span v-else>
+									<span
+										v-if="authenticated && getFixturePrediction(f.fixture.id)"
+									>
+										Change Predict
+									</span>
+									<span v-else> Predict Match </span>
 								</span>
-								<span v-else> Predict Match </span>
 							</v-btn>
 						</div>
 					</v-card>
@@ -409,12 +436,23 @@ export default {
 				(a, b) => new Date(a.fixture.date) - new Date(b.fixture.date)
 			);
 		},
+		isPredictionDraw() {
+			if (
+				this.predictionForm.teamOnePredictionNumber[0] ===
+				this.predictionForm.teamTwoPredictionNumber[0]
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		},
 	},
 	data: () => ({
 		showFilterDialog: false,
 		logo: logo,
 		nodata: nodata,
 		loading: true,
+		isProcessing: false,
 		showPredictionDialog: false,
 		currentFormData: {
 			league_id: null,
@@ -437,8 +475,11 @@ export default {
 			teamOnePredictionNumber: ["0"],
 			teamTwoPredictionNumber: ["0"],
 			prediction2xBooster: false,
+			winnerTeam: null,
 		},
 		gameWeekForSelect: [],
+		playerOptions: [],
+		fixtureTeamOptions: [],
 	}),
 	methods: {
 		moment,
@@ -454,8 +495,11 @@ export default {
 			setTeamsAction: "setTeamsAction",
 			getLeaguesAction: "getLeaguesAction",
 			getLeagueDetailAction: "getLeagueDetailAction",
+
+			getFixtureDetailAction: "fixture/getFixtureDetailAction",
 		}),
-		predictionDialogHandler(f) {
+		async predictionDialogHandler(f) {
+			this.isProcessing = true;
 			if (!this.authenticated) {
 				this.showDialogAction({
 					title: "Unauthenticated!",
@@ -469,6 +513,38 @@ export default {
 					"open dialog for ",
 					this.getFixturePrediction(f.fixture.id)
 				);
+
+				console.log("ff", f);
+
+				this.fixtureTeamOptions = [
+					{
+						id: f.teams.home.id,
+						name: f.teams.home.name,
+					},
+					{
+						id: f.teams.away.id,
+						name: f.teams.away.name,
+					},
+				];
+
+				const getFixtureDetailResponse = await this.getFixtureDetailAction(
+					f.fixture.id
+				);
+
+				console.log(
+					"🚀 ~ file: Tournament.vue:520 ~ predictionDialogHandler ~ getFixtureDetailResponse",
+					getFixtureDetailResponse
+				);
+
+				const homeTeamPlayers =
+					getFixtureDetailResponse.results[0].players[0].players.map((p) => {
+						return p.player;
+					});
+				const awayTeamPlayers =
+					getFixtureDetailResponse.results[0].players[1].players.map((p) => {
+						return p.player;
+					});
+				this.playerOptions = [...homeTeamPlayers, ...awayTeamPlayers];
 
 				if (this.getFixturePrediction(f.fixture.id)) {
 					this.predictionForm.teamOnePredictionNumber = [
@@ -499,13 +575,15 @@ export default {
 					moment.ISO_8601
 				).format("h:mm A ");
 			}
+
+			this.isProcessing = false;
 		},
 		async onLeagueChangeHandler() {
 			await this.$store.commit("setLeagueDetail", null);
 			const response = await this.getLeagueDetailAction(
 				this.currentFormData.league_id
 			);
-			
+
 			if (this.currentFormData.league_id === 1) {
 				this.currentFormData.league_name = "World Cup";
 			} else if (this.currentFormData.league_id === 39) {
@@ -528,7 +606,7 @@ export default {
 				get: "fixtures,predictions",
 			});
 
-			console.log('respones from changing gw', response);
+			console.log("respones from changing gw", response);
 
 			if (response.code === 200) {
 				this.storeSelectedGameWeekAction(this.currentFormData);
@@ -795,17 +873,17 @@ export default {
 			} else {
 				console.log("hello");
 			}
-		}else{
+		} else {
 			if (this.selectedGameWeek.gameWeek) {
-					console.log("seleted");
-					this.currentFormData.league_name = this.selectedGameWeek.league_name;
-					this.currentFormData.league_id = this.selectedGameWeek.league_id;
-					this.currentFormData.logo = this.selectedGameWeek.logo;
-				} else {
-					console.log("no seleted");
-					this.fixtureGameWeek = this.currentGameWeek.week;
-					this.league = this.currentGameWeek.league;
-				}
+				console.log("seleted");
+				this.currentFormData.league_name = this.selectedGameWeek.league_name;
+				this.currentFormData.league_id = this.selectedGameWeek.league_id;
+				this.currentFormData.logo = this.selectedGameWeek.logo;
+			} else {
+				console.log("no seleted");
+				this.fixtureGameWeek = this.currentGameWeek.week;
+				this.league = this.currentGameWeek.league;
+			}
 		}
 
 		this.loading = false;

@@ -93,6 +93,7 @@ export default {
       commit("toggleLoading", false, { root: true });
       return response.data;
     },
+    
 
     async getVenuesDetail({ commit }, id) {
       const response = await axios.get("/venues", {
@@ -105,6 +106,11 @@ export default {
 
     async storeSelectedGameWeekAction({ commit }, data) {
       await commit("storeSelectedGameWeek", data);
+    },
+
+    async getFixtureDetailAction({ commit }, id) {
+      const response = await axios.get("/fixtures/" + id);
+      return response.data;
     },
   },
 };
