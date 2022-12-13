@@ -534,7 +534,8 @@ export default {
 					f.fixture.id
 				);
 
-				const homeTeamPlayers =
+				if(getFixtureDetailResponse.results[0].players.length < 1){
+					const homeTeamPlayers =
 					getFixtureDetailResponse.results[0].players[0].players.map((p) => {
 						return p.player;
 					});
@@ -544,6 +545,9 @@ export default {
 					});
 
 				this.playerOptions = [...homeTeamPlayers, ...awayTeamPlayers];
+
+				}
+
 
 				if (this.getFixturePrediction(f.fixture.id)) {
 					this.predictionForm.teamOnePredictionNumber = [
