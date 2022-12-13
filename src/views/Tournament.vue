@@ -544,10 +544,15 @@ export default {
 					}),
 					]
 				
-				const awayTeamPlayers =
-					getFixtureDetailResponse.results[0].players[1].players.map((p) => {
+				const awayTeamPlayers =[
+					...getFixtureDetailResponse.results[0].lineups[1].startXI.map((p) => {
 						return p.player;
-					});
+					}),
+					...getFixtureDetailResponse.results[0].lineups[1].substitutes.map((p) => {
+						return p.player;
+					}),
+				]
+					
 
 				this.playerOptions = [...homeTeamPlayers, ...awayTeamPlayers];
 
