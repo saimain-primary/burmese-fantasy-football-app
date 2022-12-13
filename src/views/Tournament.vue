@@ -534,7 +534,7 @@ export default {
 					f.fixture.id
 				);
 
-				if(getFixtureDetailResponse.results[0].players.length < 1){
+				if(getFixtureDetailResponse.results[0].players.length >= 1){
 					const homeTeamPlayers =
 					getFixtureDetailResponse.results[0].players[0].players.map((p) => {
 						return p.player;
