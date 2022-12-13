@@ -693,6 +693,7 @@ export default {
 			} else {
 				week = this.currentFormData.gameWeek;
 			}
+			
 
 			const response = await this.savePredictionAction({
 				league_id: this.currentFormData.league_id,
@@ -702,7 +703,7 @@ export default {
 				home: this.predictionForm.teamOnePredictionNumber[0],
 				away: this.predictionForm.teamTwoPredictionNumber[0],
 				boosted: this.predictionForm.prediction2xBooster,
-				winner: this.predictionForm.winnerTeam,
+				winner: this.prediction.teamOnePredictionNumber[0] === this.prediction.teamTwoPredictionNumber[0] ? this.predictionForm.winnerTeam : null,
 				player_of_the_match: this.predictionForm.playerOfTheMatch,
 				week: week,
 			});
