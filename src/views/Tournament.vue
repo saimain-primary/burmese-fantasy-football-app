@@ -470,12 +470,15 @@ export default {
 			date: null,
 			time: null,
 			fixtureId: null,
+			winner: null,
+			playerOfTheMatch: null
 		},
 		predictionForm: {
 			teamOnePredictionNumber: ["0"],
 			teamTwoPredictionNumber: ["0"],
 			prediction2xBooster: false,
 			winnerTeam: null,
+			playerOfTheMatch: null
 		},
 		gameWeekForSelect: [],
 		playerOptions: [],
@@ -531,11 +534,6 @@ export default {
 					f.fixture.id
 				);
 
-				console.log(
-					"🚀 ~ file: Tournament.vue:520 ~ predictionDialogHandler ~ getFixtureDetailResponse",
-					getFixtureDetailResponse
-				);
-
 				const homeTeamPlayers =
 					getFixtureDetailResponse.results[0].players[0].players.map((p) => {
 						return p.player;
@@ -544,6 +542,7 @@ export default {
 					getFixtureDetailResponse.results[0].players[1].players.map((p) => {
 						return p.player;
 					});
+
 				this.playerOptions = [...homeTeamPlayers, ...awayTeamPlayers];
 
 				if (this.getFixturePrediction(f.fixture.id)) {
@@ -556,10 +555,15 @@ export default {
 					this.predictionForm.prediction2xBooster = this.getFixturePrediction(
 						f.fixture.id
 					).boosted;
+
+					this.predictionForm.winnerTeam = parseInt(this.getFixturePrediction(f.fixture.id).winner);
+					this.predictionForm.playerOfTheMatch = parseInt(this.getFixturePrediction(f.fixture.id).playerOfTheMatch);
 				} else {
 					this.predictionForm.teamOnePredictionNumber = ["0"];
 					this.predictionForm.teamTwoPredictionNumber = ["0"];
 					this.predictionForm.prediction2xBooster = false;
+					this.predictionForm.winnerTeam = null;
+					this.predictionForm.playerOfTheMatch = null;
 				}
 				this.showPredictionDialog = true;
 				this.prediction.leagueId = this.currentFormData.league_id;
@@ -666,6 +670,8 @@ export default {
 					predictions[existingPredictionIndex].home = data.home;
 					predictions[existingPredictionIndex].away = data.away;
 					predictions[existingPredictionIndex].boosted = data.boosted;
+					predictions[existingPredictionIndex].winner = parseInt(data.winner);
+					predictions[existingPredictionIndex].playerOfTheMatch =parseInt(data.playerOfTheMatch);
 					console.log("updated", predictions[existingPredictionIndex]);
 				} else {
 					predictions.push(data);
@@ -692,6 +698,8 @@ export default {
 				home: this.predictionForm.teamOnePredictionNumber[0],
 				away: this.predictionForm.teamTwoPredictionNumber[0],
 				boosted: this.predictionForm.prediction2xBooster,
+				winner: this.predictionForm.winnerTeam,
+				player_of_the_match: this.predictionForm.playerOfTheMatch,
 				week: week,
 			});
 
@@ -706,11 +714,15 @@ export default {
 					awayTeam: null,
 					date: null,
 					fixtureId: null,
+					winner: null,
+					playerOfTheMatch: null,
 				};
 				this.predictionForm = {
 					teamOnePredictionNumber: ["0"],
 					teamTwoPredictionNumber: ["0"],
 					prediction2xBooster: false,
+					winnerTeam: null,
+					playerOfTheMatch: null
 				};
 				this.showPredictionDialog = false;
 			} else {
@@ -725,11 +737,14 @@ export default {
 				const predictions = this.tournamentData.predictions.filter((p) => {
 					return p.fixture_id == fixture_id && p.user_id === this.user._id;
 				});
+				console.log("🚀 ~ file: Tournament.vue:740 ~ predictions ~ predictions", predictions)
 				if (predictions[0]) {
 					return {
 						home: predictions[0].home,
 						away: predictions[0].away,
 						boosted: predictions[0].boosted,
+						winner: predictions[0].winner,
+						playerOfTheMatch: predictions[0].player_of_the_match
 					};
 				}
 			}
