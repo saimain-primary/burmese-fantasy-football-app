@@ -555,7 +555,7 @@ export default {
 					
 
 				this.playerOptions = [...homeTeamPlayers, ...awayTeamPlayers];
-				console.log("🚀 ~ file: Tournament.vue:558 ~ predictionDialogHandler ~ playerOptions", playerOptions)
+				console.log("🚀 ~ file: Tournament.vue:558 ~ predictionDialogHandler ~ playerOptions", this.playerOptions)
 
 				}
 
