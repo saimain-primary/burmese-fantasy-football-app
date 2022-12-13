@@ -368,8 +368,8 @@
 						</template>
 
 						<div class="text-center mt-3">
-							<!-- v-if="f.fixture.status.short === 'NS'" -->
 							<v-btn
+								v-if="f.fixture.status.short === 'NS'"
 								size="small"
 								@click="predictionDialogHandler(f)"
 								color="primary"
