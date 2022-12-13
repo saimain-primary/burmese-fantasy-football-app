@@ -534,11 +534,16 @@ export default {
 					f.fixture.id
 				);
 
-				if(getFixtureDetailResponse.results[0].players.length >= 1){
-					const homeTeamPlayers =
-					getFixtureDetailResponse.results[0].players[0].players.map((p) => {
+				if(getFixtureDetailResponse.results[0].lineups.length >= 1){
+					const homeTeamPlayers = [
+						...getFixtureDetailResponse.results[0].lineups[0].startXI.map((p) => {
 						return p.player;
-					});
+					}),
+					...getFixtureDetailResponse.results[0].lineups[0].substitutes.map((p) => {
+						return p.player;
+					}),
+					]
+				
 				const awayTeamPlayers =
 					getFixtureDetailResponse.results[0].players[1].players.map((p) => {
 						return p.player;
