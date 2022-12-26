@@ -44,7 +44,7 @@
 								</p>
 							</div>
 						</div>
-						<div class="mt-3" v-if="isPredictionDraw">
+						<!-- <div class="mt-3" v-if="isPredictionDraw">
 							<v-select
 								v-model="predictionForm.winnerTeam"
 								:items="fixtureTeamOptions"
@@ -55,7 +55,7 @@
 								label="Which Team will win the match?"
 								required
 							></v-select>
-						</div>
+						</div> -->
 						<div class="mt-3">
 							<v-select
 								v-model="predictionForm.playerOfTheMatch"
@@ -753,8 +753,8 @@ export default {
 				const predictions = this.tournamentData.predictions.filter((p) => {
 					return p.fixture_id == fixture_id && p.user_id === this.user._id;
 				});
-				console.log("🚀 ~ file: Tournament.vue:740 ~ predictions ~ predictions", predictions)
 				if (predictions[0]) {
+					console.log("test one", predictions[0]);
 					return {
 						home: predictions[0].home,
 						away: predictions[0].away,
