@@ -145,7 +145,7 @@
           </div>
         </div>
 
-        <v-container class="mt-5">
+        <!-- <v-container class="mt-5">
           <div class="mt-3">
             <ins
               class="adsbygoogle"
@@ -156,7 +156,7 @@
               data-full-width-responsive="true"
             ></ins>
           </div>
-        </v-container>
+        </v-container> -->
 
         <!-- <v-alert color="primary" variant="tonal" class="mt-3">
 					You are using new version of <strong>BFF</strong> and to use the old version <a href="https://v1.bffsports.com" target="_blank">click here</a>
